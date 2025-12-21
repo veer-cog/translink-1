@@ -1,0 +1,15 @@
+
+<div class="auth-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <input type="email" formControlName="email" placeholder="Email" />
+    <input type="password" formControlName="password" placeholder="Password" />
+    <button type="submit">Login</button>
+  </form>
+<p>Don't Have an Account? <a routerLink="/signup">SignUp</a></p>
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+</div>
+<button routerLink="/signup">Signup</button>
+<button routerLink="/">Home</button>
