@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
             theme: {
                 preset: Aura,
                 options: {
-            darkModeSelector: true
+            darkModeSelector: false
           }
             }
         }),MessageService,

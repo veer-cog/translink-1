@@ -1,38 +1,65 @@
+/* Base Container for centering */
 .auth-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  margin-top: 3rem;
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  // background-color: #f4f7f9;
+  padding: 1rem;
 }
-
-.auth-container h2 {
-  margin-bottom: 1rem;
-  color: #333;
+ 
+/* Deep Styles for PrimeNG UI components */
+:host ::ng-deep {
+  .p-card {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+  }
+ 
+  .field-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+ 
+  /* Force fluid width on inputs */
+  .p-password,
+  .p-inputtext,
+  .p-floatlabel {
+    width: 100% !important;
+  }
+ 
+  /* Simple Error Messaging */
+  p-message {
+    .p-inline-message {
+      background: transparent;
+      border: none;
+      padding: 0;
+      justify-content: flex-start;
+      margin-left: 0.2rem;
+ 
+      .p-inline-message-text {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #ef4444;
+      }
+    }
+  }
+ 
+  /* Button styling */
+  .p-button {
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
 }
-
-.p-card {
-  padding: 2rem;
-}
-
-.p-fluid .p-float-label {
-  margin-bottom: 1.5rem;
-}
-
-.error {
-  color: #d32f2f;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-}
-
-button {
-  margin-top: 1rem;
-}
-
-.p-mt-3 {
-  margin-top: 1rem !important;
-}
-
-.p-mr-2 {
-  margin-right: 0.5rem !important;
+ 
+/* Helper Utilities */
+.text-center { text-align: center; }
+.p-mt-2 { margin-top: 1rem; }
+.signup-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  &:hover { text-decoration: underline; }
 }

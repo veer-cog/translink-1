@@ -7,6 +7,7 @@ import { ToastModule } from 'primeng/toast'
   imports: [RouterOutlet,ToastModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
+  
 })
 export class App {
   protected readonly title = signal('TransLink');
