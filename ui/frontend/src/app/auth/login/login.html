@@ -1,15 +1,38 @@
-
 <div class="auth-container">
   <h2>Login</h2>
+
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-    <input type="email" formControlName="email" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Password" />
-    <button type="submit">Login</button>
+    <p-card header="Login" [style]="{ width: '25rem' }">
+      <div class="p-fluid">
+        <!-- Email -->
+        <p-floatLabel variant="in">
+          <input pInputText id="email" formControlName="email" autocomplete="off" />
+          <label for="email">Email</label>
+        </p-floatLabel>
+<br>
+        <!-- Password -->
+        <p-floatlabel variant="in">
+    <p-password [toggleMask]="true" [feedback]="false"  />
+    <label for="in_label">Password</label>
+</p-floatlabel>
+
+        <!-- Error message -->
+        @if (errorMessage) {
+          <p class="error">{{ errorMessage }}</p>
+        }
+
+        <!-- Submit button -->
+        <button pButton type="submit" label="Login" class="p-mt-3"></button>
+      </div>
+    </p-card>
   </form>
-<p>Don't Have an Account? <a routerLink="/signup">SignUp</a></p>
-  @if (errorMessage) {
-    <p class="error">{{ errorMessage }}</p>
-  }
+
+  <p class="p-mt-3">
+    Don't have an account?
+    <a routerLink="/signup">Sign Up</a>
+  </p>
+
+  <!-- Extra navigation buttons -->
+  <button pButton routerLink="/signup" label="Signup" class="p-button-secondary p-mr-2"></button>
+  <button pButton routerLink="/" label="Home" class="p-button-secondary"></button>
 </div>
-<button routerLink="/signup">Signup</button>
-<button routerLink="/">Home</button>

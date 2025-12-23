@@ -3,13 +3,23 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common'; 
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { CardModule } from 'primeng/card';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, CommonModule, ReactiveFormsModule],
+  imports: [RouterLink,
+     PasswordModule,  
+    CommonModule,CardModule,ButtonModule, ReactiveFormsModule,InputTextModule,InputNumberModule,FloatLabelModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
 export class Login {
+  value2='';
   loginForm: FormGroup;
   errorMessage = '';
 
