@@ -1,38 +1,51 @@
 <div class="auth-container">
   <h2>Login</h2>
 
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+  <!-- <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <p-card header="Login" [style]="{ width: '25rem' }">
       <div class="p-fluid">
-        <!-- Email -->
+       
         <p-floatLabel variant="in">
           <input pInputText id="email" formControlName="email" autocomplete="off" />
           <label for="email">Email</label>
         </p-floatLabel>
 <br>
-        <!-- Password -->
+
         <p-floatlabel variant="in">
     <p-password [toggleMask]="true" [feedback]="false"  />
     <label for="in_label">Password</label>
 </p-floatlabel>
 
-        <!-- Error message -->
+       
         @if (errorMessage) {
           <p class="error">{{ errorMessage }}</p>
         }
 
-        <!-- Submit button -->
+       
         <button pButton type="submit" label="Login" class="p-mt-3"></button>
       </div>
     </p-card>
-  </form>
+  </form> -->
 
-  <p class="p-mt-3">
-    Don't have an account?
-    <a routerLink="/signup">Sign Up</a>
-  </p>
-
-  <!-- Extra navigation buttons -->
-  <button pButton routerLink="/signup" label="Signup" class="p-button-secondary p-mr-2"></button>
-  <button pButton routerLink="/" label="Home" class="p-button-secondary"></button>
+  <div class="login-container">
+  <p-card class="login-card">
+    <ng-template pTemplate="header">
+      <div class="login-header">
+        <i class="pi pi-lock"></i>
+        <h2>Sign In</h2>
+        <p>Access your account</p>
+      </div>
+    </ng-template>
+    <div class="p-fluid">
+      <div class="field">
+        <label>Email</label>
+        <input pInputText type="email" [(ngModel)]="email" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <p-password [(ngModel)]="password" toggleMask="true" [feedback]="false"></p-password>
+      </div>
+      <p-button label="Login" icon="pi pi-sign-in" (onClick)="login()"></p-button>
+    </div>
+  </p-card>
 </div>
