@@ -16,6 +16,12 @@
     <label for="in_label">Password</label>
 </p-floatlabel>
 
+<!-- Forgot password link --> 
+<div class="forgot-container"> 
+  <a routerLink="/forgot-password">Forgot password?</a>
+</div>
+
+
         <!-- Error message -->
         @if (errorMessage) {
           <p class="error">{{ errorMessage }}</p>
