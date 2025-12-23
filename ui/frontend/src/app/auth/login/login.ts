@@ -129,6 +129,7 @@ import { PasswordModule } from 'primeng/password'; // Added
 import { FloatLabelModule } from 'primeng/floatlabel'; // Added
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+
  
 @Component({
     selector: 'reactive-forms-demo',
@@ -146,7 +147,7 @@ import { RouterLink } from '@angular/router';
         FloatLabelModule,
         RouterLink
     ],
-    encapsulation: ViewEncapsulation.None,
+    // encapsulation: ViewEncapsulation.None,
     providers: [MessageService]
 })
 export class Login {
@@ -155,21 +156,62 @@ export class Login {
     formSubmitted = false;
  
     constructor(private fb: FormBuilder) {
-        this.exampleForm = this.fb.group({
-            username: ['', Validators.required],
+        this.exampleForm = this.fb.group({        
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required] // Added
         });
     }
  
-    onSubmit() {
-        this.formSubmitted = true;
-        if (this.exampleForm.valid) {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login Successful', life: 3000 });
-            console.log('Login Data:', this.exampleForm.value);
-            // logic to navigate or call API
-        }
-    }
+    // onSubmit() {
+    //     this.formSubmitted = true;
+    //     if (this.exampleForm.valid) {
+    //         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login Successful', life: 3000 });
+    //         console.log('Login Data:', this.exampleForm.value);
+    //         // logic to navigate or call API
+    //     }
+    // }
+
+  onSubmit() {
+  this.formSubmitted = true;
+
+  if (this.exampleForm.invalid) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Login Failed',
+      detail: 'Please fill all fields correctly',
+      life: 3000
+    });
+    return;
+  }
+
+  const { email, password } = this.exampleForm.value;
+
+  if (email === 'admin@gmail.com' && password === 'admin@1234') {
+    this.success('Welcome Admin');
+  } else if (email === 'manager@mail.com' && password === 'manager@1234') {
+    this.success('Welcome Manager');
+  } else if (email === 'client@gmail.com' && password === 'client@1234') {
+    this.success('Welcome Client');
+  } else {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Login Failed',
+      detail: 'Invalid email or password',
+      life: 3000
+    });
+    console.log('email',password)
+  }
+}
+
+private success(message: string): void {
+  this.messageService.add({
+    severity: 'success',
+    summary: 'Login Successful',
+    detail: message,
+    life: 3000
+  });
+}
+
  
     isInvalid(controlName: string) {
         const control = this.exampleForm.get(controlName);
