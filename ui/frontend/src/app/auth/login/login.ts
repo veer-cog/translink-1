@@ -118,7 +118,7 @@
 //   }
 // }
 
-import { Component, inject, ViewEncapsulation } from '@angular/core';
+import { Component, inject, } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -128,9 +128,15 @@ import { CardModule } from 'primeng/card'; // Added
 import { PasswordModule } from 'primeng/password'; // Added
 import { FloatLabelModule } from 'primeng/floatlabel'; // Added
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router ,Routes } from '@angular/router';
+import { LandingPage } from '../../pages/landing-page/landing-page';
 
- 
+
+const routes: Routes = [ 
+  { path: 'landing-page', component: LandingPage }, 
+  { path: '', redirectTo: '/login', pathMatch: 'full' } ];
+
+;
 @Component({
     selector: 'reactive-forms-demo',
     templateUrl: './login.html',
@@ -147,15 +153,16 @@ import { RouterLink } from '@angular/router';
         FloatLabelModule,
         RouterLink
     ],
-    // encapsulation: ViewEncapsulation.None,
+
     providers: [MessageService]
 })
+
 export class Login {
     messageService = inject(MessageService);
     exampleForm: FormGroup;
     formSubmitted = false;
  
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder,private router:Router) {
         this.exampleForm = this.fb.group({        
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required] // Added
@@ -188,10 +195,20 @@ export class Login {
 
   if (email === 'admin@gmail.com' && password === 'admin@1234') {
     this.success('Welcome Admin');
+    setTimeout(()=>{
+      this.router.navigate(['/']);
+    },1000);
+    
   } else if (email === 'manager@mail.com' && password === 'manager@1234') {
     this.success('Welcome Manager');
+    setTimeout(()=>{
+      this.router.navigate(['/']);
+    },1000);
   } else if (email === 'client@gmail.com' && password === 'client@1234') {
     this.success('Welcome Client');
+     setTimeout(()=>{
+      this.router.navigate(['/']);
+    },1000);
   } else {
     this.messageService.add({
       severity: 'error',
@@ -217,4 +234,7 @@ private success(message: string): void {
         const control = this.exampleForm.get(controlName);
         return control?.invalid && (control.touched || this.formSubmitted);
     }
+    // isValid(email:string,password:string){
+    //   console.log('all valid')
+    // }
 }

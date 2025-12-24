@@ -3,17 +3,6 @@
 <div class="auth-container">
   <p-card header="Login" [style]="{ width: '28rem' }">
     <form [formGroup]="exampleForm" (ngSubmit)="onSubmit()" class="p-fluid flex flex-col gap-4">
-     
-      <!-- <div class="field-container">
-        <p-floatLabel variant="in">
-          <input pInputText id="username" formControlName="username" autocomplete="off"
-                 [invalid]="isInvalid('username')" />
-          <label for="username">Username</label>
-        </p-floatLabel>
-        @if (isInvalid('username')) {
-          <p-message severity="error" size="small" variant="simple">Username is required.</p-message>
-        }
-      </div> -->
  
       <div class="field-container">
         <p-floatLabel variant="in">
