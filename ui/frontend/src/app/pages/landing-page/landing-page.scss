@@ -1,0 +1,74 @@
+:host {
+    --primary: #2563eb;
+    --bg: #f8fafc;
+    --text-dark: #0f172a;
+    --text-muted: #475569;
+    // --card-bg: #ffffff;
+}
+
+/* Navbar Style */
+::ng-deep .custom-menubar {
+    position: sticky !important;
+    top: 0;
+    z-index: 100;
+    background: var(--card-bg) !important;
+    padding: 0.8rem 2rem !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+}
+
+/* Button Styles */
+::ng-deep .login-btn .p-button-label { color: var(--text-dark); font-weight: 500; }
+::ng-deep .signup-btn {
+    background: var(--primary) !important;
+    border: none !important;
+    border-radius: 999px !important;
+}
+
+/* Hero Section Animation */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero {
+    background: linear-gradient(-45deg, #2563eb, #1e40af, #3b82f6, #1d4ed8);
+    background-size: 400% 400%;
+    border-radius: 24px;
+    margin: 15px;
+    animation: gradientShift 12s ease infinite;
+    color: #fff;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Linear Card Styling */
+::ng-deep .module-card {
+    background: var(--card-bg) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    height: 100%;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0,0,0,0.08) !important;
+    }
+
+    .p-card-body {
+        padding: 1.5rem !important;
+    }
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: rgba(37, 99, 235, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
