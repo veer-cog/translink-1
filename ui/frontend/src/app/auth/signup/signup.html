@@ -1,16 +1,82 @@
-<div class="auth-container">
-  <h2>Sign Up</h2>
-  <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
-    <input type="text" formControlName="name" placeholder="Full Name" />
-    <input type="email" formControlName="email" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Password" />
-    <button type="submit">Create Account</button>
-  </form>
-<p>Already have an account? <a routerLink="/login">Login</a></p>
-  @if (successMessage) {
-    <p class="success">{{ successMessage }}</p>
-  }
-  @if (errorMessage) {
-    <p class="error">{{ errorMessage }}</p>
-  }
+<p-toast></p-toast>
 
+<div class="auth-container">
+  <p-card [header]="!showOtp ? 'Create Account' : 'Verify OTP'" [style]="{ width: '30rem' }">
+    
+    <form *ngIf="!showOtp" [formGroup]="signupForm" (ngSubmit)="onSignupSubmit()" class="p-fluid flex flex-col gap-3">
+      
+      <div class="field-container">
+        <p-floatLabel variant="in">
+          <input pInputText id="fullName" formControlName="fullName" autocomplete="name" [invalid]="isInvalid('fullName')" />
+          <label for="fullName">Full Name</label>
+        </p-floatLabel>
+        @if (isInvalid('fullName')) {
+          <p-message severity="error" size="small" variant="simple">Full name is required.</p-message>
+        }
+      </div>
+
+      <div class="field-container">
+        <p-floatLabel variant="in">
+          <input pInputText id="email" formControlName="email" autocomplete="email" [invalid]="isInvalid('email')" />
+          <label for="email">Email Address</label>
+        </p-floatLabel>
+        @if (isInvalid('email')) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ signupForm.get('email')?.errors?.['required'] ? 'Email is required.' : 'Invalid email format.' }}
+          </p-message>
+        }
+      </div>
+
+      <div class="field-container">
+        <p-floatLabel variant="in">
+          <p-password formControlName="password" [toggleMask]="true" [feedback]="true" [invalid]="isInvalid('password')" />
+          <label for="password">Password</label>
+        </p-floatLabel>
+        @if (isInvalid('password')) {
+          <p-message severity="error" size="small" variant="simple">Password (min 6 chars) is required.</p-message>
+        }
+      </div>
+
+      <div class="field-container">
+        <p-floatLabel variant="in">
+          <p-password formControlName="confirmPassword" [toggleMask]="true" [feedback]="false" [invalid]="isInvalid('confirmPassword') || signupForm.errors?.['mismatch']" />
+          <label for="confirmPassword">Confirm Password</label>
+        </p-floatLabel>
+        @if (signupForm.get('confirmPassword')?.touched && signupForm.errors?.['mismatch']) {
+          <p-message severity="error" size="small" variant="simple">Passwords do not match.</p-message>
+        }
+      </div>
+
+      <button pButton type="submit" label="Create Account" class="submit-btn"></button>
+
+      <div class="text-center p-mt-2">
+        <span class="text-sm opacity-70">Already have an account? </span>
+        <a routerLink="/login" class="signup-link">Login</a>
+      </div>
+    </form>
+
+    <div *ngIf="showOtp" class="otp-wrapper">
+      <div class="text-center mb-6">
+        <div class="font-bold text-2xl mb-2">Verify Email</div>
+        <p class="text-sm opacity-60">Enter the 6-digit code sent to your inbox.</p>
+      </div>
+      
+      <p-inputotp [(ngModel)]="otpValue" [length]="6" class="justify-center">
+          <ng-template #input let-token let-events="events" let-index="index">
+              <input type="text" [maxLength]="1" (input)="events.input($event)" (keydown)="events.keydown($event)" [attr.value]="token" class="custom-otp-input" />
+              <div *ngIf="index === 2" class="otp-separator">
+                  <i class="pi pi-minus"></i>
+              </div>
+          </ng-template>
+      </p-inputotp>
+
+      <div class="otp-actions">
+          <p-button label="Resend" [link]="true" (onClick)="resendOtp()"/>
+          <p-button label="Verify Code" (onClick)="verifyOtp()" [disabled]="otpValue.length < 6"/>
+      </div>
+      
+      <button pButton icon="pi pi-arrow-left" label="Back to Signup" class="p-button-text p-button-sm mt-4 w-full" (click)="showOtp = false"></button>
+    </div>
+
+  </p-card>
+</div>

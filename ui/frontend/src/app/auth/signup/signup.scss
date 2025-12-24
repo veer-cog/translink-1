@@ -1,0 +1,103 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+//   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 1.5rem;
+}
+
+:host ::ng-deep {
+  .p-card {
+    align-items: center;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden;
+
+    .p-card-header {
+      background: #fdfdfd;
+      padding-top: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #334155;
+    }
+  }
+
+  .field-container {
+    margin-bottom: 1.25rem;
+    
+    .p-floatlabel {
+        label { margin-left: 0.5rem; }
+    }
+  }
+  .p-inputtext{
+width: 300px;
+
+  }
+  /* Improved Input Focus */
+  .p-inputtext:enabled:focus {
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.1);
+    border-color: #60f63b;
+    
+  }
+
+  .submit-btn {
+    // background: #3b82f6;
+    border: none;
+    padding: 0.85rem;
+    font-size: 1rem;
+    transition: transform 0.2s;
+    // &:hover { transform: translateY(-1px); background: #2563eb; }
+  }
+
+  /* Custom OTP Styling */
+  .custom-otp-input {
+    width: 42px;
+    height: 52px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid #e2e8f0;
+    // background: #fff;
+    border-radius: 10px;
+    margin: 0 4px;
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
+      outline: none;
+    }
+  }
+
+  .otp-separator {
+    display: flex;
+    align-items: center;
+    color: #cbd5e1;
+    font-weight: bold;
+    margin: 0 8px;
+  }
+
+  .otp-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    width: 100%;
+  }
+
+  /* Simple Error Text */
+  p-message .p-inline-message-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+.signup-link {
+  color: #3b82f6;
+  font-weight: 700;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
