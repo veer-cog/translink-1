@@ -211,7 +211,7 @@ private success(message: string): void {
     life: 3000
   });
 }
-
+    
  
     isInvalid(controlName: string) {
         const control = this.exampleForm.get(controlName);

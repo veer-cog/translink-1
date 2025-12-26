@@ -6,10 +6,10 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputOtpModule, InputOtpChangeEvent } from 'primeng/inputotp';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-forgot-password',
@@ -23,33 +23,25 @@ import { Router } from '@angular/router';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    RadioButtonModule,
-    InputOtpModule
+    InputOtpModule,
+    ToastModule
   ],
   templateUrl: './forgot-password.html',
-  styleUrls: ['./forgot-password.scss']
+  styleUrls: ['./forgot-password.scss'],
+  providers: [MessageService]
 })
-
 export class ForgotPassword {
-  method: 'email' | 'otp' = 'email';
- currentStep: 'choose' | 'emailLink' | 'otpEmail' | 'otpEntry' | 'resetPassword' = 'choose';
-
-
+  currentStep: 'otpEmail' | 'otpEntry' | 'resetPassword' = 'otpEmail';  // ✅ start directly at email for OTP
 
   otpValue = '';
   otpLength = 6;
   otpCompleted = false;
 
-  emailForm: FormGroup;
   otpEmailForm: FormGroup;
   otpResetForm: FormGroup;
   errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
-    this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
-
+  constructor(private fb: FormBuilder, private messageService: MessageService, private router: Router) {
     this.otpEmailForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });
@@ -60,38 +52,13 @@ export class ForgotPassword {
     }, { validators: this.passwordsMatchValidator });
   }
 
-  // Step navigation
-  chooseMethod() 
-  { 
-    if (this.method === 'email') 
-      { 
-        this.currentStep = 'emailLink'; // go to email link step 
-  } 
-  else 
-    { 
-      this.currentStep = 'otpEmail'; // go to OTP flow
-    } }
-
-  sendLink() 
-  { 
-    if (this.emailForm.invalid) 
-      { 
-        this.errorMessage = 'Enter a valid email'; 
-        return; 
-      } 
-      this.errorMessage = ''; 
-      alert('Reset link sent to your email.'); 
-      this.resetFlow();
-  }
-
-
   requestOtp() {
     if (this.otpEmailForm.invalid) {
       this.errorMessage = 'Enter a valid email';
       return;
     }
     this.errorMessage = '';
-    alert('OTP sent to your email.');
+    this.messageService.add({ severity: 'info', summary: 'OTP Sent', detail: 'OTP sent to your email.' });
     this.currentStep = 'otpEntry';
     this.otpValue = '';
     this.otpCompleted = false;
@@ -108,24 +75,31 @@ export class ForgotPassword {
       return;
     }
     this.errorMessage = '';
-    alert('OTP verified.');
+    this.messageService.add({ severity: 'success', summary: 'OTP Verified', detail: 'You can now reset your password.' });
     this.currentStep = 'resetPassword';
     this.otpResetForm.reset();
   }
 
-  verifyAndReset() {
-    if (this.otpResetForm.invalid) {
-      this.errorMessage = 'Fill all fields correctly';
-      return;
-    }
-    this.errorMessage = '';
-    alert('Password reset successful.');
-    this.resetFlow();
+verifyAndReset() {
+  if (this.otpResetForm.invalid) {
+    this.errorMessage = 'Fill all fields correctly';
+    return;
   }
+  this.errorMessage = '';
+  this.messageService.add({ 
+    severity: 'success', 
+    summary: 'Password Reset', 
+    detail: 'Your password has been reset successfully.' 
+  });
+
+  setTimeout(() => {
+    this.router.navigate(['/login']);
+  }, 1500);
+}
+
 
   resetFlow() {
-    this.currentStep = 'choose';
-    this.emailForm.reset();
+    this.currentStep = 'otpEmail';   
     this.otpEmailForm.reset();
     this.otpResetForm.reset();
     this.otpValue = '';
