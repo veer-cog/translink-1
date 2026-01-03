@@ -1,0 +1,133 @@
+<div class="landing-wrapper min-h-screen flex flex-column">
+    <div class="card headbar-container sticky top-0 z-5">
+        <p-menubar styleClass="custom-menubar">
+            <ng-template pTemplate="start">
+                <div class="brand-section">
+                    <h1 class="m-0 text-xl font-bold text-primary tracking-tight">TransLink</h1>
+                </div>
+                  <div class=""><img src="TRANSLINK.png" style="height: 100px; width: 100px;" alt="Not Updated"></div>
+              
+            </ng-template>
+
+            <ng-template pTemplate="end">
+                <div class="header-right-actions">
+                    <p-button 
+                        (onClick)="toggleTheme()" 
+                        [icon]="darkmode ? 'pi pi-sun' : 'pi pi-moon'" 
+                        [rounded]="true" 
+                        [text]="true" 
+                        severity="primary">
+                    </p-button>
+
+                    <div class="auth-buttons flex gap-2 ml-2">
+                        <p-button routerLink="/login" label="Log In" [text]="true" severity="secondary" styleClass="p-button-sm font-medium"></p-button> &nbsp;
+                        <p-button routerLink="/signup" label="Sign Up" severity="primary" styleClass="p-button-sm font-medium px-4"></p-button>
+                    </div>
+                </div>
+            </ng-template>
+        </p-menubar>
+    </div>
+
+    
+    <main class="flex-grow-1">
+        <section class="py-8 px-4 text-center">
+            <h2 class="text-5xl font-bold text-color mb-3">Next-Gen Logistics Control</h2>
+            <p class="text-secondary-color text-lg max-w-30rem mx-auto line-height-3">
+                Optimize fleet management and automate dispatch workflows with real-time visibility.
+            </p>
+        </section>
+
+        <div class="max-w-screen-xl mx-auto px-4 mb-8">
+            <p-carousel [value]="features" [numVisible]="3" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions">
+                <ng-template let-feature pTemplate="item">
+                    <div class="card-gutter">
+                        <div class="module-card">
+                            <div class="card-header-icon mb-4"><i [class]="feature.icon"></i></div>
+                            <h3 class="text-xl font-bold text-color mb-2">{{feature.title}}</h3>
+                            <p class="text-secondary-color text-sm line-height-3">{{feature.description}}</p>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div>
+
+        <section class="py-8 px-4 md:px-8 surface-ground">
+            <div class="max-w-screen-md mx-auto">
+                <h2 class="text-3xl font-bold text-center text-color mb-6">Technical Architecture</h2>
+                <div class="card p-4 surface-card border-round-xl shadow-1">
+                    <p-tabs lazy value="0">
+                        <p-tablist>
+                            <p-tab value="0">Frontend</p-tab>
+                            <p-tab value="1">Backend</p-tab>
+                            <p-tab value="2">Database</p-tab>
+                        </p-tablist>
+                        <p-tabpanels>
+                            <p-tabpanel value="0">
+                                <div class="p-3">
+                                    <h4 class="text-xl font-bold mb-2">Modern Web Dashboards</h4>
+                                    <p class="text-secondary-color line-height-3">
+                                        Using <b>Angular</b> to build high-performance operator and admin dashboards. 
+                                        Styled with <b>PrimeNG</b> for seamless UI/UX and real-time shipment monitoring.
+                                    </p>
+                                </div>
+                            </p-tabpanel>
+                            <p-tabpanel value="1">
+                                <div class="p-3">
+                                    <h4 class="text-xl font-bold mb-2">Robust API Workflows</h4>
+                                    <p class="text-secondary-color line-height-3">
+                                        Powered by <b>Java (Spring Boot)</b> and  REST APIs. 
+                                        Engineered to handle over <b>1,000,000 shipment transactions per day</b> with high availability.
+                                    </p>
+                                </div>
+                            </p-tabpanel>
+                            <p-tabpanel value="2">
+                                <div class="p-3">
+                                    <h4 class="text-xl font-bold mb-2">Structured Data Storage</h4>
+                                    <p class="text-secondary-color line-height-3">
+                                        Utilizing <b>MySQL</b> and <b>SQL Server</b> for reliable storage of fleet metrics, 
+                                        route plans, and compliance logs, ensuring data integrity across global hubs.
+                                    </p>
+                                </div>
+                            </p-tabpanel>
+                        </p-tabpanels>
+                    </p-tabs>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-8 px-4 md:px-8">
+            <div class="max-w-screen-md mx-auto">
+                <h2 class="text-3xl font-bold text-center text-color mb-6">Project Contributors</h2>
+                <p-accordion value="0">
+                    @for (member of members; track member.name; let i = $index) {
+                        <p-accordion-panel [value]="i">
+                            <p-accordion-header>
+                                <ng-template #toggleicon let-active="active">
+                                    <i [class]="active ? 'pi pi-minus' : 'pi pi-plus'"></i>
+                                </ng-template>
+                                <span class="flex align-items-center gap-2 w-full">
+                                    <!-- <p-avatar [image]="member.image" shape="circle" /> -->
+                                    
+                                    <span class="font-bold whitespace-nowrap text-color">{{member.name}}</span>
+                                    <!-- <p-badge [value]="member.tasks" class="ml-auto mr-2" /> -->
+                                </span>
+                            </p-accordion-header>
+                            <p-accordion-content>
+                                <div>
+<p class="m-0 text-secondary-color line-height-3">{{member.bio}}</p>
+                                </div>
+                                
+                            </p-accordion-content>
+                        </p-accordion-panel>
+                    }
+                </p-accordion>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-minimal py-5 text-center">
+        <p class="m-0 font-medium text-sm">
+            &copy; 2025 TransLink Logistics Management System. Built for global scalability.
+        </p>
+    </footer>
+</div>

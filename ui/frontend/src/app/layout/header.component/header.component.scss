@@ -1,0 +1,182 @@
+/* ==========================================================================
+   1. Menubar Base & Layout
+   ========================================================================== */
+:host ::ng-deep {
+    .p-menubar {
+        height: 60px;
+        padding: 0 0.75rem !important; 
+        background: var(--p-content-background) !important;
+        border: none !important;
+        border-bottom: 1px solid var(--p-surface-200) !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        align-items: center;
+        position: relative; // Foundation for absolute centered search
+        
+        @media (min-width: 768px) {
+            padding: 0 1.5rem !important;
+        }
+    }
+}
+
+.header-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   2. Responsive Search (Always Centered)
+   ========================================================================== */
+.search-section {
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    // Desktop: Mathematically Centered in the header
+    @media (min-width: 769px) {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+    }
+
+    // Mobile/Tablet: Centered between the start and end buttons
+    @media (max-width: 768px) {
+        position: relative;
+        flex: 1; 
+        max-width: 200px; // Small bar for mobile
+        margin: 0 auto;   // Keeps it centered in the flex space
+    }
+    
+    @media (max-width: 480px) {
+        max-width: 140px; 
+    }
+}
+
+.pill-search {
+    width: 100%;
+    height: 36px;
+    border-radius: 50px !important;
+    background: var(--p-surface-50) !important;
+    border: 1px solid var(--p-surface-200) !important;
+    padding-left: 2.2rem !important;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+
+    @media (min-width: 769px) {
+        height: 38px;
+        padding-left: 2.75rem !important;
+    }
+
+    &:focus {
+        background: var(--p-surface-0) !important;
+        border-color: var(--p-primary-color) !important;
+        box-shadow: 0 0 0 3px var(--p-primary-100) !important;
+        
+        @media (min-width: 992px) {
+            width: 420px; 
+        }
+    }
+}
+
+/* ==========================================================================
+   3. Right Actions & Avatar
+   ========================================================================== */
+.right-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    z-index: 20;
+}
+
+.avatar-hover-effect {
+    transition: all 0.2s ease;
+    outline: 2px solid transparent;
+    cursor: pointer;
+
+    &:hover, &.highlight-active {
+        outline: 2px solid var(--p-primary-color);
+        outline-offset: 2px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* ==========================================================================
+   4. THE LOGOUT FIX (Handling styleClass & linkClass)
+   ========================================================================== */
+:host ::ng-deep {
+    .p-menuitem.logout-item {
+        margin-top: 4px;
+
+        .p-menuitem-content {
+            background-color: #fee2e2 !important; // Light Red Bg
+            border-radius: 6px !important;
+            margin: 4px 6px !important;
+            transition: all 0.2s ease;
+
+            // Targeting your linkClass strings (!text-red-500)
+            .\!text-red-500 {
+                color: #ef4444 !important;
+            }
+
+            .p-menuitem-link {
+                background: transparent !important;
+                
+                .p-menuitem-text, .p-menuitem-icon {
+                    color: inherit; // Follows linkClass or default
+                }
+            }
+
+            &:hover {
+                background-color: #dc2626 !important; // Dark Red Bg
+                
+                // Force white text/icon on hover for contrast
+                .\!text-red-500, .dark\:\!text-red-400, 
+                .p-menuitem-text, .p-menuitem-icon {
+                    color: #ffffff !important;
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+   5. Dark Mode Support
+   ========================================================================== */
+:host-context(.p-dark) {
+    :host ::ng-deep .p-menubar {
+        background: var(--p-surface-950) !important;
+        border-bottom-color: var(--p-surface-800) !important;
+    }
+
+    .pill-search {
+        background: var(--p-surface-900) !important;
+        border-color: var(--p-surface-700) !important;
+        color: white;
+        &:focus { background: var(--p-surface-800) !important; }
+    }
+
+    // Dark Mode Logout Adjustments
+    :host ::ng-deep .p-menuitem.logout-item {
+        .p-menuitem-content {
+            background-color: rgba(220, 38, 38, 0.15) !important;
+            
+            // Handle linkClass dark color (!text-red-400)
+            .\!text-red-400, .dark\:\!text-red-400 {
+                color: #f87171 !important;
+            }
+
+            &:hover {
+                background-color: #ef4444 !important;
+            }
+        }
+    }
+}
+
+/* Utilities */
+.cursor-pointer { cursor: pointer; }
+.no-underline { text-decoration: none !important; }
+.text-color { color: var(--p-text-color); }

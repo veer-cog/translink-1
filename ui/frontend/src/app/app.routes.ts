@@ -1,24 +1,27 @@
 import { Routes } from '@angular/router';
-import { Landingpage } from './pages/landing-page/landing-page';
-import { Login } from './auth/login/login';
-import { Signup } from './auth/signup/signup';
-import { ForgotPassword } from './auth/forgot-password/forgot-password';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import {  LoginComponent } from './auth/login/login.component';
+import {  SignupComponent } from './auth/signup/signup.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { authGuard } from './guards/auth.guard-guard';
+import { DashboardComponent } from './admin/dashboard.component/dashboard.component';
 
 export const routes: Routes = [
     {
         path: '',
-        component: Landingpage,
+        component: LandingPageComponent,
     },
     {
         path: 'login',
-        component: Login,
+        component: LoginComponent,
     },
     {
         path: 'signup',
-        component: Signup,
+        component: SignupComponent,
     },
     {
         path: 'forgot-password',
-        component: ForgotPassword,
+        component: ForgotPasswordComponent,
     },
+    {path:'admin/dashboard',component:DashboardComponent,canActivate: [authGuard] },
 ];

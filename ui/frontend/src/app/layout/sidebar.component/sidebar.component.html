@@ -1,0 +1,65 @@
+<p-drawer [(visible)]="navService.sidebarVisible" (onHide)="navService.close()" #drawerRef>
+    <ng-template #headless let-closeCallback="closeCallback">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-header">
+                <h2 >TransLink</h2>
+                <div class=""><img src="TRANSLINK.png" style="height: 100px; width: 100px;" alt="Not Updated"></div>
+                
+                <p-button class="close-btn" (click)="navService.close()" icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary" styleClass="ml-auto w-8 h-8"></p-button>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="section-label">{{ currentRole() }} PORTAL</div>
+
+                <nav class="px-2">
+                    @for (item of menuItems(); track item.label) {
+                        <div class="menu-section">
+                            <a pRipple 
+                               [routerLink]="item.routerLink || null"
+                               routerLinkActive="active-route"
+                               [routerLinkActiveOptions]="{exact: true}"
+                               (click)="item.children ? toggleMenu(item.label) : null"
+                               class="nav-item">
+                                <i [class]="item.icon" class="menu-icon"></i>
+                                
+                                <span class="flex-1">{{ item.label }}</span>
+                                
+                                @if (item.children) {
+                                    <i class="pi pi-chevron-down text-xs transition-transform duration-200 chevron-right"
+                                       [style.transform]="isMenuOpen(item.label) ? 'rotate(180deg)' : 'rotate(0)'">
+                                    </i>
+                                }
+                            </a>
+
+                            @if (item.children && isMenuOpen(item.label)) {
+                                <div class="child-menu-container animate-slidedown">
+                                    @for (child of item.children; track child.label) {
+                                        <a pRipple 
+                                           [routerLink]="child.routerLink"
+                                           routerLinkActive="active-child"
+                                           class="nav-item child-item">
+                                            <i [class]="child.icon" class="menu-icon"></i>
+                                            <span class="flex-1">{{ child.label }}</span>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div pRipple class="user-card">
+                    <p-avatar [label]="user()?.name?.charAt(0)" shape="circle" styleClass="bg-primary text-white"></p-avatar>
+                    <div class="user-info flex-1">
+                        <span class="user-name">{{ user()?.name }}</span>
+                        <span class="user-role">{{ user()?.email }}</span>
+                    </div>
+                    <i class="pi pi-angle-right text-muted opacity-40"></i>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-drawer>

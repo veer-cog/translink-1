@@ -1,0 +1,84 @@
+/* Header Force Alignment */
+::ng-deep .custom-menubar.p-menubar {
+    height: 60px;
+    color: var(--p-primary-color);
+    padding: 0 2rem !important;
+    background: var(--p-content-background) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--p-surface-200) !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+
+    .p-menubar-end { display: flex; align-items: center; }
+}
+
+.header-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    border-left: 1px solid var(--p-primary-200);
+    padding-left: 1rem;
+}
+
+/* Feature Cards & Hover Fix (Dark Mode Included) */
+.card-gutter { padding: 1rem; }
+.module-card {
+    background-color: var(--p-surface-card);
+    border: 1px solid var(--p-surface-200);
+    border-radius: 12px;
+    padding: 2rem;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+        transform: translateY(-8px);
+        border-color: var(--p-primary-color);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.card-header-icon {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background-color: var(--p-primary-50);
+    color: var(--p-primary-color);
+    border-radius: 8px;
+}
+
+/* Footer Branded */
+.footer-minimal {
+    // background-color: var(--p-primary-color);
+    color: var(--p-primary-color);
+    text-align: center;
+    justify-content: center;
+}
+
+/* Dark Mode Overrides */
+:host-context(.p-dark) {
+    .module-card {
+        background-color: var(--p-surface-900);
+        border-color: var(--p-surface-800);
+        &:hover {
+            border-color: var(--p-primary-400) !important;
+            box-shadow: 0 0 20px rgba(var(--p-primary-rgb), 0.25) !important;
+            background-color: var(--p-surface-800);
+        }
+        .card-header-icon {
+         background-color: var(--p-surface-700);   
+        }
+
+    }
+    .custom-menubar.p-menubar { border-bottom-color: var(--p-surface-800) !important; }
+    .auth-buttons { border-left-color: var(--p-primary-700); }
+}
+
+.text-color { color: var(--p-content-color) !important; }
+.text-secondary-color { color: var(--p-text-muted-color) !important; }

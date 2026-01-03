@@ -1,0 +1,49 @@
+<div class="card">
+    <p-menubar styleClass="custom-menubar">
+        <ng-template pTemplate="start">
+            <p-button 
+                icon="pi pi-bars" 
+                [text]="true" 
+                [rounded]="true" 
+                (onClick)="navService.open()" 
+                severity="primary">
+            </p-button>
+        </ng-template>
+
+        <ng-template pTemplate="end">
+            <div class="header-wrapper">
+                <div class="search-section">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon class="pi pi-search"></p-inputicon>
+                        <input 
+                            type="text" 
+                            pInputText 
+                            placeholder="Search projects..." 
+                            class="pill-search" 
+                        />
+                    </p-iconfield>
+                </div>
+
+                <div class="right-actions">
+                    <p-button 
+                        (onClick)="toggleTheme()" 
+                        [icon]="darkmode ? 'pi pi-sun' : 'pi pi-moon'" 
+                        [rounded]="true" 
+                        [text]="true" 
+                        styleClass="theme-toggle-btn"
+                        severity="primary">
+                    </p-button>
+
+                    <p-avatar 
+                        [label]="user()?.name?.charAt(0)" 
+                        shape="circle" 
+                        [ngClass]="{'highlight-active': profileMenu.visible}"
+                        styleClass="bg-primary text-white cursor-pointer font-medium avatar-hover-effect" 
+                        (click)="profileMenu.toggle($event)">
+                    </p-avatar>
+                </div>
+            </div>
+        </ng-template>
+    </p-menubar>
+    <p-menu #profileMenu [model]="profileItems" [popup]="true"></p-menu>
+</div>

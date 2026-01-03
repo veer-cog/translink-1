@@ -16,13 +16,13 @@ import { InputOtpModule } from 'primeng/inputotp';
 
 @Component({
     selector: 'app-signup',
-    templateUrl: './signup.html',
-    styleUrls: ['./signup.scss'],
+    templateUrl: './signup.component.html',
+    styleUrls: ['./signup.component.scss'],
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ButtonModule, ToastModule, MessageModule, CardModule, PasswordModule, FloatLabelModule, InputOtpModule, RouterLink],
     providers: [MessageService]
 })
-export class Signup {
+export class SignupComponent {
     private fb = inject(FormBuilder);
     private messageService = inject(MessageService);
     private router = inject(Router);
@@ -31,13 +31,13 @@ export class Signup {
     formSubmitted = false;
     showOtp = false;
     otpValue: string = '';
-    mockOtp = '123456';
+    mockOtp = 'TL1234';
 
     constructor() {
         this.signupForm = this.fb.group({
             fullName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]],
+            password: ['', [Validators.required, Validators.minLength(8)]],
             confirmPassword: ['', Validators.required]
         }, { validators: this.passwordMatchValidator });
     }
@@ -63,7 +63,7 @@ export class Signup {
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Account Registered!' });
             setTimeout(() => this.router.navigate(['/login']), 2000);
         } else {
-            this.messageService.add({ severity: 'error', summary: 'Invalid', detail: 'Code must be 123456' });
+            this.messageService.add({ severity: 'error', summary: 'Invalid', detail: 'Code must be TL1234' });
         }
     }
 
