@@ -27,7 +27,7 @@ import { InputOtpModule } from 'primeng/inputotp';
     ],
     providers: [MessageService] // Required for Toast
 })
-export class Signup {
+export class SignupComponent {
     // Inject the service as public so the HTML can access it directly
     public auth = inject(AuthService);
 }
