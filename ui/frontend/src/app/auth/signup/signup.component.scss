@@ -1,0 +1,138 @@
+:host ::ng-deep {
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 1rem;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        border-radius: 12px;
+
+        .p-card-header {
+            text-align: center;
+            padding: 2.5rem 1rem 1.5rem;
+            
+            .logo-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: var(--p-primary-color);
+            }
+
+            h2 {
+                margin: 0;
+                font-weight: 700;
+                font-size: 1.5rem;
+                color: var(--p-primary-color);
+            }
+
+            p {
+                margin-top: 0.5rem;
+                opacity: 0.7;
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+        }
+    }
+
+    .login-form {
+        padding: 0 1rem 1rem;
+    }
+
+    .input-group {
+        margin-bottom: 0.25rem;
+        
+        .p-inputtext {
+            height: 50px !important; 
+            width: 100%;
+        }
+    }
+
+    /* Fix for p-password wrapper width */
+    .p-password, .p-password-input {
+        width: 100% !important;
+    }
+
+    .error-spacer {
+        height: 20px;
+        margin-top: 4px;
+        overflow: hidden;
+        font-size: 0.85rem;
+        color: var(--p-error-color, red);
+    }
+
+    .login-button-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 1.5rem;
+
+        .p-button {
+            width: auto !important;
+            min-width: 200px; 
+            padding: 0.75rem 2rem;
+        }
+    }
+
+    .form-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+
+        .footer-link {
+            text-decoration: none;
+            color: var(--p-primary-color);
+            font-weight: 500;
+            cursor: pointer;
+            &:hover {
+                text-decoration: underline;
+            }
+            &.bold {
+                font-weight: 700;
+            }
+        }
+    }
+
+    /* Custom OTP Styling integrated into the unified look */
+    .custom-otp-input {
+        width: 42px;
+        height: 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: 1px solid var(--p-surface-300);
+        background: transparent;
+        border-radius: 8px;
+        margin: 0 4px;
+        text-align: center;
+        color: var(--p-text-color);
+        transition: all 0.2s ease;
+
+        &:focus {
+            border-color: var(--p-primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px var(--p-primary-50);
+        }
+    }
+
+    .otp-separator {
+        display: flex;
+        align-items: center;
+        color: var(--p-surface-400);
+        margin: 0 4px;
+    }
+
+    .animate-fade {
+        animation: fadeIn 0.3s forwards;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}

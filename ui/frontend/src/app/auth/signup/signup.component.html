@@ -1,0 +1,107 @@
+<p-toast></p-toast>
+<div class="login-container">
+    <p-card class="login-card shadow-4">
+        <ng-template pTemplate="header">
+            <div class="card-header">
+                <i class="pi pi-user-plus logo-icon"></i>
+                <h2>{{ !(auth.showOtp | async) ? 'Create Account' : 'Verify Email' }}</h2>
+                <p>{{ !(auth.showOtp | async) ? 'Join TransLink to manage your logistics' : 'Enter the 6-digit code sent to your inbox' }}</p>
+            </div>
+        </ng-template>
+
+        @if (!(auth.showOtp | async)) {
+            <form [formGroup]="auth.signupForm" (ngSubmit)="auth.onSignupSubmit()" class="login-form">
+                
+                <div class="input-group">
+                    <p-floatlabel variant="on">
+                        <input id="fullName" type="text" pInputText formControlName="fullName" 
+                            [ngClass]="{'ng-invalid ng-dirty': auth.isInvalid('fullName')}" />
+                        <label for="fullName">Full Name</label>
+                    </p-floatlabel>
+                    <div class="error-spacer">
+                        @if (auth.isInvalid('fullName')) {
+                            <small class="p-error animate-fade">Full name is required.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <p-floatlabel variant="on">
+                        <input id="email" type="email" pInputText formControlName="email" 
+                            [ngClass]="{'ng-invalid ng-dirty': auth.isInvalid('email')}" />
+                        <label for="email">Email Address</label>
+                    </p-floatlabel>
+                    <div class="error-spacer">
+                        @if (auth.isInvalid('email')) {
+                            <small class="p-error animate-fade">
+                                {{ auth.signupForm.get('email')?.errors?.['required'] ? 'Email is required.' : 'Invalid email format.' }}
+                            </small>
+                        }
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <p-floatlabel variant="on">
+                        <p-password id="password" formControlName="password" [toggleMask]="true" [feedback]="true"
+                            [ngClass]="{'ng-invalid ng-dirty': auth.isInvalid('password')}"></p-password>
+                        <label for="password">Password</label>
+                    </p-floatlabel>
+                    <div class="error-spacer">
+                        @if (auth.isInvalid('password')) {
+                            <small class="p-error animate-fade">Password (min 8 chars) is required.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <p-floatlabel variant="on">
+                        <p-password id="confirmPassword" formControlName="confirmPassword" [toggleMask]="true" [feedback]="false"
+                            [ngClass]="{'ng-invalid ng-dirty': auth.isInvalid('confirmPassword') || auth.signupForm.errors?.['mismatch']}"></p-password>
+                        <label for="confirmPassword">Confirm Password</label>
+                    </p-floatlabel>
+                    <div class="error-spacer">
+                        @if (auth.signupForm.get('confirmPassword')?.touched && auth.signupForm.errors?.['mismatch']) {
+                            <small class="p-error animate-fade">Passwords do not match.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="login-button-wrapper">
+                    <p-button label="Create Account" type="submit" styleClass="p-button-raised"></p-button>
+                </div>
+
+                <div class="form-footer">
+                    <span>Already have an account? <a routerLink="/login" class="footer-link bold">Sign In</a></span>
+                </div>
+            </form>
+        } @else {
+            <div class="login-form animate-fade">
+                <div class="flex justify-center mb-4">
+                    <p-inputotp [(ngModel)]="auth.otpValue" [length]="6" class="justify-center">
+                        <ng-template #input let-token let-events="events" let-index="index">
+                            <input type="text" [maxLength]="1" (input)="events.input($event)" (keydown)="events.keydown($event)" 
+                                [attr.value]="token" class="custom-otp-input" />
+                            @if (index === 2) {
+                                <div class="otp-separator">
+                                    <i class="pi pi-minus"></i>
+                                </div>
+                            }
+                        </ng-template>
+                    </p-inputotp>
+                </div>
+
+                <div class="flex flex-column gap-2">
+                    <div class="login-button-wrapper">
+                        <p-button label="Verify Code" (onClick)="auth.verifyOtp()" [disabled]="auth.otpValue.length < 6" styleClass="p-button-raised"></p-button>
+                    </div>
+                    <div class="form-footer">
+                        <p-button label="Resend Code" [link]="true" (onClick)="auth.resendOtp()" styleClass="p-button-sm"></p-button>
+                        <a (click)="auth.showOtp.next(false)" class="footer-link cursor-pointer">
+                            <i class="pi pi-arrow-left text-xs"></i> Back to Signup
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </p-card>
+</div>
