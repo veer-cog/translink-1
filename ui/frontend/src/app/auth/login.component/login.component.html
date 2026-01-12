@@ -1,0 +1,67 @@
+<p-toast></p-toast>
+<div class="login-container">
+    
+    <p-card class="login-card shadow-4">
+        <ng-template pTemplate="header">
+            <div class="card-header">
+                <i class="pi pi-truck logo-icon"></i>
+                <h2>Logistics Portal</h2>
+                <p>Enter your credentials to manage your fleet</p>
+            </div>
+        </ng-template>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            
+            <div class="input-group">
+                <p-floatlabel variant="on">
+                    <input 
+                        id="email" 
+                        type="email" 
+                        pInputText 
+                        formControlName="email" 
+                        class="custom-input"
+                        [ngClass]="{'ng-invalid ng-dirty': isInvalid('email')}"
+                    />
+                    <label for="email">Email Address</label>
+                </p-floatlabel>
+                <div class="error-spacer">
+                    @if (isInvalid('email')) {
+                        <small class="p-error animate-fade">Please enter a valid email.</small>
+                    }
+                </div>
+            </div>
+
+            <div class="input-group">
+                <p-floatlabel variant="on">
+                    <p-password 
+                        id="password" 
+                        formControlName="password" 
+                        [toggleMask]="true" 
+                        [feedback]="false"
+                        [ngClass]="{'ng-invalid ng-dirty': isInvalid('password')}"
+                    ></p-password>
+                    <label for="password">Password</label>
+                </p-floatlabel>
+                <div class="error-spacer">
+                    @if (isInvalid('password')) {
+                        <small class="p-error animate-fade">Password is required.</small>
+                    }
+                </div>
+            </div>
+
+            <div class="login-button-wrapper">
+                 <p-button 
+                    label="Sign In" 
+                    type="submit" 
+                    styleClass="p-button-raised"
+                    [loading]="isLoading()">
+                </p-button>
+            </div>
+
+            <div class="form-footer">
+                <a routerLink="/forgot-password" class="footer-link">Forgot Password?</a>
+                <span>New here? <a routerLink="/signup" class="footer-link bold">Create Account</a></span>
+            </div>
+        </form>
+    </p-card>
+</div>
