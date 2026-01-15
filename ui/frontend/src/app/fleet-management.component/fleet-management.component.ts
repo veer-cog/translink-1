@@ -24,14 +24,14 @@ export class FleetManagementComponent {
   activeFilter = signal<string>('all');
 
   cols: TableColumn[] = [
-    { field: 'vehicleId', header: 'Vehicle ID' },
+    { field: 'vehicleId', header: 'Vehicle ID', type: 'text' },
     { field: 'type', header: 'Type' },
     { field: 'capacity', header: 'Capacity' },
     { field: 'location', header: 'Location' },
     { field: 'driver', header: 'Driver' },
     { field: 'nextMaintenance', header: 'Next Maintenance' },
-    { field: 'status', header: 'Status' },
-    { field: 'actions', header: 'Actions' } 
+    { field: 'status', header: 'Status', type: 'badge' },
+    { field: 'actions', header: 'Actions', type: 'action' } 
   ];
 
   fleetData = signal([

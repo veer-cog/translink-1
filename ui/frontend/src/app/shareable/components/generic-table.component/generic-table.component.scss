@@ -35,19 +35,7 @@ $text-muted: #64748b;
     .bold-text { font-weight: 700; color: #000; }
 }
 
-/* Target specific columns for specialized printing */
-.status-badge {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-block;
 
-    /* Custom Color Map from Screenshot */
-    &.in-transit { background: #eff6ff; color: #3b82f6; } // Blue
-    &.delivered { background: #f0fdf4; color: #22c55e; }  // Green
-    &.booked { background: #faf5ff; color: #a855f7; }     // Purple
-}
 
 .priority-tag {
     padding: 4px 10px;
@@ -68,4 +56,32 @@ $text-muted: #64748b;
     font-size: 0.85rem;
     text-decoration: none;
     &:hover { text-decoration: underline; }
+}
+/* generic-table.component.scss */
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+
+    /* Fleet Management Specific Colors */
+    &.active { 
+        background-color: #f0fdf4; 
+        color: #22c55e; 
+    }
+    &.maintenance { 
+        background-color: #fff7ed; 
+        color: #f59e0b; 
+    }
+    &.inactive { 
+        background-color: #fef2f2; 
+        color: #ef4444; 
+    }
+
+    /* Shipment Tracking Colors (Keep these if using the same table) */
+    &.in-transit { background: #eff6ff; color: #3b82f6; }
+    &.delivered { background: #f0fdf4; color: #22c55e; }
+    &.booked { background: #faf5ff; color: #a855f7; }
 }

@@ -24,7 +24,10 @@ export class GenericTableComponent {
   
   customCell = contentChild<TemplateRef<any>>('customCell');
 
+  
+  
   getStatusClass(value: string): string {
+    if (!value) return '';
     return value.toLowerCase().replace(/\s+/g, '-');
   }
 }
