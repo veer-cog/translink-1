@@ -1,0 +1,201 @@
+:host ::ng-deep {
+  /* --- VIEWPORT & RESET (Fixes the White Space/Overscroll) --- */
+  .layout-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Prevents the body from dragging and showing white gaps */
+    background-color: #f8fafc; /* Dashboard background color */
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* --- SIDEBAR (Navy Theme) --- */
+  .sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #1e293b; /* Unified Deep Navy */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    z-index: 100;
+
+    &.collapsed {
+      width: 70px;
+      .logo-text, .nav-label { display: none; }
+      .sidebar-logo { padding: 0; justify-content: center; }
+      .nav-item { 
+        justify-content: center; 
+        padding: 0.85rem 0;
+        margin: 0 8px;
+        i { margin: 0; }
+      }
+    }
+
+    .sidebar-logo {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 12px;
+      flex-shrink: 0;
+
+      .logo-box {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 6px;
+        /* Replicating the stacked icon look from image */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231e293b'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E");
+        background-size: 20px;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      .logo-text { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; }
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 0;
+      gap: 4px;
+      overflow-y: auto;
+
+      .nav-item {
+        cursor: pointer;
+        margin: 0 12px;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        color: #94a3b8; /* Muted text */
+        text-decoration: none;
+        transition: all 0.2s;
+
+        i { font-size: 1.1rem; width: 24px; }
+        .nav-label { margin-left: 12px; font-weight: 500; }
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.08);
+          color: white;
+        }
+
+        &.active {
+          background-color: #2563eb !important; /* Bright Blue */
+          color: white !important;
+        }
+      }
+    }
+
+    .sidebar-footer {
+      padding: 1rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      
+      .nav-item {
+        cursor: pointer;
+        margin: 0 12px;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        color: #94a3b8; /* Muted text */
+        text-decoration: none;
+        transition: all 0.2s;
+
+        i { font-size: 1.1rem; width: 24px; }
+        .nav-label { margin-left: 12px; font-weight: 500; }
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.08);
+          color: white;
+        }
+
+        &.active {
+          background-color: #2563eb !important; /* Bright Blue */
+          color: white !important;
+        }
+      
+        &.logout:hover { color: #f87171; }
+      }
+    }
+  }
+
+  /* --- MAIN CONTENT CONTAINER --- */
+  .main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-width: 0;
+    background-color: #f8fafc; /* Reference: */
+  }
+
+  /* --- TOPBAR --- */
+  .topbar {
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid #e2e8f0; /* Reference: */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    flex-shrink: 0;
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      .system-name { 
+        color: #64748b; 
+        font-size: 0.9rem; 
+        font-weight: 500; 
+        margin-left: 10px;
+      }
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-left: 1rem;
+        margin-left: 0.5rem;
+        border-left: 1px solid #e2e8f0;
+
+        .username { 
+          font-weight: 600; 
+          font-size: 0.9rem; 
+          color: #1e293b;
+        }
+        
+        /* Avatar color matching brand blue */
+        .p-avatar {
+          background-color: #2563eb;
+          color: white;
+        }
+      }
+    }
+  }
+
+  /* --- DYNAMIC CONTENT AREA --- */
+  .content {
+    flex: 1;
+    overflow-y: auto; /* This area scrolls, not the whole window */
+    padding: 1.5rem;
+    /* This ensures children don't push the layout out of view */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+  }
+
+  /* PrimeNG Button Adjustments for Topbar */
+  .p-button.p-button-text.p-button-secondary {
+    color: #64748b;
+  }
+}

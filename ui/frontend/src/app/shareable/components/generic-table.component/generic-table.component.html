@@ -1,0 +1,32 @@
+<div class="table-container section-card">
+  <div class="table-header">
+    <h4>{{ title() }}</h4>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th *ngFor="let col of columns()">{{ col.header }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of data()">
+          <td *ngFor="let col of columns()">
+            <ng-container *ngIf="col.type === 'badge'; else textCell">
+              <span class="status-badge" [ngClass]="getStatusClass(row[col.field])">
+                {{ row[col.field] }}
+              </span>
+            </ng-container>
+
+            <ng-template #textCell>
+              <span [class.bold-text]="col.field === 'id' || col.field === 'shipmentId'">
+                {{ row[col.field] }}
+              </span>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

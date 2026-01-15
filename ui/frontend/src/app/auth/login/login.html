@@ -1,0 +1,86 @@
+<p-toast></p-toast>
+<div class="login-container">
+    
+    <div class="brand-header">
+        <div class="logo-wrapper">
+                        <i class="pi pi-verified logo-icon" routerLink="/" style="cursor: pointer;"></i> 
+            <span class="brand-name">TransLink</span>
+        </div>
+    </div>
+
+    <p-card class="login-card shadow-4">
+        <div class="card-header">
+            <h2>Welcome back</h2>
+            <p>Sign in to your account to continue</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            
+            <div class="input-group">
+                <label for="email" class="field-label">Email Address</label>
+                <input 
+                    id="email" 
+                    type="email" 
+                    pInputText 
+                    formControlName="email" 
+                    class="custom-input"
+                    [ngClass]="{'error-state': isInvalid('email')}"
+                    placeholder="you@example.com"
+                />
+                <div class="error-container">
+                    @if (isInvalid('email')) {
+                        <small class="error-text">Please enter a valid email.</small>
+                    }
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="label-row">
+                    <label for="password" class="field-label">Password</label>
+                    <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+                </div>
+                
+                <p-password 
+                    id="password" 
+                    formControlName="password" 
+                    [toggleMask]="true" 
+                    [feedback]="false"
+                    styleClass="w-full"
+                    style="width: 100%;"
+                    inputStyleClass="custom-input w-full"
+                    [ngClass]="{'error-state': isInvalid('password')}"
+                    placeholder="Enter your password"
+                ></p-password>
+                
+                <div class="error-container">
+                    @if (isInvalid('password')) {
+                        <small class="error-text">Password is required.</small>
+                    }
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <p-checkbox 
+                    formControlName="rememberMe" 
+                    [binary]="true" 
+                    inputId="remember"
+                    styleClass="custom-checkbox">
+                </p-checkbox>
+                <label for="remember">Remember me for 30 days</label>
+            </div>
+
+            <div class="login-button-wrapper">
+                 <p-button 
+                    label="Sign In" 
+                    type="submit" 
+                    styleClass="p-button-primary w-full custom-btn"
+                    [loading]="isLoading()">
+                </p-button>
+            </div>
+
+            <div class="form-footer">
+                <span>Don't have an account? <a routerLink="/signup" class="footer-link bold">Sign up</a></span>
+            </div>
+        </form>
+    </p-card>
+</div>

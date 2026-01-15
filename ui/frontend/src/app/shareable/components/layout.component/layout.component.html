@@ -1,0 +1,55 @@
+<div class="layout-wrapper">
+    <aside class="sidebar" [class.collapsed]="isCollapsed">
+        <div class="sidebar-logo">
+            <div class="logo-box"></div>
+            <span class="logo-text">TransLink</span>
+        </div>
+
+       <nav class="sidebar-nav">
+    <a *ngFor="let item of menuItems"
+       class="nav-item"
+       [routerLink]="item.path"
+       routerLinkActive="active" 
+       [pTooltip]="isCollapsed ? item.label : ''"
+       tooltipPosition="right">
+        <i [class]="item.icon"></i>
+        <span class="nav-label">{{item.label}}</span>
+    </a>
+</nav>
+
+        <div class="sidebar-footer">
+            <a class="nav-item"><i class="pi pi-cog"></i> <span class="nav-label">Settings</span></a>
+            <a class="nav-item logout"  (click)="onLogout()"><i class="pi pi-sign-out"></i> <span class="nav-label">Logout</span></a>
+        </div>
+    </aside>
+
+    <main class="main-container">
+        <header class="topbar">
+            <div class="topbar-left">
+                <p-button
+                    icon="pi pi-bars"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="toggleSidebar()">
+                </p-button>
+                <div class="breadcrumb">
+                    <span class="system-name">Transportation Management System</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                
+                <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"></p-button>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="username">Admin</span>
+                    </div>
+                    <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
+                </div>
+            </div>
+        </header>
+<section class="content">
+            <router-outlet></router-outlet>
+        </section>
+    </main>
+</div>

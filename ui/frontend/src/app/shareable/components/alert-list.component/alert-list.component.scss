@@ -1,0 +1,45 @@
+// Variables mapped to your MyDashboardPreset
+$gap-size: 1.5rem;
+$card-border-radius: var(--p-form-field-border-radius); // 12px
+$bg-dashboard: var(--p-surface-50);
+$border-color: var(--p-surface-200);
+$text-primary: var(--p-surface-900);
+$text-muted: var(--p-surface-500);
+
+// Shared Card Style
+%section-card {
+    background: var(--p-surface-0);
+    border-radius: $card-border-radius;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.alerts-card {
+    @extend %section-card;
+    height: 100%;
+    h3 { margin-bottom: 1.5rem; font-size: 1.1rem; color: $text-primary; }
+}
+
+.alert-item {
+    display: flex;
+    gap: 12px;
+    padding: 1rem;
+    background: var(--p-surface-50);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--p-surface-100);
+
+    .priority-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-top: 6px;
+        flex-shrink: 0;
+    }
+
+    .alert-content {
+        .vehicle-id { font-weight: 700; color: $text-primary; }
+        .issue-text { font-size: 0.85rem; color: var(--p-surface-600); }
+        .priority-label { font-size: 0.75rem; color: $text-muted; }
+    }
+}
