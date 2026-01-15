@@ -1,10 +1,13 @@
 import { Component, input, contentChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// src/app/shareable/components/generic-table.component/generic-table.component.ts
+
 export interface TableColumn {
   field: string;
   header: string;
-  type?: 'text' | 'badge' | 'date'; // Define types for special rendering
+  // Update this list to include every type used in your ngIf statements
+  type?: 'text' | 'badge' | 'date' | 'priority' | 'customer' | 'action'; 
 }
 
 @Component({

@@ -1,0 +1,85 @@
+<div class="page-container">
+  <header class="page-header">
+    <div class="title-area">
+      <h1>Shipment Tracking</h1>
+      <p>Welcome back, Admin</p>
+    </div>
+    <button class="add-btn-vibrant" (click)="bookShipmentModal.show()">
+  <i class="pi pi-plus"></i>
+  <span>New Shipment</span>
+</button>
+
+<app-book-shipment #bookShipmentModal (onSave)="onShipmentAdded($event)"></app-book-shipment>
+  </header>
+
+  <div class="toolbar-section">
+    <div class="search-wrapper">
+      <i class="pi pi-search"></i>
+      <input type="text" placeholder="Search shipments..." (input)="onSearch($event)" />
+    </div>
+
+    <div class="filter-dropdown-wrapper">
+      <select class="custom-status-select" (change)="onStatusChange($event)">
+        @for (opt of statusOptions; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+  @for (stat of stats(); track stat.label) {
+    <app-stat-card 
+      [label]="stat.label" 
+      [value]="stat.value" 
+      [color]="stat.color" 
+      [icon]="stat.icon">
+    </app-stat-card>
+  }
+</div>
+
+  <div class="section-card">
+    <h3>Shipment Management</h3>
+    
+    <div class="view-toggle">
+      <button [class.active]="currentView() === 'list'" (click)="currentView.set('list')">List View</button>
+      <button [class.active]="currentView() === 'map'" (click)="currentView.set('map')">Map View</button>
+    </div>
+
+    @if (currentView() === 'list') {
+      <app-generic-table [columns]="cols" [data]="filteredShipments()">
+        <ng-template #columnData let-col let-row="row">
+          @if (col.field === 'customer') {
+            <div class="customer-cell">
+              <span class="name">{{ row.customer }}</span>
+              <span class="id">{{ row.customerId }}</span>
+            </div>
+          }
+          @if (col.field === 'route') {
+            <div class="route-cell">
+              <i class="pi pi-map-marker"></i>
+              <span>{{ row.route }}</span>
+            </div>
+          }
+          @if (col.field === 'status') {
+            <span class="status-badge" [ngClass]="row.status.toLowerCase().replace(' ', '-')">
+              {{ row.status }}
+            </span>
+          }
+          @if (col.field === 'priority') {
+            <span class="priority-badge" [ngClass]="row.priority.toLowerCase()">
+              {{ row.priority }}
+            </span>
+          }
+          @if (col.field === 'actions') {
+            <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
+          }
+        </ng-template>
+      </app-generic-table>
+    } @else {
+      <div style="height: 400px; background: #eee; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        Interactive Map View
+      </div>
+    }
+  </div>
+</div>

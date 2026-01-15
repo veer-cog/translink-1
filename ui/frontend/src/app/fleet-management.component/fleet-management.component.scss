@@ -1,0 +1,162 @@
+/* fleet-management.component.scss */
+
+.page-container {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  h1 { font-size: 1.8rem; font-weight: 700; color: #0f172a; margin: 0; }
+  p { color: #64748b; margin-top: 4px; font-size: 0.95rem; }
+}
+
+.add-btn-vibrant {
+  background-color: #2563eb; 
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+
+  &:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+  }
+}
+
+.toolbar-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+  i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+  input {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    &:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+  }
+}
+
+.filter-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  .pi-filter { position: absolute; left: 14px; color: #64748b; pointer-events: none; }
+  .chevron { position: absolute; right: 14px; font-size: 0.8rem; color: #94a3b8; pointer-events: none; }
+  .custom-status-select {
+    appearance: none;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 11px 40px 11px 38px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    min-width: 160px;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.section-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+}
+
+::ng-deep {
+  /* Status Badges */
+  .badge {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+    text-transform: capitalize;
+
+    &.active { background-color: #f0fdf4; color: #22c55e; }
+    &.maintenance { background-color: #fff7ed; color: #f59e0b; }
+    &.inactive { background-color: #fef2f2; color: #ef4444; }
+  }
+
+  /* Next Maintenance Column - Styling overdue text */
+  td:nth-child(6) {
+    font-weight: 600;
+    color: #475569;
+  }
+
+  /* Action Buttons (Pencil and Trash) */
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      i { font-size: 0.9rem; }
+      &.edit { 
+        color: #64748b; 
+        &:hover { background: #f8fafc; color: #0f172a; border-color: #cbd5e1; }
+      }
+      &.delete { 
+        color: #ef4444; 
+        &:hover { background: #fef2f2; border-color: #fecaca; }
+      }
+
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:active {
+        transform: scale(0.92); /* Feels like a real button press */
+      }
+
+      &.edit:hover {
+        background-color: #f1f5f9;
+        border-color: #cbd5e1;
+      }
+
+      &.delete:hover {
+        background-color: #fef2f2;
+        border-color: #fecaca;
+        color: #dc2626;
+      }
+    }
+  }
+}

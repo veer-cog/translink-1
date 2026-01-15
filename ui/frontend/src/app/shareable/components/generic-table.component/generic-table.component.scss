@@ -1,26 +1,15 @@
-// Variables mapped to your MyDashboardPreset
-$gap-size: 1.5rem;
-$card-border-radius: var(--p-form-field-border-radius); // 12px
-$bg-dashboard: var(--p-surface-50);
-$border-color: var(--p-surface-200);
-$text-primary: var(--p-surface-900);
-$text-muted: var(--p-surface-500);
+// 
 
-// Shared Card Style
-%section-card {
-    background: var(--p-surface-0);
+$card-border-radius: 12px;
+$border-color: #e2e8f0;
+$text-primary: #1e293b;
+$text-muted: #64748b;
+
+.table-container {
+    background: #ffffff;
     border-radius: $card-border-radius;
     padding: 1.5rem;
     border: 1px solid $border-color;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-.table-container {
-    @extend %section-card;
-}
-
-.table-header {
-    margin-bottom: 1.25rem;
-    h4 { margin: 0; font-size: 1.1rem; color: $text-primary; }
 }
 
 .custom-table {
@@ -30,34 +19,53 @@ $text-muted: var(--p-surface-500);
     th {
         text-align: left;
         padding: 12px;
-        background: var(--p-surface-50);
         color: $text-muted;
         font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-weight: 500;
+        border-bottom: 1px solid #f1f5f9;
     }
 
     td {
         padding: 16px 12px;
-        border-bottom: 1px solid var(--p-surface-100);
-        color: var(--p-surface-700);
+        border-bottom: 1px solid #f8fafc;
+        color: $text-primary;
         font-size: 0.9rem;
     }
 
-    tr:last-child td { border-bottom: none; }
-    .bold-text { font-weight: 600; color: $text-primary; }
+    .bold-text { font-weight: 700; color: #000; }
 }
 
+/* Target specific columns for specialized printing */
 .status-badge {
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     display: inline-block;
 
-    &.in-transit { background: var(--p-primary-50); color: var(--p-primary-600); }
-    &.delivered { background: #f0fdf4; color: #22c55e; }
-    &.booked { background: #faf5ff; color: #a855f7; }
-    &.pending { background: var(--p-surface-100); color: $text-muted; }
+    /* Custom Color Map from Screenshot */
+    &.in-transit { background: #eff6ff; color: #3b82f6; } // Blue
+    &.delivered { background: #f0fdf4; color: #22c55e; }  // Green
+    &.booked { background: #faf5ff; color: #a855f7; }     // Purple
+}
+
+.priority-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+
+    /* Custom Color Map from Screenshot */
+    &.high { background: #fef2f2; color: #ef4444; }   // Red
+    &.medium { background: #fffbeb; color: #f59e0b; } // Yellow
+    &.low { background: #f8fafc; color: #64748b; }    // Gray
+}
+
+.action-link {
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
 }

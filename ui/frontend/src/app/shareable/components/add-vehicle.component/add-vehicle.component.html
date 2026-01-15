@@ -1,0 +1,50 @@
+@if (isOpen()) {
+  <div class="modal-backdrop" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Register New Vehicle</h3>
+        <button class="close-btn" (click)="close()">&times;</button>
+      </div>
+
+      <form [formGroup]="vehicleForm" class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vehicle ID</label>
+            <input type="text" formControlName="id" placeholder="TRK-20-XXX" class="custom-input" />
+          </div>
+          <div class="form-group">
+            <label>Vehicle Type</label>
+            <select formControlName="type" class="custom-select">
+              <option value="" disabled>Select type</option>
+              @for (t of types; track t) { <option [value]="t">{{t}}</option> }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Capacity</label>
+            <input type="text" formControlName="capacity" placeholder="e.g., 20 tons" class="custom-input" />
+          </div>
+          <div class="form-group">
+            <label>Hub Location</label>
+            <select formControlName="location" class="custom-select">
+              <option value="" disabled>Select location</option>
+              @for (l of locations; track l) { <option [value]="l">{{l}}</option> }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Assigned Driver</label>
+          <input type="text" formControlName="driver" placeholder="Driver name" class="custom-input" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="close()">Cancel</button>
+          <button type="button" class="btn-primary" (click)="save()">Register Vehicle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
