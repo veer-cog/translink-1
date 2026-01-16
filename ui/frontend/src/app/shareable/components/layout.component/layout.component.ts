@@ -55,7 +55,7 @@ export class LayoutComponent {
   menuItems = [
       { label: 'Dashboard', icon: 'pi pi-th-large', path: '/admin/dashboard' },
       { label: 'Fleet Management', icon: 'pi pi-car', path: '/admin/fleet' },
-      { label: 'Shipment Tracking', icon: 'pi pi-box', path: '/admin/tracking' },
+      { label: 'Shipment Tracking', icon: 'pi pi-box', path: '/admin/shipment' },
       { label: 'Route Optimization', icon: 'pi pi-map', path: '/admin/routes' },
       { label: 'Compliance', icon: 'pi pi-shield', path: '/admin/compliance' },
       { label: 'Analytics & Reports', icon: 'pi pi-chart-bar', path: '/admin/analytics' }
