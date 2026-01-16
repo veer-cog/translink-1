@@ -9,6 +9,7 @@ import { FleetManagementComponent } from './fleet-management.component/fleet-man
 import { ShipmentTrackingComponent } from './shipment-tracking.component/shipment-tracking.component';
 import { ComplianceComponent } from './compliance.component/compliance.component';
 import { SettingsComponent } from './settings.component/settings.component';
+import { RouteOptimization } from './route-optimization/route-optimization';
 
 export const routes: Routes = [
   {path:'',component:LandingComponent},
@@ -27,7 +28,8 @@ export const routes: Routes = [
       {path: 'shipment',component:ShipmentTrackingComponent},
       {path: 'compliance', component:ComplianceComponent},
       {path: 'settings', component:SettingsComponent},
-      
+      {path: 'routeopt',component:RouteOptimization},
+
     ]
   }
 ];
