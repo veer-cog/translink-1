@@ -23,7 +23,7 @@ menuItems = [
     { label: 'Dashboard', icon: 'pi pi-th-large', path: '/admin/dashboard' },
     { label: 'Fleet Management', icon: 'pi pi-car', path: '/admin/fleet' },
     { label: 'Shipment Tracking', icon: 'pi pi-box', path: '/admin/tracking' },
-    { label: 'Route Optimization', icon: 'pi pi-map', path: '/admin/routes' },
+    { label: 'Route Optimization', icon: 'pi pi-map', path: '/admin/routeopt' },
     { label: 'Compliance', icon: 'pi pi-shield', path: '/admin/compliance' },
     { label: 'Analytics & Reports', icon: 'pi pi-chart-bar', path: '/admin/analytics' }
   ];

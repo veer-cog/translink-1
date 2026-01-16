@@ -43,4 +43,7 @@ export class StatCardComponent {
   // This creates the light green background (10% alpha)
   // '1A' is the hex equivalent of 10% opacity
   bgTint = computed(() => `${this.color()}1A`);
+
+  // Mapping color names to Hex for the Tint logic
+  
 }

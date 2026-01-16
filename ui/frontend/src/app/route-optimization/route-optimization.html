@@ -1,0 +1,74 @@
+<!-- <div class="stats-grid"> 
+    <app-stat-card 
+    *ngFor="let stat of stats" 
+    [label]="stat.label" 
+    [icon]="stat.icon" 
+    [value]="stat.value" 
+    [trend]="stat.trend" 
+    [isPositive]="stat.isPositive" 
+    [color]="stat.color"> 
+</app-stat-card> 
+</div>
+<header class="page-header">
+  <div class="header-content">
+    <h1>Route Planning & Optimization</h1>
+    <p>Optimize delivery routes for efficiency and cost savings</p>
+  </div>
+  <button class="btn-create" (click)="openCreateModal()">
+    <i class="material-icons">add</i>
+    Create Route
+  </button>
+</header>
+
+<div class="plan-wrapper"> 
+     <div class="page">
+  <div class="header">
+    <div class="title-block">
+      <h2>Route Plans</h2>
+    </div>
+  </div>
+    <app-route-plans *ngFor="let r of routes; let i = index"
+                   [route]="r"
+                   [showHeader]="i === 0"></app-route-plans> 
+    
+</div>
+</div>
+
+<app-route-insights [stats]=stats ></app-route-insights> -->
+
+<div class="main-content">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Route Planning & Optimization</h1>
+      <p>Optimize delivery routes for efficiency and cost savings</p>
+    </div>
+    <button class="btn-create" (click)="openCreateModal()">
+      <i class="pi pi-plus"></i> Create Route
+    </button>
+  </header>
+
+  <div class="stats-grid"> 
+    <app-stat-card 
+      *ngFor="let stat of stats" 
+      [label]="stat.label" 
+      [icon]="stat.icon" 
+      [value]="stat.value"
+      [color]="stat.color"></app-stat-card>
+   
+  </div>
+
+  <div class="plan-wrapper"> 
+    <app-route-plans 
+      *ngFor="let r of routes; let i = index"
+      [route]="r"
+      [showHeader]="i === 0"
+      (edit)="openCreateModal($event)">
+    </app-route-plans> 
+  </div>
+
+
+  <app-route-insights [stats]="stats.slice(0,3)"></app-route-insights>
+</div>
+
+
+<app-route-form *ngIf="showModal" (close)="closeModal()"></app-route-form>
