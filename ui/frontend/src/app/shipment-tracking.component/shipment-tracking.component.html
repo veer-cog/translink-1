@@ -5,12 +5,12 @@
       <p>Welcome back, Admin</p>
     </div>
     <button class="add-btn-vibrant" (click)="bookShipmentModal.show()">
-  <i class="pi pi-plus"></i>
-  <span>New Shipment</span>
-</button>
-
-<app-book-shipment #bookShipmentModal (onSave)="onShipmentAdded($event)"></app-book-shipment>
+      <i class="pi pi-plus"></i>
+      <span>New Shipment</span>
+    </button>
   </header>
+
+  <app-book-shipment #bookShipmentModal (onSave)="onShipmentAdded($event)"></app-book-shipment>
 
   <div class="toolbar-section">
     <div class="search-wrapper">
@@ -21,65 +21,62 @@
     <div class="filter-dropdown-wrapper">
       <select class="custom-status-select" (change)="onStatusChange($event)">
         @for (opt of statusOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
+        <option [value]="opt.value">{{ opt.label }}</option>
         }
       </select>
     </div>
   </div>
 
   <div class="stats-grid">
-  @for (stat of stats(); track stat.label) {
-    <app-stat-card 
-      [label]="stat.label" 
-      [value]="stat.value" 
-      [color]="stat.color" 
-      [icon]="stat.icon">
+    @for (stat of stats(); track stat.label) {
+    <app-stat-card [label]="stat.label" [value]="stat.value" [color]="stat.color" [icon]="stat.icon">
     </app-stat-card>
-  }
-</div>
+    }
+  </div>
 
   <div class="section-card">
-    <h3>Shipment Management</h3>
-    
-    <div class="view-toggle">
-      <button [class.active]="currentView() === 'list'" (click)="currentView.set('list')">List View</button>
-      <button [class.active]="currentView() === 'map'" (click)="currentView.set('map')">Map View</button>
+    <div class="card-header-flex">
+      <h3>Shipment Management</h3>
+      <div class="view-toggle">
+        <button [class.active]="currentView() === 'list'" (click)="setView('list')">List View</button>
+        <button [class.active]="currentView() === 'map'" (click)="setView('map')">Map View</button>
+      </div>
     </div>
 
     @if (currentView() === 'list') {
-      <app-generic-table [columns]="cols" [data]="filteredShipments()">
-        <ng-template #columnData let-col let-row="row">
-          @if (col.field === 'customer') {
-            <div class="customer-cell">
-              <span class="name">{{ row.customer }}</span>
-              <span class="id">{{ row.customerId }}</span>
-            </div>
-          }
-          @if (col.field === 'route') {
-            <div class="route-cell">
-              <i class="pi pi-map-marker"></i>
-              <span>{{ row.route }}</span>
-            </div>
-          }
-          @if (col.field === 'status') {
-            <span class="status-badge" [ngClass]="row.status.toLowerCase().replace(' ', '-')">
-              {{ row.status }}
-            </span>
-          }
-          @if (col.field === 'priority') {
-            <span class="priority-badge" [ngClass]="row.priority.toLowerCase()">
-              {{ row.priority }}
-            </span>
-          }
-          @if (col.field === 'actions') {
-            <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
-          }
-        </ng-template>
-      </app-generic-table>
+    <app-generic-table [columns]="cols" [data]="filteredShipments()" title="Active Shipments">
+
+      <ng-template #customCell let-data="data" let-col="col">
+        @if (col.field === 'customer') {
+        <div class="customer-cell">
+          <span class="name">{{ data.customer }}</span>
+          <span class="id">{{ data.customerId }}</span>
+        </div>
+        }
+        @if (col.field === 'route') {
+        <div class="route-cell">
+          <i class="pi pi-map-marker"></i>
+          <span>{{ data.route }}</span>
+        </div>
+        }
+        @if (col.field === 'priority') {
+        <span class="priority-badge" [ngClass]="data.priority.toLowerCase()">
+          {{ data.priority }}
+        </span>
+        }
+      </ng-template>
+
+      <ng-template #rowActions let-row>
+        <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
+      </ng-template>
+    </app-generic-table>
     } @else {
-      <div style="height: 400px; background: #eee; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-        Interactive Map View
+    <div class="map-placeholder">
+      <div class="map-content">
+        <i class="pi pi-map"></i>
+        <p>Interactive Map View is currently being optimized.</p>
       </div>
+    </div>
     }
   </div>
 </div>

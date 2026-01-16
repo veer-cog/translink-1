@@ -7,6 +7,8 @@ import { ForgotPassword } from './auth/forgot-password/forgot-password';
 import { LandingComponent } from './landing.component/landing.component';
 import { FleetManagementComponent } from './fleet-management.component/fleet-management.component';
 import { ShipmentTrackingComponent } from './shipment-tracking.component/shipment-tracking.component';
+import { ComplianceComponent } from './compliance.component/compliance.component';
+import { SettingsComponent } from './settings.component/settings.component';
 
 export const routes: Routes = [
   {path:'',component:LandingComponent},
@@ -22,7 +24,10 @@ export const routes: Routes = [
       { path: 'admin', redirectTo: 'dashboard', pathMatch: 'full' },
       {path: 'fleet', component:FleetManagementComponent},
       { path: 'admin', redirectTo: 'dashboard', pathMatch: 'full' },
-      {path: 'shipment',component:ShipmentTrackingComponent}
+      {path: 'shipment',component:ShipmentTrackingComponent},
+      {path: 'compliance', component:ComplianceComponent},
+      {path: 'settings', component:SettingsComponent},
+      
     ]
   }
 ];

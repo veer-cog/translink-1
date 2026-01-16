@@ -35,7 +35,51 @@ $text-muted: #64748b;
     .bold-text { font-weight: 700; color: #000; }
 }
 
+/* ... existing styles ... */
 
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+        font-size: 1.1rem;
+    }
+
+    &.edit {
+        color: #1e293b; // Slate-800
+        &:hover {
+            background-color: #f1f5f9;
+        }
+    }
+
+    &.delete {
+        color: #ef4444; // Red-500
+        &:hover {
+            background-color: #fef2f2;
+        }
+    }
+}
+
+// Adjust table cell alignment for actions if needed
+td:last-child {
+    text-align: right;
+    .actions-cell {
+        justify-content: flex-end;
+    }
+}
 
 .priority-tag {
     padding: 4px 10px;

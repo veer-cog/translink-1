@@ -35,7 +35,7 @@ export class ShipmentTrackingComponent {
 
   cols: TableColumn[] = [
   { field: 'shipmentId', header: 'Shipment ID', type: 'text' },
-  { field: 'customer', header: 'Customer', type: 'customer' },
+  { field: 'customer', header: 'Customer' },
   { field: 'route', header: 'Route', type: 'text' }, // We'll handle the icon in CSS
   { field: 'vehicle', header: 'Vehicle', type: 'text' },
   { field: 'status', header: 'Status', type: 'badge' },
@@ -78,6 +78,22 @@ export class ShipmentTrackingComponent {
   setView(view: 'list' | 'map') { this.currentView.set(view); }
   onSearch(e: Event) { this.searchQuery.set((e.target as HTMLInputElement).value); }
   onStatusChange(e: Event) { this.activeFilter.set((e.target as HTMLSelectElement).value); }
-  viewDetails(shipment: any) { console.log('Viewing details for:', shipment.shipmentId); }
+// Inside ShipmentTrackingComponent class
+viewDetails(shipment: any) {
+  if (this.bookShipmentModal) {
+    // We map the table data back to the form fields used in BookShipmenComponent
+    this.bookShipmentModal.shipmentForm.patchValue({
+      customerName: shipment.customer,
+      pickup: shipment.route.split(' → ')[0],
+      delivery: shipment.route.split(' → ')[1],
+      vehicle: shipment.vehicle,
+      priority: shipment.priority
+    });
 
+    // Optional: Disable the form if you want "View" to be read-only
+    // this.bookShipmentModal.shipmentForm.disable();
+
+    this.bookShipmentModal.show();
+  }
+}
 }
