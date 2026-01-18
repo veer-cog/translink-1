@@ -123,11 +123,31 @@ $white: #ffffff;
 
     .topbar-left {
         display: flex; align-items: center; gap: 1rem;
+
         .system-name { color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
     }
 
     .topbar-right {
         display: flex; align-items: center; gap: 0.5rem;
+        .notifications-num {
+    position: absolute;
+    
+    // Adjust these values to fine-tune the "overlap" look
+    top: 4px;     
+    right: 4px;
+    
+    // Ensure the badge doesn't push the icon around
+    margin: 0;
+    pointer-events: none; // Allows clicks to pass through to the button if needed
+
+    // Optional: Scale down the badge if it feels too large on the button
+    .p-badge {
+        min-width: 1.25rem;
+        height: 1rem;
+        line-height: 1.25rem;
+        font-size: 0.75rem;
+    }
+  }
         .user-profile {
             display: flex; align-items: center; gap: 10px; padding: 6px 12px;
             border-left: 1px solid var(--p-content-border-color); cursor: pointer; border-radius: 8px;

@@ -1,76 +1,46 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-
-// PrimeNG Imports
+import { RouterLink } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-
-// Custom Service
-import { AuthService } from '../../services/auth.service';
-import { Checkbox } from "primeng/checkbox";
+import { CheckboxModule } from 'primeng/checkbox';
+import { AuthService } from '../auth.service';
 
 @Component({
-    selector: 'app-login',
-    standalone: true,
-    imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterLink,
-    InputTextModule,
-    ButtonModule,
-    ToastModule,
-    CardModule,
-    PasswordModule,
-    FloatLabelModule,
-    IconFieldModule,
-    InputIconModule,
-    Checkbox
-],
-    templateUrl: './login.html',
-    styleUrls: ['./login.scss']
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputTextModule, ButtonModule, ToastModule, CardModule, PasswordModule, CheckboxModule],
+  templateUrl: './login.html',
+  styleUrls: ['./login.scss']
 })
 export class Login {
-    private fb = inject(FormBuilder);
-    private authService = inject(AuthService);
-    isLoading = signal(false);
-    
-    loginForm: FormGroup;
-    formSubmitted = false;
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  
+  isLoading = signal(false);
+  loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+    rememberMe: [false]
+  });
+  formSubmitted = false;
 
-    constructor() {
-        this.loginForm = this.fb.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required],
-            rememberMe:[false]
-        });
+  onSubmit() {
+    this.formSubmitted = true;
+    if (this.loginForm.valid) {
+      this.isLoading.set(true);
+      // Service handles redirection based on role
+      this.authService.validateLogin(this.loginForm.value);
+      this.isLoading.set(false);
     }
-// Validators.pattern('^[a-zA-z0-9]+@cognizant\\.com')
-    /**
-     * Handles form submission and delegates authentication logic to the AuthService
-     */
-    onSubmit() {
-        this.formSubmitted = true;
-        this.isLoading.set(true);
-        if (this.loginForm.valid) {
-            // Business logic and role-based redirection are handled in the service
-           setTimeout(() => {
-        this.authService.validateLogin(this.loginForm.value);
-        this.isLoading.set(false);
-    }, 1000);
-        }
-       
-    }
+  }
 
-    isInvalid(controlName: string): boolean {
-        const control = this.loginForm.get(controlName);
-        return !!(control?.invalid && (control.touched || this.formSubmitted));
-    }
+  isInvalid(controlName: string): boolean {
+    const control = this.loginForm.get(controlName);
+    return !!(control?.invalid && (control.touched || this.formSubmitted));
+  }
 }

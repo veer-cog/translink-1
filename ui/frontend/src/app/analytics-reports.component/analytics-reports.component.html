@@ -1,0 +1,56 @@
+<div class="analytics-page">
+  <header class="main-header">
+    <div class="title-wrap">
+      <h1>Logistics Analytics & Reporting</h1>
+      <p>Comprehensive insights into your logistics operations</p>
+    </div>
+    <div class="action-wrap">
+      <app-tab-filter [tabs]="timeTabs"></app-tab-filter>
+      <button class=" export-button "> <i class="pi pi-download"> </i> Export Report </button>
+    </div>
+  </header>
+
+  <div class="stats-row">
+    @for (s of stats; track s.label) {
+      <app-stat-card 
+        [label]="s.label" [value]="s.value" [trend]="s.trend" 
+        [isPositive]="s.isPos" [icon]="s.icon" [color]="s.col">
+      </app-stat-card>
+    }
+  </div>
+
+  <div class="visual-row">
+    <div class="chart-box">
+      <app-dashboard-chart 
+        title="Revenue & Cost Trend" type="bar" 
+        [data]="chartData" [options]="chartOptions" height="320px">
+      </app-dashboard-chart>
+    </div>
+
+    <div class="cost-analysis-card">
+      <h3>Cost Analysis</h3>
+      <div class="cost-list">
+        @for (item of costAnalysis; track item.label) {
+          <div class="progress-group">
+            <div class="labels"><span>{{item.label}}</span><span>{{item.amt}}</span></div>
+            <div class="track">
+              <div class="fill" [style.width.%]="item.pct">{{item.pct}}%</div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="cost-footer">
+        <span>Total Operating Cost</span>
+        <strong>$119,300</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-row">
+    <app-generic-table 
+      title="Recent Logistics Operations" 
+      [columns]="tableCols" 
+      [data]="tableData">
+    </app-generic-table>
+  </div>
+</div>
