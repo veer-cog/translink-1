@@ -1,0 +1,31 @@
+<div class="modal-backdrop" *ngIf="isVisible()">
+  <div class="details-card-modal">
+    <div class="modal-header">
+      <h2>{{ title() }}</h2>
+      <button class="close-btn" (click)="close()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="details-grid">
+        <div *ngFor="let detail of details" class="detail-item">
+          <div class="detail-label">{{ detail.label }}</div>
+          <div class="detail-value">
+            <span 
+              *ngIf="isBadge(detail.value)"
+              class="badge"
+              [ngClass]="getValueClass(detail.value)">
+              {{ detail.value }}
+            </span>
+            <span *ngIf="!isBadge(detail.value)">
+              {{ detail.value }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-primary" (click)="close()">Close</button>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,7 @@ import { ComplianceComponent } from './compliance.component/compliance.component
 import { SettingsComponent } from './settings.component/settings.component';
 import { RouteOptimization } from './route-optimization/route-optimization';
 import { adminGuard } from './guards/admin-auth-guard';
-import { AnalyticsReportsComponent } from './analytics-reports.component/analytics-reports.component';
+
 
 export const routes: Routes = [
   {path:'',component:LandingComponent},
@@ -32,7 +32,7 @@ export const routes: Routes = [
       {path: 'compliance', component:ComplianceComponent},
       {path: 'settings', component:SettingsComponent},
       {path: 'routeopt',component:RouteOptimization},
-      {path: 'analytics',component:AnalyticsReportsComponent},
+      //{path: 'analytics',component:AnalyticsReportsComponent},
 
     ]
   }

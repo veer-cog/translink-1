@@ -4,22 +4,26 @@ import { CommonModule } from '@angular/common';
 import { StatCardComponent } from '../shareable/components/stat-card.component/stat-card.component';
 import { GenericTableComponent, TableColumn } from '../shareable/components/generic-table.component/generic-table.component';
 import { BookShipmenComponent } from '../shareable/components/book-shipmen.component/book-shipmen.component';
+import { DetailsCardComponent } from '../shareable/components/details-card.component/details-card.component';
+import { TabFilterComponent } from "../shareable/components/tab-filter.component/tab-filter.component";
 
-
+ 
 @Component({
   selector: 'app-shipment-tracking',
   standalone: true,
-  imports: [CommonModule,StatCardComponent,GenericTableComponent,BookShipmenComponent],
+  imports: [CommonModule, StatCardComponent, GenericTableComponent, BookShipmenComponent, DetailsCardComponent, TabFilterComponent],
   templateUrl: './shipment-tracking.component.html',
   styleUrl: './shipment-tracking.component.scss'
 })
 export class ShipmentTrackingComponent {
 
   @ViewChild('bookShipmentModal') bookShipmentModal!: BookShipmenComponent;
+  @ViewChild('detailsCard') detailsCard!: DetailsCardComponent;
 
   searchQuery = signal<string>('');
   activeFilter = signal<string>('all');
   currentView = signal<'list' | 'map'>('list');
+view: any;
 
   onShipmentAdded(newShipment: any) {
     const formattedShipment = {
@@ -78,22 +82,10 @@ export class ShipmentTrackingComponent {
   setView(view: 'list' | 'map') { this.currentView.set(view); }
   onSearch(e: Event) { this.searchQuery.set((e.target as HTMLInputElement).value); }
   onStatusChange(e: Event) { this.activeFilter.set((e.target as HTMLSelectElement).value); }
-// Inside ShipmentTrackingComponent class
-viewDetails(shipment: any) {
-  if (this.bookShipmentModal) {
-    // We map the table data back to the form fields used in BookShipmenComponent
-    this.bookShipmentModal.shipmentForm.patchValue({
-      customerName: shipment.customer,
-      pickup: shipment.route.split(' → ')[0],
-      delivery: shipment.route.split(' → ')[1],
-      vehicle: shipment.vehicle,
-      priority: shipment.priority
-    });
 
-    // Optional: Disable the form if you want "View" to be read-only
-    // this.bookShipmentModal.shipmentForm.disable();
-
-    this.bookShipmentModal.show();
+  viewDetails(shipment: any) {
+    if (this.detailsCard) {
+      this.detailsCard.show(shipment);
+    }
   }
-}
 }

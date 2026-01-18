@@ -1,148 +1,241 @@
-$text-main: #0f172a;
-$text-muted: #64748b;
-$primary-blue: #2563eb;
-$bg-light: #f8fafc;
-$border-color: #e2e8f0;
+/* shipment-tracking.component.scss */
 
-.page-container {
-  padding: 2rem;
-  background-color: $bg-light;
-  min-height: 100vh;
+// Variables synchronized with Fleet Management
+$border-color: var(--p-surface-200);
+$primary-blue: var(--p-primary-600);
+$text-dark: var(--p-surface-900);
+$text-muted: var(--p-surface-500);
+$header-height: 42px;
+
+:host {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
 }
 
+.page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    background-color: var(--p-surface-50);
+}
+
+/* --- Header: Single Row Force --- */
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  
-  .title-area {
-    h1 { font-size: 1.8rem; font-weight: 700; color: $text-main; margin: 0; }
-    p { color: $text-muted; margin-top: 4px; font-size: 0.95rem; }
-  }
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex-wrap: nowrap; // Prevents wrapping to second line
+
+    .title-area {
+        flex-shrink: 0;
+        h1 { margin: 0; font-size: 1.75rem; font-weight: 700; color: $text-dark; letter-spacing: -0.02em; }
+        p { margin: 2px 0 0 0; color: $text-muted; font-size: 0.95rem; }
+    }
+}
+
+.header-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* --- Inputs matched to Fleet Management --- */
+.search-wrapper {
+    position: relative;
+    i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); z-index: 2; }
+    input {
+        padding: 0 12px 0 36px;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        width: 240px; 
+        height: $header-height;
+        box-sizing: border-box;
+        background: #ffffff;
+        &:focus { outline: none; border-color: var(--p-primary-500); }
+    }
+}
+
+.filter-dropdown-wrapper {
+    position: relative;
+    select {
+        padding: 0 32px 0 36px;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        appearance: none;
+        background: white;
+        font-weight: 600;
+        height: $header-height;
+        width: 160px;
+        box-sizing: border-box;
+        color: $text-dark;
+        cursor: pointer;
+    }
+    .pi-filter { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); z-index: 2; }
+    .chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: $text-dark; }
 }
 
 .add-btn-vibrant {
-  background-color: $primary-blue; 
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: transform 0.1s;
-  
-  &:hover { background-color: #1d4ed8; }
-  &:active { transform: scale(0.98); }
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
-}
-
-.section-card {
-  background: white;
-  border-radius: 16px;
-  border: 1px solid $border-color;
-  padding: 1.5rem;
-
-  .card-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: $text-main; }
-  }
-}
-
-.view-toggle {
-  display: flex;
-  background: #f1f5f9;
-  padding: 4px;
-  border-radius: 10px;
-
-  button {
+    background: $primary-blue;
+    color: white;
     border: none;
-    padding: 8px 18px;
+    padding: 0 20px;
+    height: $header-height;
     border-radius: 8px;
-    font-size: 0.85rem;
     font-weight: 600;
-    color: $text-muted;
-    background: transparent;
     cursor: pointer;
-
-    &.active {
-      background: white;
-      color: $text-main;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-  }
-}
-
-.toolbar-section {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  
-  .search-wrapper {
-    position: relative;
-    flex: 1;
-    max-width: 400px;
-    i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-    input {
-      width: 100%;
-      padding: 12px 16px 12px 48px;
-      background: #f1f5f9;
-      border: 1px solid $border-color;
-      border-radius: 10px;
-      &:focus { outline: none; border-color: $primary-blue; background: white; }
-    }
-  }
-}
-
-.map-placeholder {
-  height: 450px;
-  background: #f8fafc;
-  border: 2px dashed #e2e8f0;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  .map-content {
-    text-align: center;
-    color: #94a3b8;
-    i { font-size: 3rem; margin-bottom: 1rem; }
-    p { font-weight: 500; }
-  }
-}
-
-/* Generic Table Overrides */
-::ng-deep {
-  .view-details-link {
-    color: $text-main;
-    font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 0.85rem;
-    &:hover { color: $primary-blue; text-decoration: underline; }
-  }
-
-  .customer-cell {
-    .name { font-weight: 700; color: $text-main; display: block; }
-    .id { font-size: 0.75rem; color: #94a3b8; }
-  }
-
-  .route-cell {
     display: flex;
     align-items: center;
     gap: 8px;
-    i { color: $primary-blue; }
-  }
+    white-space: nowrap;
+    &:hover { background: var(--p-primary-700); }
+}
+
+/* --- Content Layout --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.section-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+    
+    .card-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: $text-dark; }
+    }
+}
+
+/* --- Tables & Custom Cells --- */
+::ng-deep {
+    .customer-cell {
+        .name { font-weight: 700; color: $text-dark; display: block; }
+        .id { font-size: 0.75rem; color: $text-muted; }
+    }
+
+    .priority-badge {
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-block;
+        &.high { background: #fee2e2; color: #dc2626; }
+        &.medium { background: #fef3c7; color: #d97706; }
+        &.low { background: #f0fdf4; color: #16a34a; }
+    }
+
+    .view-details-link {
+        color: $primary-blue;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        &:hover { text-decoration: underline; }
+    }
+}
+
+/* --- Map Container --- */
+.map-container {
+    width: 100%;
+    min-height: 400px;
+    background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    .map-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        text-align: center;
+        z-index: 10;
+
+        i {
+            font-size: 64px;
+            color: #0369a1;
+            opacity: 0.9;
+            animation: mapPulse 2s ease-in-out infinite;
+        }
+
+        p {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0369a1;
+            letter-spacing: 0.3px;
+        }
+    }
+
+    // Add decorative map markers
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        animation: mapFloat 4s ease-in-out infinite;
+    }
+
+    &::before {
+        width: 200px;
+        height: 200px;
+        top: -50px;
+        left: -50px;
+        animation-delay: 0s;
+    }
+
+    &::after {
+        width: 150px;
+        height: 150px;
+        bottom: -40px;
+        right: -40px;
+        animation-delay: 1s;
+    }
+}
+
+@keyframes mapPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+@keyframes mapFloat {
+    0%, 100% {
+        transform: translateY(0px) translateX(0px);
+    }
+    25% {
+        transform: translateY(-10px) translateX(5px);
+    }
+    50% {
+        transform: translateY(-20px) translateX(-5px);
+    }
+    75% {
+        transform: translateY(-10px) translateX(5px);
+    }
 }

@@ -2,81 +2,78 @@
   <header class="page-header">
     <div class="title-area">
       <h1>Shipment Tracking</h1>
-      <p>Welcome back, Admin</p>
+      <p>Monitor and manage logistics flows in real-time</p>
     </div>
-    <button class="add-btn-vibrant" (click)="bookShipmentModal.show()">
-      <i class="pi pi-plus"></i>
-      <span>New Shipment</span>
-    </button>
+
+    <div class="header-toolbar">
+      <div class="search-wrapper">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Search shipments..." (input)="onSearch($event)" />
+      </div>
+
+      <div class="filter-dropdown-wrapper">
+        <i class="pi pi-filter"></i>
+        <select class="custom-status-select" (change)="onStatusChange($event)">
+          @for (opt of statusOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+        <i class="pi pi-chevron-down chevron"></i>
+      </div>
+
+      <button class="add-btn-vibrant" (click)="bookShipmentModal.show()">
+        <i class="pi pi-plus"></i>
+        <span>New Shipment</span>
+      </button>
+    </div> 
   </header>
-
-  <app-book-shipment #bookShipmentModal (onSave)="onShipmentAdded($event)"></app-book-shipment>
-
-  <div class="toolbar-section">
-    <div class="search-wrapper">
-      <i class="pi pi-search"></i>
-      <input type="text" placeholder="Search shipments..." (input)="onSearch($event)" />
-    </div>
-
-    <div class="filter-dropdown-wrapper">
-      <select class="custom-status-select" (change)="onStatusChange($event)">
-        @for (opt of statusOptions; track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-        }
-      </select>
-    </div>
-  </div>
 
   <div class="stats-grid">
     @for (stat of stats(); track stat.label) {
-    <app-stat-card [label]="stat.label" [value]="stat.value" [color]="stat.color" [icon]="stat.icon">
-    </app-stat-card>
+      <app-stat-card [label]="stat.label" [value]="stat.value" [color]="stat.color" [icon]="stat.icon"></app-stat-card>
     }
   </div>
 
   <div class="section-card">
     <div class="card-header-flex">
       <h3>Shipment Management</h3>
-      <div class="view-toggle">
-        <button [class.active]="currentView() === 'list'" (click)="setView('list')">List View</button>
-        <button [class.active]="currentView() === 'map'" (click)="setView('map')">Map View</button>
-      </div>
+      <app-tab-filter [tabs]="['List','Map']" (tabChanged)="view = $event"></app-tab-filter> 
     </div>
 
-    @if (currentView() === 'list') {
-    <app-generic-table [columns]="cols" [data]="filteredShipments()" title="Active Shipments">
-
-      <ng-template #customCell let-data="data" let-col="col">
-        @if (col.field === 'customer') {
-        <div class="customer-cell">
-          <span class="name">{{ data.customer }}</span>
-          <span class="id">{{ data.customerId }}</span>
+    @if (view === 'Map') {
+      <div class="map-container">
+        <div class="map-content">
+          <i class="pi pi-map"></i>
+          <p>Real-time Shipment Tracking Map</p>
         </div>
-        }
-        @if (col.field === 'route') {
-        <div class="route-cell">
-          <i class="pi pi-map-marker"></i>
-          <span>{{ data.route }}</span>
-        </div>
-        }
-        @if (col.field === 'priority') {
-        <span class="priority-badge" [ngClass]="data.priority.toLowerCase()">
-          {{ data.priority }}
-        </span>
-        }
-      </ng-template>
-
-      <ng-template #rowActions let-row>
-        <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
-      </ng-template>
-    </app-generic-table>
+      </div>
     } @else {
-    <div class="map-placeholder">
-      <div class="map-content">
-        <i class="pi pi-map"></i>
-        <p>Interactive Map View is currently being optimized.</p>
-      </div>
-    </div>
+      <app-generic-table [columns]="cols" [data]="filteredShipments()" title="Active Shipments">
+        <ng-template #customCell let-data="data" let-col="col">
+          @if (col.field === 'customer') {
+            <div class="customer-cell">
+              <span class="name">{{ data.customer }}</span>
+              <span class="id">{{ data.customerId }}</span>
+            </div>
+          }
+          @if (col.field === 'route') {
+            <div class="route-cell">
+              <i class="pi pi-map-marker"></i>
+              <span>{{ data.route }}</span>
+            </div>
+          }
+          @if (col.field === 'priority') {
+            <span class="priority-badge" [ngClass]="data.priority.toLowerCase()">
+              {{ data.priority }}
+            </span>
+          }
+        </ng-template>
+        <ng-template #rowActions let-row>
+          <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
+        </ng-template>
+      </app-generic-table>
     }
   </div>
 </div>
+<app-book-shipment #bookShipmentModal (onSave)="onShipmentAdded($event)"></app-book-shipment>
+<app-details-card #detailsCard title="Shipment Details"></app-details-card>

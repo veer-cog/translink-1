@@ -1,50 +1,61 @@
-@if (isOpen()) {
-  <div class="modal-backdrop" (click)="close()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3>Register New Vehicle</h3>
-        <button class="close-btn" (click)="close()">&times;</button>
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? 'Update Vehicle' : 'Register New Vehicle' }}</h3>
+      <button class="close-btn" (click)="close()">&times;</button>
+    </div>
+
+    <form [formGroup]="vehicleForm" class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vehicle ID</label>
+          <input type="text" formControlName="vehicleId" placeholder="TRK-20-XXX" [readonly]="isEditMode" />
+        </div>
+        <div class="form-group">
+          <label>Vehicle Type</label>
+          <select formControlName="type">
+            <option value="Heavy Truck">Heavy Truck</option>
+            <option value="Light Truck">Light Truck</option>
+            <option value="Van">Van</option>
+          </select>
+        </div>
       </div>
 
-      <form [formGroup]="vehicleForm" class="modal-body">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Vehicle ID</label>
-            <input type="text" formControlName="id" placeholder="TRK-20-XXX" class="custom-input" />
-          </div>
-          <div class="form-group">
-            <label>Vehicle Type</label>
-            <select formControlName="type" class="custom-select">
-              <option value="" disabled>Select type</option>
-              @for (t of types; track t) { <option [value]="t">{{t}}</option> }
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Capacity</label>
-            <input type="text" formControlName="capacity" placeholder="e.g., 20 tons" class="custom-input" />
-          </div>
-          <div class="form-group">
-            <label>Hub Location</label>
-            <select formControlName="location" class="custom-select">
-              <option value="" disabled>Select location</option>
-              @for (l of locations; track l) { <option [value]="l">{{l}}</option> }
-            </select>
-          </div>
-        </div>
-
+      <div class="form-row">
         <div class="form-group">
-          <label>Assigned Driver</label>
-          <input type="text" formControlName="driver" placeholder="Driver name" class="custom-input" />
+          <label>Capacity</label>
+          <input type="text" formControlName="capacity" placeholder="e.g., 20 tons" />
         </div>
+        <div class="form-group">
+          <label>Hub Location</label>
+          <select formControlName="location">
+            <option value="New York Hub">New York Hub</option>
+            <option value="Chicago Hub">Chicago Hub</option>
+            <option value="Detroit Hub">Detroit Hub</option>
+          </select>
+        </div>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn-secondary" (click)="close()">Cancel</button>
-          <button type="button" class="btn-primary" (click)="save()">Register Vehicle</button>
-        </div>
-      </form>
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="Active">Active</option>
+          <option value="Maintenance">Maintenance</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Assigned Driver</label>
+        <input type="text" formControlName="driver" placeholder="Enter driver name" />
+      </div>
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="close()">Cancel</button>
+      <button class="btn-primary" (click)="handleSave()" [disabled]="vehicleForm.invalid">
+        {{ isEditMode ? 'Update Vehicle' : 'Register Vehicle' }}
+      </button>
     </div>
   </div>
-}
+</div>
