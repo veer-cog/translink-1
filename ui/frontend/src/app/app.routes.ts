@@ -10,7 +10,6 @@ import { ShipmentTrackingComponent } from './shipment-tracking.component/shipmen
 import { RouteOptimization } from './route-optimization/route-optimization';
 import { ComplianceComponent } from './compliance.component/compliance.component';
 import { SettingsComponent } from './settings.component/settings.component';
-import { RouteOptimization } from './route-optimization/route-optimization';
 import { adminGuard } from './guards/admin-auth-guard';
 
 
