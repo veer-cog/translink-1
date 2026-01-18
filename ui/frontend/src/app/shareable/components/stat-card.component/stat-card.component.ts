@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="stat-card">
+    <div class="stat-card" [style.background-color]="cardBg()">
       <div class="icon-container" [style.background-color]="bgTint()">
         
         <div class="icon-circle" [style.border-color]="color()">
@@ -39,7 +39,7 @@ export class StatCardComponent {
   
   // Provide the HEX color here (e.g., #10b981 for green)
   color = input<string>('#10b981'); 
-
+cardBg = input<string>('var(--p-surface-0)');
   // This creates the light green background (10% alpha)
   // '1A' is the hex equivalent of 10% opacity
   bgTint = computed(() => `${this.color()}1A`);

@@ -1,13 +1,10 @@
-import { Component, input, contentChild, TemplateRef } from '@angular/core';
+import { Component, input, contentChild, TemplateRef, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// src/app/shareable/components/generic-table.component/generic-table.component.ts
 
 export interface TableColumn {
   field: string;
   header: string;
-  // Update this list to include every type used in your ngIf statements
-  type?: 'text' | 'badge' | 'date' | 'priority' | 'customer' | 'action'; 
+  type?: 'text' | 'badge' | 'date' | 'priority' | 'action'; 
 }
 
 @Component({
@@ -22,10 +19,9 @@ export class GenericTableComponent {
   columns = input.required<TableColumn[]>();
   data = input.required<any[]>();
   
-  customCell = contentChild<TemplateRef<any>>('customCell');
+  // This looks for <ng-template #rowActions> in the parent
+  rowActionsTemplate = contentChild<TemplateRef<any>>('rowActions');
 
-  
-  
   getStatusClass(value: string): string {
     if (!value) return '';
     return value.toLowerCase().replace(/\s+/g, '-');

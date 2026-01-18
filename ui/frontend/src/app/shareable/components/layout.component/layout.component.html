@@ -5,50 +5,96 @@
             <span class="logo-text">TransLink</span>
         </div>
 
-       <nav class="sidebar-nav">
-    <a *ngFor="let item of menuItems"
-       class="nav-item"
-       [routerLink]="item.path"
-       routerLinkActive="active" 
-       [pTooltip]="isCollapsed ? item.label : ''"
-       tooltipPosition="right">
-        <i [class]="item.icon"></i>
-        <span class="nav-label">{{item.label}}</span>
-    </a>
-</nav>
+        <nav class="sidebar-nav">
+            @for (item of menuItems; track item.label) {
+            <a class="nav-item" [routerLink]="item.path" routerLinkActive="active"
+                [pTooltip]="isCollapsed ? item.label : ''" tooltipPosition="right">
+                <i [class]="item.icon"></i>
+                <span class="nav-label">{{item.label}}</span>
+            </a>
+            }
+        </nav>
 
         <div class="sidebar-footer">
-            <a class="nav-item"><i class="pi pi-cog"></i> <span class="nav-label">Settings</span></a>
-            <a class="nav-item logout"  (click)="onLogout()"><i class="pi pi-sign-out"></i> <span class="nav-label">Logout</span></a>
+            <a class="nav-item" routerLink="/admin/settings" routerLinkActive="active">
+                <i class="pi pi-cog"></i>
+                <span class="nav-label">Settings</span>
+            </a>
+            <a class="nav-item logout">
+                <i class="pi pi-sign-out"></i>
+                <span class="nav-label">Logout</span>
+            </a>
         </div>
     </aside>
 
     <main class="main-container">
         <header class="topbar">
             <div class="topbar-left">
-                <p-button
-                    icon="pi pi-bars"
-                    [rounded]="true"
-                    [text]="true"
-                    (onClick)="toggleSidebar()">
-                </p-button>
+                <p-button icon="pi pi-bars" [rounded]="true" [text]="true" (onClick)="toggleSidebar()"></p-button>
                 <div class="breadcrumb">
                     <span class="system-name">Transportation Management System</span>
                 </div>
             </div>
 
             <div class="topbar-right">
-                
-                <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"></p-button>
-                <div class="user-profile">
-                    <div class="user-info">
-                        <span class="username">Admin</span>
-                    </div>
+                <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"
+                    (onClick)="notifPopover.toggle($event)">
+                    <p-badge *ngIf="notifications().length > 0" [value]="notifications().length"
+                        severity="danger"></p-badge>
+                </p-button>
+
+                <div class="user-profile" (click)="userPopover.toggle($event)">
+                    <span class="username">Admin</span>
                     <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
                 </div>
             </div>
         </header>
-<section class="content">
+
+        <p-popover #notifPopover>
+            <div class="popover-header" *ngIf="notifications().length > 0">
+                <strong>Notifications</strong>
+                <p-button label="Clear All" [text]="true" size="small" (onClick)="clearAll()"></p-button>
+            </div>
+
+            <div class="popover-content notif-list">
+                @for (n of notifications(); track n.id) {
+                <div class="notif-item" (click)="navigateToIssue(n, notifPopover)">
+                    <div class="notif-icon" [ngClass]="n.type">
+                        <i class="pi" [ngClass]="n.type === 'error' ? 'pi-times-circle' : 'pi-info-circle'"></i>
+                    </div>
+                    <div class="notif-body">
+                        <span class="notif-title">{{n.title}}</span>
+                        <p class="notif-desc">{{n.desc}}</p>
+                        <span class="notif-time">{{n.time}}</span>
+                    </div>
+                    <div class="notif-actions">
+                        <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="secondary"
+                            (onClick)="clearNotification(n.id, $event)"></p-button>
+                    </div>
+                </div>
+                } @empty {
+                <div class="notif-empty-state">
+                    <i class="pi pi-bell-slash"></i>
+                    <p>No new notifications</p>
+                </div>
+                }
+            </div>
+        </p-popover>
+
+        <p-popover #userPopover>
+            <div class="user-menu">
+                <div class="user-menu-header">
+                    <strong>Admin User</strong>
+                    <span>admin@translink.com</span>
+                </div>
+                <ul class="menu-list">
+                    <li routerLink="/admin/settings"><i class="pi pi-user"></i> My Profile</li>
+                    <li class="logout-link" (click)="onLogout()"><i class="pi pi-sign-out"></i> Sign Out</li>
+                </ul>
+            </div>
+        </p-popover>
+
+        <section class="content">
             <router-outlet></router-outlet>
         </section>
     </main>

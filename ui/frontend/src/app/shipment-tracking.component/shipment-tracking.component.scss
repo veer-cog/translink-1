@@ -1,8 +1,12 @@
-/* shipment-tracking.component.scss */
+$text-main: #0f172a;
+$text-muted: #64748b;
+$primary-blue: #2563eb;
+$bg-light: #f8fafc;
+$border-color: #e2e8f0;
 
 .page-container {
   padding: 2rem;
-  background-color: #f8fafc;
+  background-color: $bg-light;
   min-height: 100vh;
 }
 
@@ -13,77 +17,74 @@
   margin-bottom: 2rem;
   
   .title-area {
-    h1 { font-size: 1.8rem; font-weight: 700; color: #0f172a; margin: 0; }
-    p { color: #64748b; margin-top: 4px; font-size: 0.95rem; }
-  }
-}
-.stats-grid {
-  display: grid;
-  /* This creates 4 equal columns side-by-side */
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 1.5rem; /* Space between the cards */
-  margin-bottom: 2.5rem;
-  width: 100%;
-}
-
-/* Responsive adjustment: stack cards on mobile, 2x2 on tablets */
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+    h1 { font-size: 1.8rem; font-weight: 700; color: $text-main; margin: 0; }
+    p { color: $text-muted; margin-top: 4px; font-size: 0.95rem; }
   }
 }
 
-@media (max-width: 640px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* New Shipment Button */
 .add-btn-vibrant {
-  background-color: #2563eb; 
+  background-color: $primary-blue; 
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
+  transition: transform 0.1s;
   
   &:hover { background-color: #1d4ed8; }
+  &:active { transform: scale(0.98); }
 }
 
-/* List/Map Toggle Styling */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.section-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid $border-color;
+  padding: 1.5rem;
+
+  .card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: $text-main; }
+  }
+}
+
 .view-toggle {
   display: flex;
   background: #f1f5f9;
   padding: 4px;
   border-radius: 10px;
-  width: fit-content;
-  margin-bottom: 1.5rem;
 
   button {
     border: none;
-    padding: 6px 16px;
-    border-radius: 7px;
+    padding: 8px 18px;
+    border-radius: 8px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #64748b;
+    color: $text-muted;
     background: transparent;
     cursor: pointer;
-    transition: 0.2s;
 
     &.active {
       background: white;
-      color: #1e293b;
+      color: $text-main;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
   }
 }
 
-/* Toolbar & Filters */
 .toolbar-section {
   display: flex;
   gap: 1rem;
@@ -98,92 +99,50 @@
       width: 100%;
       padding: 12px 16px 12px 48px;
       background: #f1f5f9;
-      border: 1px solid #e2e8f0;
+      border: 1px solid $border-color;
       border-radius: 10px;
-      &:focus { outline: none; border-color: #2563eb; background: white; }
+      &:focus { outline: none; border-color: $primary-blue; background: white; }
     }
   }
 }
 
-/* Generic Table Scoping Fixes */
+.map-placeholder {
+  height: 450px;
+  background: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .map-content {
+    text-align: center;
+    color: #94a3b8;
+    i { font-size: 3rem; margin-bottom: 1rem; }
+    p { font-weight: 500; }
+  }
+}
+
+/* Generic Table Overrides */
 ::ng-deep {
-  .section-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    padding: 1.5rem;
+  .view-details-link {
+    color: $text-main;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    &:hover { color: $primary-blue; text-decoration: underline; }
   }
 
-  /* Table Header Text */
-  th {
-    color: #64748b !important;
-    font-weight: 500 !important;
-    font-size: 0.85rem !important;
-    background: transparent !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-    padding: 1rem !important;
-  }
-
-  /* Table Cell Styling */
-  td {
-    padding: 1.2rem 1rem !important;
-    vertical-align: middle !important;
-    border-bottom: 1px solid #f8fafc !important;
-    color: #1e293b;
-    font-size: 0.9rem;
-  }
-
-  /* Shipment ID Bold */
-  td:first-child {
-    font-weight: 600;
-  }
-
-  /* Customer Column with Subtext */
   .customer-cell {
-    display: flex;
-    flex-direction: column;
-    .name { font-weight: 700; color: #1e293b; display: block; }
-    .id { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; }
+    .name { font-weight: 700; color: $text-main; display: block; }
+    .id { font-size: 0.75rem; color: #94a3b8; }
   }
 
-  /* Route Icon Style */
   .route-cell {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #64748b;
-    i { color: #94a3b8; font-size: 0.9rem; }
-  }
-
-  /* Status Badge Logic */
-  .status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    
-    &.in-transit { background: #eff6ff; color: #3b82f6; }
-    &.delivered { background: #f0fdf4; color: #22c55e; }
-    &.booked { background: #faf5ff; color: #a855f7; }
-  }
-
-  /* Priority Badge Logic */
-  .priority-badge {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    &.high { background: #fef2f2; color: #ef4444; }
-    &.medium { background: #fffbeb; color: #f59e0b; }
-    &.low { background: #f8fafc; color: #64748b; }
-  }
-
-  /* Action Link Style */
-  .view-details-link {
-    color: #1e293b;
-    font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
-    &:hover { text-decoration: underline; }
+    i { color: $primary-blue; }
   }
 }

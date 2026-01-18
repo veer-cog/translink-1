@@ -8,9 +8,11 @@ import { LandingComponent } from './landing.component/landing.component';
 import { FleetManagementComponent } from './fleet-management.component/fleet-management.component';
 import { ShipmentTrackingComponent } from './shipment-tracking.component/shipment-tracking.component';
 import { RouteOptimization } from './route-optimization/route-optimization';
+import { ComplianceComponent } from './compliance.component/compliance.component';
+import { SettingsComponent } from './settings.component/settings.component';
 
 export const routes: Routes = [
-  {path:'',component:LandingComponent},
+{path:'',component:LandingComponent},
 {path:'login', component:Login},
 {path:'signup',component:Signup},
 {path:'forgot-password',component:ForgotPassword},
@@ -24,7 +26,10 @@ export const routes: Routes = [
       {path: 'fleet', component:FleetManagementComponent},
       { path: 'admin', redirectTo: 'dashboard', pathMatch: 'full' },
       {path: 'shipment',component:ShipmentTrackingComponent},
-      {path: 'routeopt',component:RouteOptimization}
+      {path: 'routeopt',component:RouteOptimization},
+      {path: 'compliance', component:ComplianceComponent},
+      {path: 'settings', component:SettingsComponent},
+      
     ]
   }
 ];

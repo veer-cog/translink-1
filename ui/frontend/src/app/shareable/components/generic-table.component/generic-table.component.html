@@ -2,7 +2,7 @@
   <div class="table-header">
     <h4>{{ title() }}</h4>
   </div>
-  
+
   <div class="table-responsive">
     <table class="custom-table">
       <thead>
@@ -13,18 +13,26 @@
       <tbody>
         <tr *ngFor="let row of data()">
           <td *ngFor="let col of columns()">
-            <ng-container *ngIf="col.type === 'badge'; else textCell">
+
+            <ng-container *ngIf="col.type === 'badge'; else actionCell">
               <span class="status-badge" [ngClass]="getStatusClass(row[col.field])">
                 {{ row[col.field] }}
               </span>
             </ng-container>
- 
+
+            <ng-template #actionCell>
+              <ng-container *ngIf="col.field === 'actions'; else textCell">
+                <ng-container *ngTemplateOutlet="rowActionsTemplate(); context: { $implicit: row }">
+                </ng-container>
+              </ng-container>
+            </ng-template>
 
             <ng-template #textCell>
-              <span [class.bold-text]="col.field === 'id' || col.field === 'shipmentId'">
+              <span [class.bold-text]="col.field === 'vehicleId' || col.field === 'id'">
                 {{ row[col.field] }}
               </span>
             </ng-template>
+
           </td>
         </tr>
       </tbody>

@@ -13,7 +13,8 @@ describe('LandingComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(LandingComponent);
-    component = fixture.componentInstance;
+    component = fixture.componentInstance;  
+    
     await fixture.whenStable();
   });
 
