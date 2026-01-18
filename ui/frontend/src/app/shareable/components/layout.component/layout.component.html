@@ -39,12 +39,12 @@
             <div class="topbar-right">
                 <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"
                     (onClick)="notifPopover.toggle($event)">
-                    <p-badge *ngIf="notifications().length > 0" [value]="notifications().length"
-                        severity="danger"></p-badge>
+                    <p-badge *ngIf="notifications().length > 0" [value]="notifications().length" severity="danger"
+                        class="notifications-num"></p-badge>
                 </p-button>
 
                 <div class="user-profile" (click)="userPopover.toggle($event)">
-                    <span class="username">Admin</span>
+                    <span class="username">{{authService.currentUser()?.role}}</span>
                     <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
                 </div>
             </div>
@@ -84,8 +84,8 @@
         <p-popover #userPopover>
             <div class="user-menu">
                 <div class="user-menu-header">
-                    <strong>Admin User</strong>
-                    <span>admin@translink.com</span>
+                    <strong>{{authService.currentUser()?.name}} </strong>
+                    <span>{{authService.currentUser()?.email}} </span>
                 </div>
                 <ul class="menu-list">
                     <li routerLink="/admin/settings"><i class="pi pi-user"></i> My Profile</li>

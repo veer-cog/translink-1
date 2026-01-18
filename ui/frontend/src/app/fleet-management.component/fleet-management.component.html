@@ -1,6 +1,11 @@
 <div class="page-container">
   <header class="page-header">
-    <div class="toolbar-section">
+    <div class="title-area">
+      <h1>Fleet Management</h1>
+      <p>Manage and monitor your vehicle fleet</p>
+    </div>
+
+    <div class="header-toolbar">
       <div class="search-wrapper">
         <i class="pi pi-search"></i>
         <input type="text" placeholder="Search by Vehicle ID..." (input)="onSearch($event)" />
@@ -10,34 +15,32 @@
         <i class="pi pi-filter"></i>
         <select class="custom-status-select" (change)="onStatusChange($event)">
           @for (opt of statusOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
+            <option [value]="opt.value">{{ opt.label }}</option>
           }
         </select>
         <i class="pi pi-chevron-down chevron"></i>
       </div>
-    </div>
-    <div class="actions">
-      <button class="add-btn-vibrant" (click)="openAddVehicle()">
+
+      <button class="add-btn-vibrant" (click)="addVehicleModal.show()">
         <i class="pi pi-plus"></i>
         <span>Add Vehicle</span>
       </button>
     </div>
   </header>
 
-
-
   <div class="stats-grid">
     @for (stat of stats(); track stat.label) {
-    <app-stat-card [label]="stat.label" [value]="stat.value" [icon]="stat.icon" [color]="stat.color"></app-stat-card>
+      <app-stat-card [label]="stat.label" [value]="stat.value" [icon]="stat.icon" [color]="stat.color"></app-stat-card>
     }
   </div>
 
-  <div class="section-card table-section">
-    <app-generic-table title="Fleet Overview" [columns]="cols" [data]="filteredFleet()" (onEdit)="editVehicle($event)"
-      (onDelete)="deleteVehicle($event)">
-
+  <div class="section-card">
+    <app-generic-table title="Fleet Overview" [columns]="cols" [data]="filteredFleet()">
       <ng-template #rowActions let-vehicle>
         <div class="actions-cell">
+          <button class="icon-btn view" (click)="viewDetails(vehicle)" title="View Details">
+            <i class="pi pi-eye"></i>
+          </button>
           <button class="icon-btn edit" (click)="editVehicle(vehicle)">
             <i class="pi pi-pencil"></i>
           </button>
@@ -49,5 +52,5 @@
     </app-generic-table>
   </div>
 </div>
-
-<app-add-vehicle #addVehicleModal (onSave)="onVehicleAdded($event)"></app-add-vehicle>
+<app-add-vehicle #addVehicleModal (onSave)="handleVehicleSaved($event)"></app-add-vehicle>
+<app-details-card #detailsCard title="Vehicle Details"></app-details-card>

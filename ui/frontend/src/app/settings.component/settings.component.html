@@ -27,7 +27,9 @@
                     </div>
 
                     <div class="avatar-upload">
-                        <div class="avatar-circle">JW</div>
+                        <div class="avatar-circle">
+                            {{ authService.currentUser()?.name?.charAt(0) || 'U' }}
+                        </div>
                         <div class="upload-actions">
                             <p-button label="Change Photo" [outlined]="true" size="small"></p-button>
                             <span>Min 400x400px, PNG or JPG</span>
@@ -35,14 +37,22 @@
                     </div>
 
                     <div class="form-grid">
-                        <div class="form-field"><label>First Name</label><input pInputText
-                                formControlName="firstName" /></div>
-                        <div class="form-field"><label>Last Name</label><input pInputText formControlName="lastName" />
+                        <div class="form-field">
+                            <label>First Name</label>
+                            <input pInputText formControlName="firstName" />
                         </div>
-                        <div class="form-field full-width"><label>Phone Number</label><input pInputText
-                                formControlName="phone" /></div>
-                        <div class="form-field full-width"><label>Bio</label><textarea pInputTextarea
-                                formControlName="bio" rows="4"></textarea></div>
+                        <div class="form-field">
+                            <label>Last Name</label>
+                            <input pInputText formControlName="lastName" />
+                        </div>
+                        <div class="form-field full-width">
+                            <label>Phone Number</label>
+                            <input pInputText formControlName="phone" />
+                        </div>
+                        <div class="form-field full-width">
+                            <label>Bio</label>
+                            <textarea pInputTextarea formControlName="bio" rows="4"></textarea>
+                        </div>
                     </div>
                 </div>
                 }
@@ -55,19 +65,22 @@
                     </div>
                     <div class="action-list">
                         <div class="action-item">
-                            <div class="text"><strong>Critical Failures</strong>
+                            <div class="text">
+                                <strong>Critical Failures</strong>
                                 <p>Alerts for safety inspection failures.</p>
                             </div>
                             <p-toggleSwitch formControlName="criticalFailures"></p-toggleSwitch>
                         </div>
                         <div class="action-item">
-                            <div class="text"><strong>Maintenance Reminders</strong>
+                            <div class="text">
+                                <strong>Maintenance Reminders</strong>
                                 <p>Upcoming scheduled service dates.</p>
                             </div>
                             <p-toggleSwitch formControlName="maintenanceReminders"></p-toggleSwitch>
                         </div>
                         <div class="action-item">
-                            <div class="text"><strong>Email Summaries</strong>
+                            <div class="text">
+                                <strong>Email Summaries</strong>
                                 <p>Weekly PDF summary of all logs.</p>
                             </div>
                             <p-toggleSwitch formControlName="emailAlerts"></p-toggleSwitch>
@@ -94,7 +107,6 @@
                             <p-select [options]="countries" [(ngModel)]="selectedCountry"
                                 [ngModelOptions]="{standalone: true}" optionLabel="name" [filter]="true" filterBy="name"
                                 class="w-full">
-
                                 <ng-template #selectedItem let-selectedOption>
                                     <div class="flex items-center gap-3">
                                         <img [src]="'https://flagcdn.com/w40/' + selectedOption.code.toLowerCase() + '.png'"
@@ -102,7 +114,6 @@
                                         <div class="font-medium">{{ selectedOption.currency }}</div>
                                     </div>
                                 </ng-template>
-
                                 <ng-template let-country #item>
                                     <div class="flex items-center gap-3 p-2">
                                         <img [src]="'https://flagcdn.com/w40/' + country.code.toLowerCase() + '.png'"
@@ -116,8 +127,8 @@
                     </div>
                 </div>
                 }
-                @if (activeTab() === 'Security') {
 
+                @if (activeTab() === 'Security') {
                 <div class="settings-content">
                     <div class="section-header">
                         <h3>Security & Access</h3>
@@ -143,39 +154,13 @@
 
                     <div class="divider"></div>
 
-                    <div class="section-header mt-4">
-                        <h3>Account Protection</h3>
-                    </div>
-
-                    <div class="action-list">
+                    <div class="action-list mt-4">
                         <div class="action-item">
                             <div class="text">
                                 <strong>Two-Factor Authentication</strong>
                                 <p>Add an extra layer of security to your account.</p>
                             </div>
                             <p-toggleSwitch></p-toggleSwitch>
-                        </div>
-                        <div class="action-item">
-                            <div class="text">
-                                <strong>Session Timeout</strong>
-                                <p>Automatically log out after 30 minutes of inactivity.</p>
-                            </div>
-                            <p-toggleSwitch></p-toggleSwitch>
-                        </div>
-                    </div>
-
-                    <div class="section-header mt-6">
-                        <h3>Active Sessions</h3>
-                        <p>Devices currently logged into your account.</p>
-                    </div>
-                    <div class="session-log">
-                        <div class="session-entry">
-                            <i class="pi pi-desktop"></i>
-                            <div class="details">
-                                <strong>Chrome on Windows</strong>
-                                <span>Ahmedabad, India • Current Session</span>
-                            </div>
-                            <p-button label="Revoke" [text]="true" severity="danger" size="small"></p-button>
                         </div>
                     </div>
                 </div>
@@ -188,11 +173,15 @@
                 <h3>Account Overview</h3>
                 <div class="stat-mini">
                     <span>Role</span>
-                    <strong>Senior Fleet Manager</strong>
+                    <strong class="role-highlight">{{ authService.currentUser()?.role }}</strong>
+                </div>
+                <div class="stat-mini">
+                    <span>Email</span>
+                    <strong>{{ authService.currentUser()?.email }}</strong>
                 </div>
                 <div class="stat-mini">
                     <span>Joined</span>
-                    <strong>January 2024</strong>
+                    <strong>Jan 2026</strong>
                 </div>
             </div>
 

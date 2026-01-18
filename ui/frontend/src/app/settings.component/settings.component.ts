@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 
@@ -9,24 +9,29 @@ import { ButtonModule } from 'primeng/button';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
+import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
+
+// Shared
 import { TabFilterComponent } from "../shareable/components/tab-filter.component/tab-filter.component";
-import { Password } from "primeng/password";
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-user-settings',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule, SelectModule,
-    InputTextModule, ButtonModule, ToggleSwitchModule, TextareaModule, ToastModule,
-    TabFilterComponent,
-    Password
-],
+    InputTextModule, ButtonModule, ToggleSwitchModule, TextareaModule, 
+    ToastModule, TabFilterComponent, PasswordModule
+  ],
   providers: [MessageService],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
+  authService = inject(AuthService);
+  private messageService = inject(MessageService);
+
   activeTab = signal<string>('Profile');
   tabs = ['Profile', 'Security', 'Notifications', 'Organization'];
 
@@ -36,14 +41,14 @@ export class SettingsComponent {
     { name: 'India', code: 'IN', currency: 'INR (₹)' },
     { name: 'Germany', code: 'DE', currency: 'EUR (€)' }
   ];
-  selectedCountry: any = this.countries[0];
+  selectedCountry: any = this.countries[2]; // Default to India
 
-  // Forms
+  // --- FORMS ---
   profileForm = new FormGroup({
-    firstName: new FormControl('John'),
-    lastName: new FormControl('Williams'),
-    phone: new FormControl('+1 (555) 012-3456'),
-    bio: new FormControl('Senior Fleet Manager.')
+    firstName: new FormControl('', Validators.required),
+    lastName: new FormControl('', Validators.required),
+    phone: new FormControl('+91 98765 43210'),
+    bio: new FormControl('Fleet Logistics Professional')
   });
 
   notificationForm = new FormGroup({
@@ -53,35 +58,45 @@ export class SettingsComponent {
   });
 
   orgForm = new FormGroup({
-    companyName: new FormControl('Fleet Logistics Ltd'),
-    country: new FormControl(this.countries[0])
+    companyName: new FormControl('TransLink Global'),
+    country: new FormControl(this.countries[2])
   });
 
-  // Check if current active form is modified
-// Inside your class
-isSaveDisabled(): boolean {
-  const active = this.activeTab();
-  
-  // A form is "pristine" if it hasn't been changed by the user
-  if (active === 'Profile') return this.profileForm.pristine;
-  if (active === 'Notifications') return this.notificationForm.pristine;
-  if (active === 'Organization') return this.orgForm.pristine;
-  
-  return true;
-}
+  ngOnInit() {
+    // Fill profile from AuthService Signals
+    const user = this.authService.currentUser();
+    if (user) {
+      const nameParts = user.name.split(' ');
+      this.profileForm.patchValue({
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || ''
+      });
+    }
+  }
 
-saveData() {
-  // Your API call here...
-  this.messageService.add({ severity: 'success', summary: 'Updated', detail: 'Settings saved' });
-  
-  // IMPORTANT: After saving, mark the forms as pristine again to disable the button
-  this.profileForm.markAsPristine();
-  this.notificationForm.markAsPristine();
-  this.orgForm.markAsPristine();
-}
-  constructor(private messageService: MessageService) {}
+  onTabChange(tab: string) { 
+    this.activeTab.set(tab); 
+  }
 
-  onTabChange(tab: string) { this.activeTab.set(tab); }
+  isSaveDisabled(): boolean {
+    const active = this.activeTab();
+    if (active === 'Profile') return this.profileForm.pristine || this.profileForm.invalid;
+    if (active === 'Notifications') return this.notificationForm.pristine;
+    if (active === 'Organization') return this.orgForm.pristine;
+    return true;
+  }
 
-
+  saveData() {
+    // In a real app, you would send this to your backend
+    this.messageService.add({ 
+      severity: 'success', 
+      summary: 'Settings Updated', 
+      detail: `${this.activeTab()} changes saved successfully.` 
+    });
+    
+    // Mark as pristine to disable button until next change
+    this.profileForm.markAsPristine();
+    this.notificationForm.markAsPristine();
+    this.orgForm.markAsPristine();
+  }
 }

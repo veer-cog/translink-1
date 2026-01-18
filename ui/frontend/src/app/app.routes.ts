@@ -10,6 +10,9 @@ import { ShipmentTrackingComponent } from './shipment-tracking.component/shipmen
 import { RouteOptimization } from './route-optimization/route-optimization';
 import { ComplianceComponent } from './compliance.component/compliance.component';
 import { SettingsComponent } from './settings.component/settings.component';
+import { RouteOptimization } from './route-optimization/route-optimization';
+import { adminGuard } from './guards/admin-auth-guard';
+
 
 export const routes: Routes = [
 {path:'',component:LandingComponent},
@@ -19,7 +22,8 @@ export const routes: Routes = [
 
 {
     path: 'admin',
-  component: LayoutComponent, // The parent layout
+  component: LayoutComponent,
+  canActivate:[adminGuard], // The parent layout
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'admin', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -29,7 +33,9 @@ export const routes: Routes = [
       {path: 'routeopt',component:RouteOptimization},
       {path: 'compliance', component:ComplianceComponent},
       {path: 'settings', component:SettingsComponent},
-      
+      {path: 'routeopt',component:RouteOptimization},
+      //{path: 'analytics',component:AnalyticsReportsComponent},
+
     ]
   }
 ];

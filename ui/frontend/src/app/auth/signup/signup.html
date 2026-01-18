@@ -1,7 +1,8 @@
+<p-toast></p-toast>
 <div class="login-container">
     <div class="brand-header">
         <div class="logo-wrapper">
-                        <i class="pi pi-verified logo-icon" routerLink="/" style="cursor: pointer;"></i> 
+            <i class="pi pi-verified logo-icon" routerLink="/" style="cursor: pointer;"></i>
 
             <span class="brand-name">TransLink</span>
         </div>
@@ -9,103 +10,117 @@
 
     <p-card class="login-card">
         <div class="card-header">
-            @if (!(auth.showOtp | async)) {
-                <h2>Create an account</h2>
-                <p>Get started with TransLink today</p>
+            @if (!(auth.showOtp$ | async)) {
+            <h2>Create an account</h2>
+            <p>Get started with TransLink today</p>
             } @else {
-                <h2>Verify Email</h2>
-                <p>Enter the 6-digit code sent to your inbox</p>
+            <h2>Verify Email</h2>
+            <p>Enter the 6-digit code sent to your inbox</p>
             }
         </div>
 
-        @if (!(auth.showOtp | async)) {
-            <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit()">
-                <div class="form-row">
-                    <div class="input-group">
-                        <label class="field-label">First Name</label>
-                        <input pInputText formControlName="firstName" class="custom-input" placeholder="John" [ngClass]="{'error-state': isInvalid('firstName')}">
-                        <div class="error-container">
-                            @if (isInvalid('firstName')) { <small class="error-text">First name required.</small> }
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="field-label">Last Name</label>
-                        <input pInputText formControlName="lastName" class="custom-input" placeholder="Doe" [ngClass]="{'error-state': isInvalid('lastName')}">
-                        <div class="error-container">
-                            @if (isInvalid('lastName')) { <small class="error-text">Last name required.</small> }
-                        </div>
-                    </div>
-                </div>
-
+        @if (!(auth.showOtp$ | async)) {
+        <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit()">
+            <div class="form-row">
                 <div class="input-group">
-                    <label class="field-label">Email Address</label>
-                    <input pInputText formControlName="email" class="custom-input" placeholder="you@company.com" [ngClass]="{'error-state': isInvalid('email')}">
+                    <label class="field-label">First Name</label>
+                    <input pInputText formControlName="firstName" class="custom-input" placeholder="John"
+                        [ngClass]="{'error-state': isInvalid('firstName')}">
                     <div class="error-container">
-                        @if (isInvalid('email')) { <small class="error-text">Valid email required.</small> }
+                        @if (isInvalid('firstName')) { <small class="error-text">First name required.</small> }
                     </div>
                 </div>
+                <div class="input-group">
+                    <label class="field-label">Last Name</label>
+                    <input pInputText formControlName="lastName" class="custom-input" placeholder="Doe"
+                        [ngClass]="{'error-state': isInvalid('lastName')}">
+                    <div class="error-container">
+                        @if (isInvalid('lastName')) { <small class="error-text">Last name required.</small> }
+                    </div>
+                </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="input-group">
-                        <label class="field-label">Company Name</label>
-                        <input pInputText formControlName="companyName" class="custom-input" placeholder="Acme Logistics" [ngClass]="{'error-state': isInvalid('companyName')}">
-                        <div class="error-container">
-                            @if (isInvalid('companyName')) { <small class="error-text">Company name required.</small> }
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="field-label">Role</label>
-                        <p-select [options]="roles" formControlName="role" placeholder="Select role" styleClass="w-full" [ngClass]="{'error-state': isInvalid('role')}"></p-select>
-                        <div class="error-container">
-                            @if (isInvalid('role')) { <small class="error-text">Please select a role.</small> }
-                        </div>
-                    </div>
+            <div class="input-group">
+                <label class="field-label">Email Address</label>
+                <input pInputText formControlName="email" class="custom-input" placeholder="you@company.com"
+                    [ngClass]="{'error-state': isInvalid('email')}">
+                <div class="error-container">
+                    @if (isInvalid('email')) { <small class="error-text">Valid email required.</small> }
                 </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="input-group">
-                        <label class="field-label">Password</label>
-                        <p-password formControlName="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="custom-input" placeholder="Create a password" [ngClass]="{'error-state': isInvalid('password')}"></p-password>
-                        <div class="error-container">
-                            @if (isInvalid('password')) { <small class="error-text">Min 8 chars required.</small> }
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="field-label">Confirm Password</label>
-                        <p-password formControlName="confirmPassword" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="custom-input" placeholder="Confirm password" [ngClass]="{'error-state': isInvalid('confirmPassword')}"></p-password>
-                        <div class="error-container">
-                            @if (signupForm.errors?.['mismatch'] && signupForm.get('confirmPassword')?.touched) { <small class="error-text">Passwords must match.</small> }
-                        </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label class="field-label">Company Name</label>
+                    <input pInputText formControlName="companyName" class="custom-input" placeholder="Acme Logistics"
+                        [ngClass]="{'error-state': isInvalid('companyName')}">
+                    <div class="error-container">
+                        @if (isInvalid('companyName')) { <small class="error-text">Company name required.</small> }
                     </div>
                 </div>
-
-                <div class="checkbox-group">
-                    <p-checkbox formControlName="agreeToTerms" [binary]="true"></p-checkbox>
-                    <label>I agree to the <a class="terms-link">Terms</a> and <a class="terms-link">Privacy Policy</a></label>
+                <div class="input-group">
+                    <label class="field-label">Role</label>
+                    <p-select [options]="roles" formControlName="role" placeholder="Select role" styleClass="w-full"
+                        [ngClass]="{'error-state': isInvalid('role')}"></p-select>
+                    <div class="error-container">
+                        @if (isInvalid('role')) { <small class="error-text">Please select a role.</small> }
+                    </div>
                 </div>
+            </div>
 
-                <div class="login-button-wrapper">
-                    <p-button label="Create Account" type="submit" [loading]="loading" styleClass="custom-btn"></p-button>
+            <div class="form-row">
+                <div class="input-group">
+                    <label class="field-label">Password</label>
+                    <p-password formControlName="password" [toggleMask]="true" [feedback]="false" styleClass="w-full"
+                        inputStyleClass="custom-input" placeholder="Create a password"
+                        [ngClass]="{'error-state': isInvalid('password')}"></p-password>
+                    <div class="error-container">
+                        @if (isInvalid('password')) { <small class="error-text">Min 8 chars required.</small> }
+                    </div>
                 </div>
-            </form>
+                <div class="input-group">
+                    <label class="field-label">Confirm Password</label>
+                    <p-password formControlName="confirmPassword" [toggleMask]="true" [feedback]="false"
+                        styleClass="w-full" inputStyleClass="custom-input" placeholder="Confirm password"
+                        [ngClass]="{'error-state': isInvalid('confirmPassword')}"></p-password>
+                    <div class="error-container">
+                        @if (signupForm.errors?.['mismatch'] && signupForm.get('confirmPassword')?.touched) { <small
+                            class="error-text">Passwords must match.</small> }
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <p-checkbox formControlName="agreeToTerms" [binary]="true"></p-checkbox>
+                <label>I agree to the <a class="terms-link">Terms</a> and <a class="terms-link">Privacy
+                        Policy</a></label>
+            </div>
+
+            <div class="login-button-wrapper">
+                <p-button label="Create Account" type="submit" [loading]="loading" styleClass="custom-btn"></p-button>
+            </div>
+        </form>
         } @else {
-            <form [formGroup]="otpForm" (ngSubmit)="onOtpSubmit()" class="otp-section">
-                <div class="otp-wrapper">
-                    <p-inputOtp formControlName="otpCode" [length]="6" styleClass="custom-otp-group"></p-inputOtp>
-                </div>
-                
-                <div class="login-button-wrapper">
-                    <p-button label="Verify & Continue" type="submit" [loading]="loading" styleClass="custom-btn"></p-button>
-                </div>
+        <form [formGroup]="otpForm" (ngSubmit)="onOtpSubmit()" class="otp-section">
+            <div class="otp-wrapper">
+                <p-inputOtp formControlName="otpCode" [length]="6" styleClass="custom-otp-group"></p-inputOtp>
+            </div>
 
-                <div class="form-footer">
-                    <p>Didn't receive a code? <a class="footer-link bold">Resend</a></p>
-                    <a (click)="backToSignup()" class="footer-link small-text">Back to Signup</a>
-                </div>
-            </form>
+            <div class="login-button-wrapper">
+                <p-button label="Verify & Continue" type="submit" [loading]="loading"
+                    styleClass="custom-btn"></p-button>
+            </div>
+
+            <div class="form-footer">
+                <p>Didn't receive a code?
+                    <a (click)="auth.resendOtp()" class="footer-link bold" style="cursor: pointer;">Resend</a>
+                </p>
+                <a (click)="backToSignup()" class="footer-link small-text">Back to Signup</a>
+            </div>
+        </form>
         }
 
-        <div class="form-footer" *ngIf="!(auth.showOtp | async)">
+        <div class="form-footer" *ngIf="!(auth.showOtp$ | async)">
             <span>Already have an account? <a routerLink="/login" class="footer-link bold">Sign in</a></span>
         </div>
     </p-card>
