@@ -40,16 +40,17 @@
                 </div>
             </div>
 
-            <div class="input-group">
-                <label class="field-label">Email Address</label>
-                <input pInputText formControlName="email" class="custom-input" placeholder="you@company.com"
-                    [ngClass]="{'error-state': isInvalid('email')}">
-                <div class="error-container">
-                    @if (isInvalid('email')) { <small class="error-text">Valid email required.</small> }
-                </div>
-            </div>
+
 
             <div class="form-row">
+                <div class="input-group">
+                    <label class="field-label">Email Address</label>
+                    <input pInputText formControlName="email" class="custom-input" placeholder="you@company.com"
+                        [ngClass]="{'error-state': isInvalid('email')}">
+                    <div class="error-container">
+                        @if (isInvalid('email')) { <small class="error-text">Valid email required.</small> }
+                    </div>
+                </div>
                 <div class="input-group">
                     <label class="field-label">Company Name</label>
                     <input pInputText formControlName="companyName" class="custom-input" placeholder="Acme Logistics"
@@ -58,14 +59,14 @@
                         @if (isInvalid('companyName')) { <small class="error-text">Company name required.</small> }
                     </div>
                 </div>
-                <div class="input-group">
+                <!-- <div class="input-group">
                     <label class="field-label">Role</label>
                     <p-select [options]="roles" formControlName="role" placeholder="Select role" styleClass="w-full"
                         [ngClass]="{'error-state': isInvalid('role')}"></p-select>
                     <div class="error-container">
                         @if (isInvalid('role')) { <small class="error-text">Please select a role.</small> }
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="form-row">
