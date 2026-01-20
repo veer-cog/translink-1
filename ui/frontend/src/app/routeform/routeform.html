@@ -1,47 +1,47 @@
 <div class="modal-overlay" (click)="closeModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Create New Route Plan</h2>
-      <button class="close-btn" (click)="closeModal()">&times;</button>
+      <h2>{{ routeData ? 'Edit' : 'Create' }} Route Plan</h2>
+      <button class="close-btn" (click)="closeModal()">×</button>
     </div>
 
     <div class="form-body">
       <div class="form-group">
         <label>Assign Vehicle</label>
-        <select class="custom-input">
-          <option value="" disabled selected>Select vehicle</option>
-          <option value="trk101">TRK-101</option>
-          <option value="trk102">TRK-102</option>
+        <select class="custom-input" [(ngModel)]="vehicleId">
+          <option value="TRK-101">TRK-101</option>
+          <option value="TRK-102">TRK-102</option>
+          <option value="TRK-103">TRK-103</option>
         </select>
       </div>
 
-      <div class="form-group">
-        <label>Route Stops</label>
-        <input type="text" placeholder="Start location" class="custom-input stop-input">
-        <div *ngFor="let stop of stops; let i = index">
-          <input type="text" [placeholder]="'Stop ' + (i + 1)" class="custom-input stop-input">
-        </div>
-        <button class="btn-add-stop" (click)="addStop()">+ Add Stop</button>
-      </div>
+     
+<div class="form-group">
+  <label>Route Stops (Drag to reorder)</label>
+  <div *ngFor="let stop of stops; let i = index" 
+       class="stop-row"
+       [draggable]="stop.type === 'stop'" 
+       (dragstart)="onDragStart(i)"
+       (dragover)="$event.preventDefault()"
+       (drop)="onDrop(i)"
+       [class.draggable-item]="stop.type === 'stop'">
+    
+    <span class="drag-icon" *ngIf="stop.type === 'stop'">☰</span>
+    <span class="fixed-icon" *ngIf="stop.type !== 'stop'">📍</span>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Departure Time</label>
-          <input type="datetime-local" class="custom-input">
-        </div>
-        <div class="form-group">
-          <label>Optimization Goal</label>
-          <select class="custom-input">
-            <option>Shortest Distance</option>
-            <option>Fastest Time</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-cancel" (click)="closeModal()">Cancel</button>
-      <button class="btn-submit">Optimize & Create</button>
-    </div>
+    <input type="text" 
+           [(ngModel)]="stop.city" 
+           [placeholder]="stop.type | uppercase" 
+           class="custom-input stop-input"
+           >
   </div>
+  <button class="btn-add-stop" (click)="addStop()">+ Add Stop</button>
+</div>
+
+<div class="modal-actions">
+  <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+  
+  <button type="button" class="btn-submit" (click)="optimizeAndSubmit()">
+    <i class="pi pi-bolt"></i> Optimize & Create
+  </button>
 </div>

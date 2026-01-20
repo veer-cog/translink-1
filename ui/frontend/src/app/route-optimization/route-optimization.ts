@@ -74,6 +74,33 @@ export class RouteOptimization {
           this.selectedRoute = route || null; // If route exists, we are editing; otherwise, creating
           this.showModal = true; 
 }
+handleFormSubmit(formData: any) {
+  if (this.selectedRoute) {
+    // Logic for editing existing route (find by ID and update)
+    const index = this.routes.findIndex(r => r.id === this.selectedRoute?.id);
+    if (index > -1) {
+      this.routes[index] = { ...this.routes[index], ...formData };
+    }
+  } else {
+    // Logic for creating a NEW (4th) route
+    const newRoute: Route = {
+      id: `RT-00${this.routes.length + 1}`,
+      status: 'Pending',
+      optimizedPercent: Math.floor(Math.random() * 10) + 90, // Mock optimization
+      vehicleId: formData.vehicleId,
+      costUSD: 150,
+      totalDistanceMiles: 300,
+      estimatedTime: '6h 00m',
+      shipmentsAssigned: 2,
+      stops: formData.stops
+    };
+    
+    // This adds the 4th route to your list
+    this.routes = [...this.routes, newRoute];
+  }
+  
+  this.closeModal();
+}
       }
 
 

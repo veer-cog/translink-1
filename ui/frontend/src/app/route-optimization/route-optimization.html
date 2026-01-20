@@ -33,4 +33,11 @@
 </div>
 
 
-<app-route-form *ngIf="showModal" (close)="closeModal()"></app-route-form>
+<!-- <app-route-form *ngIf="showModal" (close)="closeModal()"></app-route-form> -->
+
+<app-route-form 
+  *ngIf="showModal" 
+  [routeData]="selectedRoute"
+  (submitted)="handleFormSubmit($event)"
+  (close)="closeModal()">
+</app-route-form>
