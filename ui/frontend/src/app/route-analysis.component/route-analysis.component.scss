@@ -1,0 +1,296 @@
+// 1. Core Variables
+$primary-blue: #2563eb;
+$primary-vibrant: #3b82f6;
+$success-green: #10b981;
+$error-red: #ef4444;
+$text-main: #0f172a;
+$text-muted: #64748b;
+$bg-light: #f8fafc;
+$white: #ffffff;
+$border-color: #e2e8f0;
+
+// 2. Page Container
+.page-container {
+    padding: 1.5rem 2rem;
+    background-color: $bg-light;
+    min-height: 100vh;
+}
+
+// 3. Header Styling
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    .breadcrumb-nav {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        color: $text-muted;
+        cursor: pointer;
+        
+        a { 
+            color: $primary-blue; 
+            text-decoration: none; 
+            font-weight: 500;
+            &:hover { text-decoration: underline; } 
+        }
+    }
+
+    .title-with-badge {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        
+        h1 { 
+            margin: 0; 
+            font-size: 1.85rem; 
+            font-weight: 800; 
+            color: $text-main;
+            letter-spacing: -0.02em;
+        }
+    }
+
+    .sub-text {
+        font-size: 0.95rem;
+        color: $text-muted;
+        margin-top: 0.5rem;
+    }
+}
+
+// 4. Action Buttons
+.action-area {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: $white;
+    border: 1px solid $border-color;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: $text-main;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: $bg-light;
+        border-color: darken($border-color, 10%);
+    }
+}
+
+.add-btn-vibrant {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+    padding: 0 1.5rem;
+    background: linear-gradient(135deg, $primary-blue 0%, $primary-vibrant 100%);
+    color: $white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba($primary-blue, 0.25);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba($primary-blue, 0.35);
+        filter: brightness(1.1);
+    }
+}
+
+// 5. Status Pills
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    &.transit { background: rgba($primary-blue, 0.1); color: $primary-blue; }
+    &.delivered { background: rgba($success-green, 0.1); color: $success-green; }
+    &.booked { background: rgba($text-muted, 0.1); color: $text-muted; }
+    &.cancelled { background: rgba($error-red, 0.1); color: $error-red; }
+}
+
+// 6. Stats Grid
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+
+    .stat-mini {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 1.25rem !important;
+        span { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        strong { font-size: 1.25rem; font-weight: 800; color: $text-main; }
+    }
+}
+
+// 7. Main Details Layout
+.main-details-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    @media (max-width: 1100px) { grid-template-columns: 1fr; }
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+// 8. Section Card Components
+.section-card {
+    background: $white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+    .card-header {
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: $text-main;
+            i { color: $primary-blue; }
+        }
+    }
+}
+
+// 12. Stop Sequence Specifics
+.timeline-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $white;
+    border: 2px solid $border-color;
+    z-index: 2;
+
+    i { font-size: 0.7rem; color: $border-color; }
+
+    &[data-status="completed"] {
+        background: $success-green;
+        border-color: $success-green;
+        i { color: $white; }
+    }
+
+    &[data-status="active"] {
+        background: $primary-blue;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 4px rgba($primary-blue, 0.15);
+        i { color: $white; }
+    }
+}
+
+.stop-entry {
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+
+    &.is-active {
+        border-color: $primary-blue;
+        background: #eff6ff;
+        box-shadow: 0 4px 12px rgba($primary-blue, 0.08);
+    }
+
+    .loc-row {
+        display: flex;
+        justify-content: space-between;
+        strong { font-size: 0.95rem; color: $text-main; }
+        .stop-time { color: $primary-blue; font-weight: 700; font-size: 0.85rem; }
+    }
+
+    .meta-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        .stop-type { color: $text-muted; text-transform: uppercase; }
+        .status-indicator {
+            &[data-status="completed"] { color: $success-green; }
+            &[data-status="active"] { color: $primary-blue; }
+        }
+    }
+}
+
+// Generic Table Style
+.custom-table {
+    th {
+        background: $bg-light !important;
+        color: $text-muted !important;
+        font-size: 0.75rem !important;
+        text-transform: uppercase;
+        padding: 1rem !important;
+    }
+    td { padding: 1rem !important; font-size: 0.9rem; }
+}
+
+// Color Utility
+.color-primary { color: $primary-blue !important; }
+.color-success { color: $success-green !important; }
+
+// Cost Breakdown
+.cost-grid {
+    .cost-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.95rem;
+        color: $text-main;
+        span { color: $text-muted; }
+        &.total {
+            border-bottom: none;
+            margin-top: 1rem;
+            padding: 1.25rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            span { font-weight: 700; color: $text-main; }
+            strong { font-size: 1.1rem; color: $primary-blue; }
+        }
+    }
+}
+
+// Info Panel Details
+.info-panel {
+    h4 { font-size: 0.9rem; text-transform: uppercase; color: $text-muted; margin-bottom: 1.25rem; }
+    .asset-details p { margin: 0.75rem 0; font-size: 0.95rem; }
+    .link-text { color: $primary-blue; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+}
+
+.compliance-list .compliance-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f5f9;
+}

@@ -1,90 +1,81 @@
-  <p-card styleClass="route-plan-card">
+<p-card styleClass="route-plan-card">
   <div class="card-title-header" *ngIf="showHeader">
     <h2>Route Plans</h2>
   </div>
-    <div class="route-header">
-      <div class="left-block">
-        <div class="top-row">
-          <h4>{{ route.id }}</h4>
-          <p-tag [severity]="statusSeverity" [value]="route.status"></p-tag>
-          <div class="optimized-badge">
-            <span class="dot"></span>
-            {{ route.optimizedPercent }}% Optimized
-          </div>
+  <div class="route-header">
+    <div class="left-block">
+      <div class="top-row">
+        <h4>{{ route.id }}</h4>
+        <p-tag [severity]="statusSeverity" [value]="route.status"></p-tag>
+        <div class="optimized-badge">
+          <span class="dot"></span>
+          {{ route.optimizedPercent }}% Optimized
         </div>
-        <div class="vehicle">Vehicle: <strong>{{ route.vehicleId }}</strong></div>
       </div>
-
-      <div class="right-block">
-        <div class="cost-label">Estimated Cost</div>
-        <div class="cost">${{ route.costUSD }}</div>
-      </div>
+      <div class="vehicle">Vehicle: <strong>{{ route.vehicleId }}</strong></div>
     </div>
 
-    <div class="timeline-container">
-      <p-timeline [value]="route.stops" align="left">
-        <ng-template pTemplate="marker" let-stop>
-          <span
-            class="custom-marker"
-            [style.backgroundColor]="stop.type === 'start' ? '#22C55E' : (stop.type === 'end' ? '#EF4444' : '#3B82F6')">
+    <div class="right-block">
+      <div class="cost-label">Estimated Cost</div>
+      <div class="cost">${{ route.costUSD }}</div>
+    </div>
+  </div>
+
+  <div class="timeline-container">
+    <p-timeline [value]="route.stops" align="left">
+      <ng-template pTemplate="marker" let-stop>
+        <span class="custom-marker"
+          [style.backgroundColor]="stop.type === 'start' ? '#22C55E' : (stop.type === 'end' ? '#EF4444' : '#3B82F6')">
+        </span>
+      </ng-template>
+
+      <ng-template let-stop pTemplate="content">
+        <div class="stop-content">
+          <span class="city">{{ stop.city }}, {{ stop.state }}</span>
+          <span class="type-label">
+            {{ stop.type === 'start' ? 'Starting point' : stop.type === 'end' ? 'Final destination' : 'Stop' }}
           </span>
-        </ng-template>
+        </div>
+      </ng-template>
+    </p-timeline>
+  </div>
 
-        <ng-template let-stop pTemplate="content">
-          <div class="stop-content">
-            <span class="city">{{ stop.city }}, {{ stop.state }}</span>
-            <span class="type-label">
-              {{ stop.type === 'start' ? 'Starting point' : stop.type === 'end' ? 'Final destination' : 'Stop' }}
-            </span>
-          </div>
-        </ng-template>
-      </p-timeline>
+  <p-divider></p-divider>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <span class="label">Total Distance</span>
+      <span class="value">{{ route.totalDistanceMiles }} miles</span>
     </div>
+    <div class="meta-item">
+      <span class="label">Estimated Time</span>
+      <span class="value">{{ route.estimatedTime }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Shipments</span>
+      <span class="value">{{ route.shipmentsAssigned }} assigned</span>
+    </div>
+  </div>
 
+
+  <p-card styleClass="route-plan-card">
     <p-divider></p-divider>
 
-    <div class="meta-row">
-      <div class="meta-item">
-        <span class="label">Total Distance</span>
-        <span class="value">{{ route.totalDistanceMiles }} miles</span>
-      </div>
-      <div class="meta-item">
-        <span class="label">Estimated Time</span>
-        <span class="value">{{ route.estimatedTime }}</span>
-      </div>
-      <div class="meta-item">
-        <span class="label">Shipments</span>
-        <span class="value">{{ route.shipmentsAssigned }} assigned</span>
-      </div>
+    <div class="actions">
+      <button *ngIf="route.status === 'Pending'" pButton label="Start Route" icon="pi pi-play" class="p-button-primary"
+        (click)="startRoute()">
+      </button>
+
+      <button pButton label="View Analysis" icon="pi pi-chart-bar" class="p-button-info p-button-outlined"
+        (click)="onViewAnalysis()">
+      </button>
+
+      <button pButton label="View on Map" icon="pi pi-map" class="p-button-secondary p-button-outlined"
+        (click)="viewOnMap()">
+      </button>
+
+      <button pButton label="Edit Route" icon="pi pi-pencil" class="p-button-secondary p-button-outlined"
+        (click)="onEditClick()">
+      </button>
     </div>
-
-    
-    <p-card styleClass="route-plan-card">
-
-  <div class="actions">
-    <button 
-      *ngIf="route.status === 'Pending'" 
-      pButton 
-      label="Start Route" 
-      icon="pi pi-play" 
-      class="p-button-primary" 
-      (click)="startRoute()">
-    </button>
-
-    <button 
-      pButton 
-      label="View on Map" 
-      icon="pi pi-map"
-      class="p-button-secondary p-button-outlined" 
-      (click)="viewOnMap()">
-    </button>
-
-    <button 
-      pButton 
-      label="Edit Route" 
-      icon="pi pi-pencil"
-      class="p-button-secondary p-button-outlined" 
-      (click)="onEditClick()">
-    </button>
-  </div>
-</p-card>
+  </p-card>

@@ -1,0 +1,115 @@
+<div class="page-container">
+    <header class="page-header">
+        <div class="header-info">
+            <nav class="breadcrumb-nav">System / Activity Logs</nav>
+            <div class="title-with-badge">
+                <h1>Audit Activity Logs</h1>
+                <span class="status-pill transit live-pulse">Live Feed</span>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <div class="search-wrapper">
+                <i class="pi pi-search"></i>
+                <input type="text" pInputText (input)="onSearch($event)" placeholder="Global Search..."
+                    class="search-field" />
+            </div>
+            <button class="btn-secondary" (click)="dt.reset()"><i class="pi pi-filter-slash"></i> Reset</button>
+            <button class="add-btn-vibrant" (click)="exportCSV()">
+                <i class="pi pi-file-excel"></i> Export CSV
+            </button>
+        </div>
+    </header>
+
+    <div class="main-details-layout">
+        <section class="section-card no-padding">
+            <p-table #dt [value]="logs" [paginator]="true" [rows]="10"
+                [globalFilterFields]="['entityId', 'activity', 'performedBy', 'entityType']"
+                styleClass="custom-table activity-grid" [rowsPerPageOptions]="[5, 10, 20]"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="timestamp" style="width: 18%">
+                            <div class="flex-align">
+                                Timestamp <p-sortIcon field="timestamp"></p-sortIcon>
+                                <p-columnFilter type="date" field="timestamp" display="menu"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="width: 15%">
+                            <div class="flex-align">
+                                Source
+                                <p-columnFilter type="text" field="entityType" display="menu" [showMatchModes]="false"
+                                    [showOperator]="false" [showAddButton]="false"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="width: 15%">Reference ID</th>
+                        <th style="width: 25%">Activity Details</th>
+                        <th style="width: 15%">
+                            <div class="flex-align">
+                                Operator
+                                <p-columnFilter type="text" field="performedBy" display="menu" [showMatchModes]="false"
+                                    [showOperator]="false" [showAddButton]="false"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="width: 12%">
+                            <div class="flex-align">
+                                Status
+                                <p-columnFilter field="severity" matchMode="equals" display="menu"
+                                    [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-select [ngModel]="value" [options]="statuses"
+                                            (onChange)="filter($event.value)" placeholder="Any" [showClear]="true">
+                                            <ng-template let-option pTemplate="item">
+                                                <span class="status-pill"
+                                                    [ngClass]="getSeverityTag(option.value)">{{option.label}}</span>
+                                            </ng-template>
+                                        </p-select>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-log>
+                    <tr class="log-row">
+                        <td class="time-cell">
+                            <div class="date">{{ log.timestamp | date:'MMM dd, yyyy' }}</div>
+                            <div class="time">{{ log.timestamp | date:'hh:mm a' }}</div>
+                        </td>
+                        <td>
+                            <div class="entity-type-badge" [attr.data-type]="log.entityType">
+                                <i class="pi" [ngClass]="getEntityIcon(log.entityType)"></i>
+                                <span>{{ log.entityType }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="ref-id clickable" (click)="navigateToEntity(log.entityType, log.entityId)">
+                                {{ log.entityId }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="activity-desc">
+                                <span class="dot-indicator" [attr.data-severity]="log.severity"></span>
+                                <span class="text">{{ log.activity }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-chip">
+                                <div class="user-avatar">{{ log.performedBy.charAt(0).toUpperCase() }}</div>
+                                <span class="user-name">{{ log.performedBy }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-pill" [ngClass]="getSeverityTag(log.severity)">
+                                {{ log.severity }}
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </section>
+    </div>
+</div>

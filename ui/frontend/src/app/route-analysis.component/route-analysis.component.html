@@ -1,0 +1,138 @@
+<div class="page-container">
+    <header class="page-header">
+        <div class="header-info">
+            <nav class="breadcrumb-nav">
+                <a (click)="goBack()">Routes</a> / Analysis
+            </nav>
+            <div class="title-with-badge">
+                <h1>Route #{{ routeDetail.id }}</h1>
+                <span class="status-pill transit">{{ routeDetail.status }}</span>
+            </div>
+            <p class="sub-text">
+                Assigned to <strong>{{ routeDetail.vehicleId }}</strong> • Driver: {{ routeDetail.driver }}
+            </p>
+        </div>
+
+        <div class="action-area">
+            <button class="btn-secondary"><i class="pi pi-print"></i> Export Manifest</button>
+            <button class="add-btn-vibrant"><i class="pi pi-bolt"></i> Re-Optimize</button>
+        </div>
+    </header>
+
+    <div class="stats-grid">
+        <div class="section-card stat-mini">
+            <span class="text-muted">Efficiency</span>
+            <strong>{{ routeDetail.efficiency }}</strong>
+        </div>
+        <div class="section-card stat-mini">
+            <span class="text-muted">Total Distance</span>
+            <strong>{{ routeDetail.totalDistance }}</strong>
+        </div>
+        <div class="section-card stat-mini">
+            <span class="text-muted">Est. Time</span>
+            <strong>{{ routeDetail.estTime }}</strong>
+        </div>
+        <div class="section-card stat-mini">
+            <span class="text-muted">Route Cost</span>
+            <strong class="color-primary">{{ routeDetail.cost }}</strong>
+        </div>
+    </div>
+
+    <div class="main-details-layout">
+
+        <div class="left-column">
+
+            <section class="section-card">
+                <div class="card-header">
+                    <h4><i class="pi pi-map-marker"></i> Stop Sequence</h4>
+                    <span class="status-pill booked">{{ routeDetail.stops.length }} Total Stops</span>
+                </div>
+
+                <div class="timeline-wrapper alternate-layout">
+                    <p-timeline [value]="routeDetail.stops" align="alternate" styleClass="zigzag-timeline">
+                        <ng-template pTemplate="marker" let-stop>
+                            <div class="timeline-dot" [attr.data-status]="stop.status">
+                                <i class="pi"
+                                    [ngClass]="stop.status === 'completed' ? 'pi-check' : 'pi-circle-fill'"></i>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="content" let-stop>
+                            <div class="stop-entry" [ngClass]="{'is-active': stop.status === 'active'}">
+                                <div class="stop-details">
+                                    <div class="loc-row">
+                                        <strong>{{ stop.city }}, {{ stop.state }}</strong>
+                                        <span class="stop-time">{{ stop.time }}</span>
+                                    </div>
+                                    <div class="meta-row">
+                                        <span class="stop-type">{{ stop.type }}</span>
+                                        <span class="status-indicator" [attr.data-status]="stop.status">
+                                            {{ stop.status }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-arrow"></div>
+                            </div>
+                        </ng-template>
+                    </p-timeline>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <div class="card-header">
+                    <h4><i class="pi pi-box"></i> Assigned Shipments</h4>
+                </div>
+                <p-table [value]="routeDetail.shipments" styleClass="custom-table">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Shipment ID</th>
+                            <th>Customer</th>
+                            <th>Weight</th>
+                            <th>Priority</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-shipment>
+                        <tr>
+                            <td><strong class="color-primary">{{ shipment.id }}</strong></td>
+                            <td>{{ shipment.customer }}</td>
+                            <td>{{ shipment.weight }}</td>
+                            <td>
+                                <span class="status-pill"
+                                    [ngClass]="shipment.priority === 'High' ? 'cancelled' : 'transit'">
+                                    {{ shipment.priority }}
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </section>
+        </div>
+
+        <div class="right-column">
+            <section class="section-card info-panel">
+                <h4>Asset Details</h4>
+                <div class="asset-details">
+                    <p>Vehicle ID: <strong>{{ routeDetail.vehicleId }}</strong></p>
+                    <p>Type: <strong>Heavy Duty Truck</strong></p>
+                    <p>Fuel Type: <strong>Diesel</strong></p>
+                    <a class="link-text">View Full History →</a>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <div class="card-header">
+                    <h4>Cost Breakdown</h4>
+                </div>
+                <div class="cost-grid">
+                    <div class="cost-item"><span>Fuel Estimation</span><strong>$85.00</strong></div>
+                    <div class="cost-item"><span>Driver Labor</span><strong>$45.00</strong></div>
+                    <div class="cost-item total">
+                        <span>Estimated Total</span>
+                        <strong>{{ routeDetail.cost }}</strong>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>

@@ -5,8 +5,6 @@
             <span class="brand-name">TransLink</span>
         </div>
         <div class="nav-links">
-            <a routerLink="/dashboard" class="nav-item">Dashboard</a>
-            <a routerLink="/about" class="nav-item">About</a>
             <a routerLink="/login" class="nav-item">Log in</a>
             <p-button label="Get started" routerLink="/signup" styleClass="get-started-btn"></p-button>
         </div>
@@ -24,8 +22,8 @@
     </header>
 
     <section class="carousel-container">
-        <p-carousel [value]="features" [numVisible]="3" [numScroll]="1"  [circular]="true" 
-                    [responsiveOptions]="responsiveOptions" autoplayInterval="5000">
+        <p-carousel [value]="features" [numVisible]="3" [numScroll]="1" [circular]="true"
+            [responsiveOptions]="responsiveOptions" autoplayInterval="5000">
             <ng-template let-feature pTemplate="item">
                 <div class="feature-card">
                     <div class="icon-box">

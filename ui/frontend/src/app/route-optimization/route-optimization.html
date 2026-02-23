@@ -9,23 +9,16 @@
     </button>
   </header>
 
-  <div class="stats-grid"> 
-    <app-stat-card 
-      *ngFor="let stat of stats" 
-      [label]="stat.label" 
-      [icon]="stat.icon" 
-      [value]="stat.value"
+  <div class="stats-grid">
+    <app-stat-card *ngFor="let stat of stats" [label]="stat.label" [icon]="stat.icon" [value]="stat.value"
       [color]="stat.color"></app-stat-card>
-   
+
   </div>
 
-  <div class="plan-wrapper"> 
-    <app-route-plans 
-      *ngFor="let r of routes; let i = index"
-      [route]="r"
-      [showHeader]="i === 0"
-      (edit)="openCreateModal($event)">
-    </app-route-plans> 
+  <div class="plan-wrapper">
+    <app-route-plans *ngFor="let r of routes; let i = index" [route]="r" [showHeader]="i === 0"
+      (edit)="openCreateModal($event)" (viewAnalysis)="viewAnalysis($event)">
+    </app-route-plans>
   </div>
 
 
@@ -35,9 +28,6 @@
 
 <!-- <app-route-form *ngIf="showModal" (close)="closeModal()"></app-route-form> -->
 
-<app-route-form 
-  *ngIf="showModal" 
-  [routeData]="selectedRoute"
-  (submitted)="handleFormSubmit($event)"
+<app-route-form *ngIf="showModal" [routeData]="selectedRoute" (submitted)="handleFormSubmit($event)"
   (close)="closeModal()">
 </app-route-form>

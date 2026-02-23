@@ -127,6 +127,5 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),MessageService
-
   ]
 };

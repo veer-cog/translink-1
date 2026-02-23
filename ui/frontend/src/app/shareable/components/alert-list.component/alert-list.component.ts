@@ -16,7 +16,7 @@ export interface Alert {
 })
 export class AlertListComponent {
   alerts = input.required<Alert[]>();
-
+ 
   getPriorityColor(priority: string): string {
     switch (priority) {
       case 'High': return '#ef4444';

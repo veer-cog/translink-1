@@ -3,7 +3,6 @@
     <div class="brand-header">
         <div class="logo-wrapper">
             <i class="pi pi-verified logo-icon" routerLink="/" style="cursor: pointer;"></i>
-
             <span class="brand-name">TransLink</span>
         </div>
     </div>
@@ -24,7 +23,7 @@
             <div class="form-row">
                 <div class="input-group">
                     <label class="field-label">First Name</label>
-                    <input pInputText formControlName="firstName" class="custom-input" placeholder="John"
+                    <input pInputText formControlName="firstName" class="custom-input" placeholder="Enter Name"
                         [ngClass]="{'error-state': isInvalid('firstName')}">
                     <div class="error-container">
                         @if (isInvalid('firstName')) { <small class="error-text">First name required.</small> }
@@ -32,15 +31,13 @@
                 </div>
                 <div class="input-group">
                     <label class="field-label">Last Name</label>
-                    <input pInputText formControlName="lastName" class="custom-input" placeholder="Doe"
+                    <input pInputText formControlName="lastName" class="custom-input" placeholder="Enter Last Name"
                         [ngClass]="{'error-state': isInvalid('lastName')}">
                     <div class="error-container">
                         @if (isInvalid('lastName')) { <small class="error-text">Last name required.</small> }
                     </div>
                 </div>
             </div>
-
-
 
             <div class="form-row">
                 <div class="input-group">

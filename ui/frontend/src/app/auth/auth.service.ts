@@ -36,7 +36,7 @@ export class AuthService {
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password') || control.get('newPassword');
     const confirm = control.get('confirmPassword');
-    return password && confirm && password.value !== confirm.value ? { mismatch: true } : null;
+    return password && confirm && password.value !== confirm.value ? {  m:true } : null;
   }
 
   // --- LOGIN FLOW (Role Based) ---

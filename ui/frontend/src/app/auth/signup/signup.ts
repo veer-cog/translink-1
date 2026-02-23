@@ -11,13 +11,14 @@ import { PasswordModule } from 'primeng/password';
 import { InputOtpModule } from 'primeng/inputotp';
 import { SelectModule } from 'primeng/select';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputTextModule, ButtonModule, ToastModule, CardModule, PasswordModule, InputOtpModule, SelectModule, CheckboxModule],
+  imports: [CommonModule ,ReactiveFormsModule, RouterLink, InputTextModule, ButtonModule, ToastModule, CardModule, PasswordModule, InputOtpModule, SelectModule, CheckboxModule],
   templateUrl: './signup.html',
-  styleUrl: './signup.scss'
+  styleUrl: './signup.scss',
 })
 export class Signup implements OnInit {
   public auth = inject(AuthService);
@@ -25,6 +26,8 @@ export class Signup implements OnInit {
   
   signupForm!: FormGroup;
   otpForm!: FormGroup;
+messageService = inject(MessageService);
+  
   loading = false;
 
   roles = [
@@ -34,6 +37,7 @@ export class Signup implements OnInit {
   ];
 
   ngOnInit() {
+    this.messageService.add({ severity: 'success', summary: 'Login Successful', detail: `Welcome ${name}` });
     this.signupForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -49,6 +53,8 @@ export class Signup implements OnInit {
       otpCode: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
+
+  integer1 = 10;
 
   onSignupSubmit() {
     if (this.signupForm.invalid) {

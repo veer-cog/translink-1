@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardChartComponent } from '../shareable/components/dashboard-chart.component/dashboard-chart.component';
 import { StatCardComponent } from '../shareable/components/stat-card.component/stat-card.component';
@@ -6,6 +6,7 @@ import { Route, RoutePlans } from '../route-plans/route-plans';
 import { RouteInsights } from "../route-insights/route-insights";
 import { RouteFormComponent } from '../routeform/routeform';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-route-optimization',
@@ -14,6 +15,11 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './route-optimization.scss',
 })
 export class RouteOptimization {
+  private router = inject(Router);
+viewAnalysis(id: string) {
+  // Navigate to your detail analysis page
+  this.router.navigate(['/admin/routes/analysis', id]);
+}
 
   showModal = false;
   selectedRoute: Route | null = null;
@@ -102,6 +108,7 @@ handleFormSubmit(formData: any) {
   this.closeModal();
 }
       }
+
 
 
 

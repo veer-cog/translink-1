@@ -1,4 +1,4 @@
-import { Component, computed, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { StatCardComponent } from '../shareable/components/stat-card.component/stat-card.component';
@@ -6,6 +6,8 @@ import { GenericTableComponent, TableColumn } from '../shareable/components/gene
 import { AddVehicleComponent } from '../shareable/components/add-vehicle.component/add-vehicle.component';
 import { DetailsCardComponent } from '../shareable/components/details-card.component/details-card.component';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-fleet-management',
@@ -24,6 +26,8 @@ export class FleetManagementComponent {
 @ViewChild('addVehicleModal') addVehicleModal!: AddVehicleComponent;
   @ViewChild('detailsCard') detailsCard!: DetailsCardComponent;
 
+  private router = inject(Router);
+  private authService = inject(AuthService);
   searchQuery = signal<string>('');
   activeFilter = signal<string>('all');
 
@@ -135,8 +139,9 @@ export class FleetManagementComponent {
   }
 
   viewDetails(vehicle: any) {
-    if (this.detailsCard) {
-      this.detailsCard.show(vehicle);
-    }
+    const role = this.authService.currentUser()?.role?.toLowerCase();
+    
+    // Navigate to the dynamic route: e.g., /admin/fleet/TRK-101
+    this.router.navigate([`/${role}/fleet`, vehicle.vehicleId]);
   }
-}
+  }

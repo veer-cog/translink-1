@@ -6,7 +6,7 @@
         </div>
 
         <nav class="sidebar-nav">
-            @for (item of menuItems; track item.label) {
+            @for (item of menuItems(); track item.label) {
             <a class="nav-item" [routerLink]="item.path" routerLinkActive="active"
                 [pTooltip]="isCollapsed ? item.label : ''" tooltipPosition="right">
                 <i [class]="item.icon"></i>
@@ -16,11 +16,14 @@
         </nav>
 
         <div class="sidebar-footer">
-            <a class="nav-item" routerLink="/admin/settings" routerLinkActive="active">
+            <a class="nav-item"
+                [routerLink]="authService.currentUser()?.role === 'ADMIN' ? '/admin/settings' : '/operator/settings'"
+                routerLinkActive="active" [pTooltip]="isCollapsed ? 'Settings' : ''" tooltipPosition="right">
                 <i class="pi pi-cog"></i>
                 <span class="nav-label">Settings</span>
+
             </a>
-            <a class="nav-item logout">
+            <a class="nav-item logout" [pTooltip]="isCollapsed ? 'Logout' : ''" tooltipPosition="right">
                 <i class="pi pi-sign-out"></i>
                 <span class="nav-label">Logout</span>
             </a>
@@ -88,7 +91,10 @@
                     <span>{{authService.currentUser()?.email}} </span>
                 </div>
                 <ul class="menu-list">
-                    <li routerLink="/admin/settings"><i class="pi pi-user"></i> My Profile</li>
+                    <li
+                        [routerLink]="authService.currentUser()?.role === 'ADMIN' ? '/admin/settings' : '/operator/settings'">
+                        <i class="pi pi-user"></i> My Profile
+                    </li>
                     <li class="logout-link" (click)="onLogout()"><i class="pi pi-sign-out"></i> Sign Out</li>
                 </ul>
             </div>

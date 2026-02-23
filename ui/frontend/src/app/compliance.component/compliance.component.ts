@@ -1,8 +1,6 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-// PrimeNG 18+ Components
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -11,14 +9,10 @@ import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { MenuItem } from 'primeng/api';
-
-// Shared Components
 import { StatCardComponent } from '../shareable/components/stat-card.component/stat-card.component';
 import { TabFilterComponent } from '../shareable/components/tab-filter.component/tab-filter.component';
 import { Alert, AlertListComponent } from '../shareable/components/alert-list.component/alert-list.component';
 import { DashboardChartComponent } from '../shareable/components/dashboard-chart.component/dashboard-chart.component';
-
-// Export Libraries
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -41,8 +35,6 @@ export interface ComplianceLog {
 })
 export class ComplianceComponent {
   private fb = inject(FormBuilder);
-
-  // --- 20+ MOCK LOGS ACROSS 12 MONTHS ---
   allLogs = signal<ComplianceLog[]>([
     { id: 'LOG-001', status: 'Passed', date: '2025-01-10', type: 'Safety Inspection', vehicle: 'TRK-101', inspector: 'John Doe', notes: 'Clear', nextDue: '2025-07-10' },
     { id: 'LOG-002', status: 'Action Required', date: '2025-01-22', type: 'Emissions', vehicle: 'TRK-202', inspector: 'Sarah Smith', notes: 'High CO2', nextDue: '2025-02-10' },
@@ -266,8 +258,6 @@ exportPDF() {
       doc.text(str, 14, pageHeight - 10);
     }
   });
-
-  // 4. Save with backticks for variable evaluation
   doc.save(`compliance_logs_${dateStr}.pdf`);
 }
 private getExportDateString(): string {

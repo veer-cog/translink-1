@@ -1,0 +1,98 @@
+<div class="page-container">
+    <div class="page-header">
+        <div class="title-area">
+            <div class="breadcrumb-nav">
+                <a [routerLink]="['/', rolePath(), 'shipment']">Shipments</a> / <span>{{ shipment().id }}</span>
+            </div>
+            <div class="title-with-badge">
+                <h1>Shipment {{ shipment().id }}</h1>
+                <span class="status-pill" [ngClass]="getStatusClass(shipment().status)">{{ shipment().status }}</span>
+            </div>
+            <p class="sub-text">Customer: <strong>{{ shipment().customer }}</strong> | Priority: <strong>{{
+                    shipment().priority }}</strong></p>
+        </div>
+        <div class="action-area">
+            <button class="btn-secondary"><i class="pi pi-print"></i> Manifest</button>
+            <button class="add-btn-vibrant" (click)="openStatusModal()">
+                <i class="pi pi-check-square"></i> Update Status
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <app-stat-card label="Revenue" [value]="'$' + shipment().revenue" icon="pi pi-dollar" trend="Gross"
+            [isPositive]="true" color="#3b82f6"></app-stat-card>
+        <app-stat-card label="Net Profit" [value]="'$' + shipment().netProfit" icon="pi pi-chart-line" trend="69.5%"
+            [isPositive]="true" color="#10b981"></app-stat-card>
+        <app-stat-card label="Total Costs"
+            [value]="'$' + (shipment().fuelCost + shipment().laborCost + shipment().tollCost)" icon="pi pi-wallet"
+            trend="Expenses" [isPositive]="false" color="#ef4444"></app-stat-card>
+        <app-stat-card label="Cargo Weight" [value]="shipment().weight + ' kg'" icon="pi pi-box" trend="LTL"
+            [isPositive]="true" color="#a855f7"></app-stat-card>
+    </div>
+
+    <div class="main-details-layout">
+        <div class="left-column">
+            <app-generic-table [columns]="routeCols()" [data]="routeData()" title="Route Progress"></app-generic-table>
+
+            <div class="section-card">
+                <div class="card-header">
+                    <h4>Cost Breakdown</h4>
+                </div>
+                <div class="cost-grid">
+                    <div class="cost-item"><span>Fuel Expenses</span><strong>${{shipment().fuelCost}}</strong></div>
+                    <div class="cost-item"><span>Driver Payout</span><strong>${{shipment().laborCost}}</strong></div>
+                    <div class="cost-item"><span>Transit Tolls</span><strong>${{shipment().tollCost}}</strong></div>
+                    <div class="cost-item total"><span>Total Operating Cost</span><strong>${{shipment().fuelCost +
+                            shipment().laborCost + shipment().tollCost}}</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="section-card info-panel">
+                <h4><i class="pi pi-truck"></i> Assigned Vehicle</h4>
+                <div class="asset-details">
+                    <p>Vehicle ID: <strong>{{ shipment().vehicleId }}</strong></p>
+                    <p>Driver: <strong>{{ shipment().driverName }}</strong></p>
+                    <a [routerLink]="['/', rolePath(), 'fleet', shipment().vehicleId]" class="link-text">View Vehicle
+                        Details →</a>
+                </div>
+            </div>
+
+            <div class="section-card info-panel">
+                <h4><i class="pi pi-info-circle"></i> Shipment Info</h4>
+                <div class="compliance-list">
+                    <div class="compliance-item"><span>Date Created</span><span>{{ shipment().createdAt |
+                            date:'shortDate' }}</span></div>
+                    <div class="compliance-item"><span>Last Update</span><span>{{ shipment().updatedAt |
+                            date:'shortTime' }}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showStatusModal()) {
+<div class="modal-overlay">
+    <div class="status-modal">
+        <h3>Update Shipment Status</h3>
+        <p>Select the new state for shipment <strong>{{ shipment().id }}</strong></p>
+
+        <div class="status-options">
+            @for (opt of statusOptions; track opt.value) {
+            <label class="status-radio" [class.active]="selectedStatus() === opt.value">
+                <input type="radio" name="status" [value]="opt.value" [checked]="selectedStatus() === opt.value"
+                    (change)="selectedStatus.set(opt.value)">
+                {{ opt.label }}
+            </label>
+            }
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" (click)="showStatusModal.set(false)">Cancel</button>
+            <button class="btn-confirm" (click)="confirmStatusUpdate()">Save Changes</button>
+        </div>
+    </div>
+</div>
+}

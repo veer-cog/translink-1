@@ -1,0 +1,50 @@
+<div class="page-container">
+    <div class="page-header">
+        <div class="title-area">
+            <h1>Operator Dashboard</h1>
+            <p>Monitor real-time shipments and dispatch workflows</p>
+        </div>
+        <div class="action-area">
+            <button class="add-btn-vibrant">
+                <i class="pi pi-plus"></i> New Shipment
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <app-stat-card label="Total Vehicles" [value]="totalVehicles()" icon="pi pi-car" trend="+12%"
+            [isPositive]="true" color="#3b82f6">
+        </app-stat-card>
+
+        <app-stat-card label="Active Shipments" [value]="activeCount()" icon="pi pi-box" trend="+5%" [isPositive]="true"
+            color="#10b981">
+        </app-stat-card>
+
+        <app-stat-card label="Drivers on Duty" value="42" icon="pi pi-users" trend="-2%" [isPositive]="false"
+            color="#f59e0b">
+        </app-stat-card>
+
+        <app-stat-card label="Pending Alerts" [value]="shipments().length" icon="pi pi-bell" trend="Stable"
+            [isPositive]="true" color="#ef4444">
+        </app-stat-card>
+    </div>
+    <div class="section-card">
+        <div class="table-header">
+            <h4>Recent Shipments</h4>
+            <div class="toolbar-section">
+                <div class="search-wrapper">
+                    <i class="pi pi-search"></i>
+                    <input type="text" placeholder="Search shipments...">
+                </div>
+            </div>
+        </div>
+
+        <app-generic-table [columns]="columns()" [data]="shipments()">
+
+            <ng-template #rowActions let-row>
+                <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
+            </ng-template>
+
+        </app-generic-table>
+    </div>
+</div>

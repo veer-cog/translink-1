@@ -31,6 +31,13 @@ export class RoutePlans {
 
   @Input() route!: Route;
   @Input() showHeader=false;
+  // ... existing imports
+@Output() viewAnalysis = new EventEmitter<string>(); // Add this line
+
+// ... inside class
+onViewAnalysis() {
+  this.viewAnalysis.emit(this.route.id);
+}
  get statusSeverity(): 'success' | 'info' | 'warn' | 'danger' {
   // Use 'this.route.status' instead of just 'status'
   const currentStatus = this.route.status.toLowerCase();

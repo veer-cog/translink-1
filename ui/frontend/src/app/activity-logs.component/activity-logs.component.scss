@@ -1,0 +1,110 @@
+$primary-blue: #2563eb;
+$primary-vibrant: #3b82f6;
+$success-green: #10b981;
+$error-red: #ef4444;
+$warning-orange: #f59e0b;
+$text-main: #0f172a;
+$text-muted: #64748b;
+$bg-light: #f8fafc;
+$white: #ffffff;
+$border-color: #e2e8f0;
+
+.page-container {
+  padding: 2.5rem;
+  background-color: $bg-light;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: $text-main; letter-spacing: -0.04em; }
+}
+
+.action-area {
+  display: flex; gap: 12px;
+  .search-field {
+    height: 48px; border-radius: 12px; border: 1px solid $border-color;
+    padding-left: 3rem; width: 320px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    &:focus { border-color: $primary-blue; box-shadow: 0 0 0 4px rgba($primary-blue, 0.1); }
+  }
+}
+
+.search-wrapper {
+  position: relative;
+  i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: $text-muted; z-index: 5; }
+}
+
+.section-card {
+  background: $white; border-radius: 24px; border: 1px solid $border-color;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.custom-table {
+  ::ng-deep {
+    .p-datatable-thead > tr > th {
+      background: #fafbfc !important; color: $text-muted !important;
+      font-size: 0.75rem !important; text-transform: uppercase; padding: 1.25rem !important;
+      border-bottom: 1px solid $border-color !important;
+      .flex-align { display: flex; align-items: center; gap: 8px; }
+    }
+    .p-paginator { border: none; padding: 1.5rem; background: #fff; border-top: 1px solid $border-color; }
+    .p-select { width: 100%; border-radius: 8px; }
+  }
+
+  .log-row {
+    transition: 0.2s;
+    &:hover { background-color: #f8faff }
+    td { padding: 1.25rem !important; border-bottom: 1px solid #f8fafc; }
+    .time-cell{
+        .date{
+            font-weight: 900;
+        }
+        .time{
+            color: gray;
+        }
+    }
+  }
+
+  .ref-id.clickable {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; color: $primary-blue;
+    background: rgba($primary-blue, 0.05); padding: 5px 10px; border-radius: 8px; cursor: pointer;
+    &:hover { background: $primary-blue; color: white; }
+  }
+}
+
+.entity-type-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+  border-radius: 10px; font-size: 0.7rem; font-weight: 800;
+  &[data-type="SHIPMENT"] { background: #eff6ff; color: #1e40af; }
+  &[data-type="VEHICLE"] { background: #fff1f2; color: #be123c; }
+  &[data-type="ROUTE"] { background: #f0fdf4; color: #15803d; }
+}
+
+.user-chip {
+  display: flex; align-items: center; gap: 10px;
+  .user-avatar {
+    width: 32px; height: 32px; border-radius: 10px; background: #f1f5f9;
+    color: $primary-blue; display: flex; align-items: center; justify-content: center; font-weight: 800;
+  }
+}
+
+.status-pill {
+  padding: 6px 14px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  &.transit { background: rgba($primary-blue, 0.1); color: $primary-blue; }
+  &.booked { background: rgba($warning-orange, 0.1); color: $warning-orange; }
+  &.cancelled { background: rgba($error-red, 0.1); color: $error-red; }
+}
+
+.add-btn-vibrant {
+  background: linear-gradient(135deg, $primary-blue 0%, $primary-vibrant 100%);
+  color: white; border: none; padding: 0 1.5rem; height: 48px; border-radius: 12px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba($primary-blue, 0.3);
+}
+
+.btn-secondary {
+  background: white; border: 1px solid $border-color; height: 48px; padding: 0 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer;
+}
