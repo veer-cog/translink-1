@@ -7,7 +7,8 @@
             <p>Manage your personal profile, security, and organization preferences</p>
         </div>
         <div class="action-block">
-            <p-button label="Save Changes" icon="pi pi-check" (onClick)="saveData()" [disabled]="isSaveDisabled()">
+            <p-button label="Save Changes" icon="pi pi-check" (onClick)="saveData()" [disabled]="isSaveDisabled()"
+                [loading]="isLoading()">
             </p-button>
         </div>
     </header>
@@ -23,67 +24,72 @@
                 <div class="settings-content" [formGroup]="profileForm">
                     <div class="section-header">
                         <h3>Personal Information</h3>
-                        <p>Update your personal details and how others see you.</p>
+                        <p>Update your name and primary contact email.</p>
                     </div>
 
                     <div class="avatar-upload">
                         <div class="avatar-circle">
-                            {{ authService.currentUser()?.name?.charAt(0) || 'U' }}
+                            {{ userProfile()?.firstName?.charAt(0) || 'U' }}
                         </div>
                         <div class="upload-actions">
-                            <p-button label="Change Photo" [outlined]="true" size="small"></p-button>
-                            <span>Min 400x400px, PNG or JPG</span>
+                            <span>Profile identification is based on your account ID.</span>
                         </div>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-field">
                             <label>First Name</label>
-                            <input pInputText formControlName="firstName" />
+                            <input pInputText formControlName="firstName" placeholder="Enter first name" />
                         </div>
                         <div class="form-field">
                             <label>Last Name</label>
-                            <input pInputText formControlName="lastName" />
+                            <input pInputText formControlName="lastName" placeholder="Enter last name" />
                         </div>
                         <div class="form-field full-width">
-                            <label>Phone Number</label>
-                            <input pInputText formControlName="phone" />
-                        </div>
-                        <div class="form-field full-width">
-                            <label>Bio</label>
-                            <textarea pInputTextarea formControlName="bio" rows="4"></textarea>
+                            <label>Email Address (Primary)</label>
+                            <input pInputText formControlName="email" class="w-full opacity-70" />
                         </div>
                     </div>
                 </div>
                 }
 
-                @if (activeTab() === 'Notifications') {
-                <div class="settings-content" [formGroup]="notificationForm">
+                @if (activeTab() === 'Security') {
+                <div class="settings-content" [formGroup]="securityForm">
                     <div class="section-header">
-                        <h3>Notification Channels</h3>
-                        <p>Configure how you receive critical fleet updates.</p>
+                        <h3>Security & Access</h3>
+                        <p>Manage your password and multi-factor authentication preferences.</p>
                     </div>
-                    <div class="action-list">
-                        <div class="action-item">
-                            <div class="text">
-                                <strong>Critical Failures</strong>
-                                <p>Alerts for safety inspection failures.</p>
-                            </div>
-                            <p-toggleSwitch formControlName="criticalFailures"></p-toggleSwitch>
+
+                    <div class="form-grid mb-6">
+                        <div class="form-field full-width">
+                            <label>Current Password</label>
+                            <p-password formControlName="currentPassword" [feedback]="false" [toggleMask]="true"
+                                styleClass="w-full" inputStyleClass="w-full" placeholder="Enter current password">
+                            </p-password>
                         </div>
-                        <div class="action-item">
-                            <div class="text">
-                                <strong>Maintenance Reminders</strong>
-                                <p>Upcoming scheduled service dates.</p>
-                            </div>
-                            <p-toggleSwitch formControlName="maintenanceReminders"></p-toggleSwitch>
+                        <div class="form-field">
+                            <label>New Password</label>
+                            <p-password formControlName="newPassword" [toggleMask]="true" styleClass="w-full"
+                                inputStyleClass="w-full" placeholder="Min. 6 characters">
+                            </p-password>
                         </div>
+                        <div class="form-field">
+                            <label>Confirm New Password</label>
+                            <p-password formControlName="confirmPassword" [feedback]="false" [toggleMask]="true"
+                                styleClass="w-full" inputStyleClass="w-full" placeholder="Repeat new password">
+                            </p-password>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="action-list mt-4">
                         <div class="action-item">
                             <div class="text">
-                                <strong>Email Summaries</strong>
-                                <p>Weekly PDF summary of all logs.</p>
+                                <strong>Two-Factor Authentication (MFA)</strong>
+                                <p>Receive a security code via email whenever you log in.</p>
                             </div>
-                            <p-toggleSwitch formControlName="emailAlerts"></p-toggleSwitch>
+                            <p-toggleSwitch formControlName="mfaEnabled"></p-toggleSwitch>
                         </div>
                     </div>
                 </div>
@@ -93,74 +99,13 @@
                 <div class="settings-content" [formGroup]="orgForm">
                     <div class="section-header">
                         <h3>Organization Details</h3>
-                        <p>Configure company-wide settings and regional currency.</p>
+                        <p>View your registered company information.</p>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-field full-width">
                             <label>Company Name</label>
                             <input pInputText formControlName="companyName" class="w-full" />
-                        </div>
-
-                        <div class="form-field full-width">
-                            <label>Regional Currency</label>
-                            <p-select [options]="countries" [(ngModel)]="selectedCountry"
-                                [ngModelOptions]="{standalone: true}" optionLabel="name" [filter]="true" filterBy="name"
-                                class="w-full">
-                                <ng-template #selectedItem let-selectedOption>
-                                    <div class="flex items-center gap-3">
-                                        <img [src]="'https://flagcdn.com/w40/' + selectedOption.code.toLowerCase() + '.png'"
-                                            style="width: 20px;" />
-                                        <div class="font-medium">{{ selectedOption.currency }}</div>
-                                    </div>
-                                </ng-template>
-                                <ng-template let-country #item>
-                                    <div class="flex items-center gap-3 p-2">
-                                        <img [src]="'https://flagcdn.com/w40/' + country.code.toLowerCase() + '.png'"
-                                            style="width: 20px;" />
-                                        <div>{{ country.name }} <span class="text-muted-foreground">({{ country.currency
-                                                }})</span></div>
-                                    </div>
-                                </ng-template>
-                            </p-select>
-                        </div>
-                    </div>
-                </div>
-                }
-
-                @if (activeTab() === 'Security') {
-                <div class="settings-content">
-                    <div class="section-header">
-                        <h3>Security & Access</h3>
-                        <p>Manage your password and account security preferences.</p>
-                    </div>
-
-                    <div class="form-grid mb-6">
-                        <div class="form-field full-width">
-                            <label>Current Password</label>
-                            <p-password [feedback]="false" [toggleMask]="true" styleClass="w-full"
-                                inputStyleClass="w-full"></p-password>
-                        </div>
-                        <div class="form-field">
-                            <label>New Password</label>
-                            <p-password [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
-                        </div>
-                        <div class="form-field">
-                            <label>Confirm New Password</label>
-                            <p-password [feedback]="false" [toggleMask]="true" styleClass="w-full"
-                                inputStyleClass="w-full"></p-password>
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="action-list mt-4">
-                        <div class="action-item">
-                            <div class="text">
-                                <strong>Two-Factor Authentication</strong>
-                                <p>Add an extra layer of security to your account.</p>
-                            </div>
-                            <p-toggleSwitch></p-toggleSwitch>
                         </div>
                     </div>
                 </div>
@@ -173,25 +118,24 @@
                 <h3>Account Overview</h3>
                 <div class="stat-mini">
                     <span>Role</span>
-                    <strong class="role-highlight">{{ authService.currentUser()?.role }}</strong>
+                    <strong class="role-highlight">{{ userProfile()?.role }}</strong>
                 </div>
                 <div class="stat-mini">
                     <span>Email</span>
-                    <strong>{{ authService.currentUser()?.email }}</strong>
+                    <strong>{{ userProfile()?.email }}</strong>
                 </div>
                 <div class="stat-mini">
-                    <span>Joined</span>
-                    <strong>Jan 2026</strong>
+                    <span>Organization</span>
+                    <strong>{{ userProfile()?.companyName }}</strong>
                 </div>
             </div>
 
             <div class="content-card activity-card mt-4">
-                <h3>Recent Activity</h3>
-                <ul class="activity-feed">
-                    <li><i class="pi pi-pencil"></i> Updated Profile Info</li>
-                    <li><i class="pi pi-bell"></i> Changed Notification Settings</li>
-                    <li><i class="pi pi-building"></i> Edited Org Details</li>
-                </ul>
+                <h3>System Identity</h3>
+                <div class="user-id-badge">
+                    <small>Unique Identifier</small>
+                    <code>{{ userProfile()?.id }}</code>
+                </div>
             </div>
         </div>
     </div>

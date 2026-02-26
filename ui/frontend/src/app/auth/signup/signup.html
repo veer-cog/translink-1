@@ -111,7 +111,7 @@
 
             <div class="form-footer">
                 <p>Didn't receive a code?
-                    <a (click)="auth.resendOtp()" class="footer-link bold" style="cursor: pointer;">Resend</a>
+                    <a (click)="auth.resendOtp(signupForm.get('email')?.value, signupForm.get('firstName')?.value)" class="footer-link bold" style="cursor: pointer;">Resend</a>
                 </p>
                 <a (click)="backToSignup()" class="footer-link small-text">Back to Signup</a>
             </div>

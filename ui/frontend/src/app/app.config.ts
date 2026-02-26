@@ -7,6 +7,8 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { definePreset } from '@primeuix/themes';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -118,6 +120,10 @@ const MyDashboardPreset = definePreset(Aura, {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideHttpClient(
+      withFetch(), // Fixes the NG02801 warning
+      withInterceptors([authInterceptor]) // Fixes the 401 Unauthorized error
+    ),
     provideRouter(routes), provideClientHydration(withEventReplay()),
     providePrimeNG({
       theme: {

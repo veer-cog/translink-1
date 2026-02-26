@@ -1,7 +1,6 @@
 :host ::ng-deep {
-    /* --- MASTER LAYOUT & BACKGROUND --- */
+    /* --- THEME SETUP --- */
     .login-container {
-        
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -18,7 +17,6 @@
         .logo-wrapper {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 0.75rem;
             color: #ffffff;
             .logo-icon { font-size: 2rem; color: #3b82f6; }
@@ -26,30 +24,45 @@
         }
     }
 
-    /* --- AUTH CARD --- */
+    /* --- CARD --- */
     .login-card {
         width: 100%;
-        max-width: 500px;
-        border-radius: 12px;
-        background-color: #ffffff;
+        max-width: 480px;
         border: none;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         
+        .p-card {
+            border-radius: 12px;
+            background-color: #ffffff;
+            border: none;
+        }
         .p-card-body { padding: 2.5rem; }
     }
 
     .card-header {
         text-align: left;
         margin-bottom: 2rem;
+        
+        .logo-icon-display {
+            font-size: 2.5rem;
+            color: #2563eb;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
         h2 { font-weight: 800; font-size: 1.85rem; color: #0f172a; margin: 0; }
-        p { margin-top: 0.5rem; font-size: 1rem; color: #64748b; }
+        p { margin-top: 0.5rem; font-size: 1rem; color: #64748b; line-height: 1.5; }
     }
 
-    /* --- INPUT GROUPS & LABEL ROW --- */
+    /* --- INPUTS & FORMS --- */
     .input-group {
-        flex: 1;
-        width: 100%;
         margin-bottom: 0.25rem;
+        width: 100%;
+
+        .label-row-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
         .field-label {
             display: block;
@@ -58,92 +71,161 @@
             font-weight: 600;
             color: #334155;
         }
-
-        /* --- FORGOT PASSWORD ROW --- */
-        .label-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-
-            .field-label { margin-bottom: 0; } // Reset margin when in row
-        }
-
-        .forgot-link {
-            font-size: 0.85rem;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 600;
-            &:hover { text-decoration: underline; }
-        }
     }
 
-    .form-row {
-        display: flex;
-        gap: 1.25rem;
-        align-items: flex-start;
-        @media (max-width: 576px) { flex-direction: column; gap: 0; }
-    }
-
-    /* --- INPUT STYLING --- */
-    .custom-input, .p-inputtext, .p-dropdown, .p-password input {
+    /* Shared Styles for standard inputs and p-password inner input */
+    .custom-input, 
+    .p-inputtext,
+    .p-password input {
         width: 100%;
-        height: 48px;
+        height: 50px;
         background-color: #f8fafc;
         border: 1px solid #cbd5e1;
         border-radius: 8px;
         padding: 0 1rem;
         font-size: 1rem;
-        transition: all 0.2s ease;
+        transition: all 0.2s;
+        box-sizing: border-box;
 
-        &:enabled:focus {
-            background-color: #fff;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 1px #3b82f6;
+        &:enabled:focus, &:focus {
+            background-color: #ffffff !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 1px #3b82f6 !important;
             outline: none;
         }
     }
 
-    /* --- ANTI-JUMP ERROR BOX --- */
+    .p-password {
+        display: block;
+        width: 100%;
+    }
+
+    /* --- ERROR STATES --- */
     .error-container {
         min-height: 22px; 
         margin-top: 4px;
+        display: flex;
+        align-items: center;
     }
 
-    .error-text { color: #ef4444; font-size: 0.85rem; font-weight: 500; }
+    .error-text {
+        color: #ef4444;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
 
-    /* --- ERROR STATE --- */
-    .error-state, .ng-invalid.ng-dirty:not(form) {
-        .custom-input, .p-inputtext, .p-dropdown, .p-password input {
-            border-color: #ef4444 !important;
-            background-color: #fff1f2 !important;
-            color: #ef4444 !important;
-            &::placeholder { color: #fca5a5; }
+    /* Applies red tint to both standard and PrimeNG password inputs */
+    .error-state {
+        border-color: #ef4444 !important;
+        background-color: #fff1f2 !important;
+        color: #ef4444 !important;
+        &::placeholder { color: #fca5a5; }
+    }
+
+    /* --- OTP STYLING FIXES --- */
+    .otp-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .p-inputotp {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .otp-wrapper {
+        display: flex;
+        justify-content: center;
+        margin: 1.5rem 0 2rem;
+        width: 100%;
+    }
+
+    .custom-otp-input {
+        width: 48px !important;
+        height: 56px !important;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border: 2px solid #cbd5e1;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin: 0 5px;
+        text-align: center;
+        transition: all 0.2s;
+
+        &:focus {
+            border-color: #2563eb !important;
+            background: #ffffff !important;
+            outline: none;
+            box-shadow: 0 0 0 1px #2563eb;
         }
+    }
+
+    .otp-separator {
+        display: flex;
+        align-items: center;
+        color: #94a3b8;
+        padding: 0 5px;
     }
 
     /* --- BUTTONS & FOOTER --- */
-    .login-button-wrapper {
-        margin-top: 1rem;
-        .custom-btn {
-            width: 100%;
-            height: 52px;
-            background-color: #2563eb;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            &:hover { background-color: #1d4ed8; }
-        }
+    .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+        color: #475569;
+        label { cursor: pointer; }
     }
 
-    .form-footer {
+    .login-button-wrapper { width: 100%; }
+
+    .custom-btn {
+        width: 100% !important;
+        height: 52px !important;
+        background-color: #2563eb !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #ffffff;
+        &:hover { background-color: #1d4ed8 !important; }
+        &:disabled { opacity: 0.6; }
+    }
+
+    .otp-footer, .form-footer {
         text-align: center;
         margin-top: 2rem;
         color: #64748b;
+        font-size: 0.95rem;
+
         .footer-link {
-            color: #2563eb;
             text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
             &.bold { font-weight: 700; }
+            &.small-text { font-size: 0.85rem; }
+            &:hover { text-decoration: underline; }
         }
     }
+
+    .back-navigation {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .animate-fade {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }

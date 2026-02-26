@@ -1,125 +1,168 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { AbstractControl, ValidationErrors, FormBuilder } from '@angular/forms';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, of, Observable } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode';
 
-export type UserRole = 'ADMIN' | 'OPERATOR' | 'CLIENT' | null;
+export type UserRole = 'ADMIN' | 'OPERATOR' | null;
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface DecodedToken {
+  sub: string;
+  role: UserRole;
+  companyId: string;
+  userId: string;
+  exp: number;
+}
+
+export interface LoginResponse {
+  status: 'SUCCESS' | 'MFA_REQUIRED' | 'MUST_RESET_PASSWORD';
+  token?: string;
+  email?: string;
+}
+
+export interface AuthResponse {
+  token?: string;
+  message?: string;
+  status?: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
+  private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
-  private messageService = inject(MessageService);
-  private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
+  public messageService = inject(MessageService);
 
-  // --- MOCK DATA ---
-  private readonly MOCK_OTP = '123456';
+  private readonly API_BASE = 'http://localhost:8080/auth';
 
-  // --- STATE MANAGEMENT ---
-  currentUser = signal<{ email: string; role: UserRole; name: string } | null>(null);
+  // --- STATE ---
+  currentUser = signal<{ 
+    email: string; 
+    role: UserRole; 
+    companyId?: string; 
+    userId?: string;
+    name?: string; 
+  } | null>(null);
+
   public showOtp$ = new BehaviorSubject<boolean>(false);
 
-  // --- HELPER METHODS ---
-  private getRedirectPath(role: UserRole): string {
-    switch (role) {
-      case 'ADMIN': return '/admin/dashboard';
-      case 'OPERATOR': return '/operator/dashboard';
-      case 'CLIENT': return '/client/dashboard';
-      default: return '/login';
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.restoreSession();
     }
   }
 
-  // Shared validator for Signup and Forgot Password
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password') || control.get('newPassword');
-    const confirm = control.get('confirmPassword');
-    return password && confirm && password.value !== confirm.value ? {  m:true } : null;
-  }
+  // --- AUTH METHODS ---
 
-  // --- LOGIN FLOW (Role Based) ---
-  validateLogin(credentials: any): void {
-    const { email, password } = credentials;
-    let role: UserRole = null;
-    let name = '';
-
-    // Credential check logic
-    if (email === 'admin@gmail.com' && password === 'admin@1234') {
-      role = 'ADMIN';
-      name = 'System Administrator';
-    } else if (email === 'manager@gmail.com' && password === 'manager@1234') {
-      role = 'OPERATOR';
-      name = 'Fleet Manager';
-    } else if (email === 'client@gmail.com' && password === 'client@1234') {
-      role = 'CLIENT';
-      name = 'Logistics Client';
-    }
-
-    if (role) {
-      this.currentUser.set({ email, role, name });
-      this.messageService.add({ severity: 'success', summary: 'Login Successful', detail: `Welcome ${name}` });
-      this.router.navigate([this.getRedirectPath(role)]);
-    } else {
-      this.messageService.add({ severity: 'error', summary: 'Login Failed', detail: 'Invalid credentials' });
-    }
-  }
-
-  // --- SIGNUP FLOW ---
-  signup(formData: any): Observable<boolean> {
-    // In a real app, you'd send formData to the server here
-    return of(true).pipe(
-      delay(1000),
-      tap(() => {
-        this.messageService.add({ severity: 'info', summary: 'OTP Sent', detail: 'Please check your email.' });
-        this.showOtp$.next(true); // Switch signup component to OTP view
-      })
-    );
-  }
-
-  // --- FORGOT PASSWORD & RESET FLOW ---
-  requestPasswordReset(email: string): Observable<boolean> {
-    return of(true).pipe(
-      delay(1000),
-      tap(() => {
-        this.messageService.add({ severity: 'success', summary: 'OTP Sent', detail: `Code sent to ${email}` });
-      })
-    );
-  }
-
-  verifyOtp(otp: string): Observable<boolean> {
-    const isValid = otp === this.MOCK_OTP;
-    return of(isValid).pipe(
-      delay(800),
-      tap((valid) => {
-        if (valid) {
-          this.messageService.add({ severity: 'success', summary: 'Verified', detail: 'Code accepted.' });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Invalid Code', detail: 'The OTP is incorrect.' });
+  validateLogin(credentials: any): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_BASE}/login`, credentials).pipe(
+      tap((res: LoginResponse) => {
+        if (res.status === 'SUCCESS' && res.token) {
+          this.handleAuthSuccess(res.token);
+        } else if (res.status === 'MFA_REQUIRED') {
+          this.showOtp$.next(true); 
+        } else if (res.status === 'MUST_RESET_PASSWORD') {
+          this.router.navigate(['/auth/reset-password'], { 
+            queryParams: { email: res.email, type: 'forced' } 
+          });
         }
       })
     );
   }
 
-  resetPassword(password: string): Observable<boolean> {
-    return of(true).pipe(
-      delay(1000),
-      tap(() => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Password updated.' });
-        this.showOtp$.next(false);
-        this.router.navigate(['/login']);
+  verifyOtp(email: string, code: string, purpose: 'LOGIN_MFA' | 'REGISTRATION' | 'FORGOT_PASSWORD'): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_BASE}/verify-otp`, { email, code, purpose }).pipe(
+      tap((res: AuthResponse) => {
+        if (res.token && (purpose === 'LOGIN_MFA' || purpose === 'REGISTRATION')) {
+          this.showOtp$.next(false);
+          this.handleAuthSuccess(res.token);
+        }
       })
     );
   }
 
-  resendOtp() {
-    this.messageService.add({ severity: 'info', summary: 'Resent', detail: 'A new code has been sent.' });
+  signup(formData: any): Observable<string> {
+    return this.http.post(`${this.API_BASE}/register`, formData, { responseType: 'text' });
   }
 
-  logout() {
+  resendOtp(email: string, purpose: string): Observable<string> {
+    return this.http.post(`${this.API_BASE}/resend-otp`, { email, purpose }, { responseType: 'text' });
+  }
+
+  initiateForgotPassword(email: string): Observable<string> {
+    return this.http.post(`${this.API_BASE}/forgot-password`, { email }, { responseType: 'text' });
+  }
+
+  resetPassword(email: string, newPassword: string): Observable<string> {
+    return this.http.post(`${this.API_BASE}/reset-password`, { email, newPassword }, { responseType: 'text' });
+  }
+
+  changePassword(payload: any): Observable<string> {
+    return this.http.post(`${this.API_BASE}/change-password`, payload, { responseType: 'text' });
+  }
+
+  // --- SESSION LOGIC (FIXED ACCESS MODIFIERS) ---
+
+  /**
+   * Changed to public so it can be accessed by the constructor or other components
+   */
+  public restoreSession() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = this.decodeAndSetUser(token);
+      if (decoded && decoded.exp * 1000 < Date.now()) {
+        this.logout();
+      }
+    }
+  }
+
+  public handleAuthSuccess(token: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      
+      localStorage.setItem('token', token);
+    }
+    const decoded = this.decodeAndSetUser(token);
+    if (decoded) {
+      const targetRoute = decoded.role === 'ADMIN' ? '/admin/dashboard' : '/operator/dashboard';
+      this.router.navigate([targetRoute]);
+    }
+  }
+
+  private decodeAndSetUser(token: string): DecodedToken | null {
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      this.currentUser.set({
+        email: decoded.sub,
+        role: decoded.role,
+        companyId: decoded.companyId,
+        userId: decoded.userId,
+        name: decoded.sub.split('@')[0]
+      });
+      return decoded;
+    } catch (e) {
+      this.logout();
+      return null;
+    }
+  }
+
+  public logout() {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+    }
     this.currentUser.set(null);
     this.showOtp$.next(false);
     this.router.navigate(['/login']);
+  }
+
+  // --- VALIDATORS ---
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password') || control.get('newPassword');
+    const confirm = control.get('confirmPassword');
+    return password && confirm && password.value !== confirm.value ? { mismatch: true } : null;
   }
 }

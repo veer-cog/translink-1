@@ -61,16 +61,16 @@
 
         @if (isEditMode()) {
         <div class="divider"></div>
-        <div class="status-toggle-card" [class.inactive-bg]="!userForm.value.isActive">
+        <div class="status-toggle-card" [class.inactive-bg]="!userForm.value.active">
             <div class="status-info">
                 <label>Account Status</label>
-                <p>{{ userForm.value.isActive ? 'User has full access' : 'Access is currently revoked' }}</p>
+                <p>{{ userForm.value.active ? 'User has full access' : 'Access is currently revoked' }}</p>
             </div>
             <div class="toggle-wrapper">
-                <span [style.color]="userForm.value.isActive ? '#22c55e' : '#ef4444'" class="status-label">
-                    {{ userForm.value.isActive ? 'Active' : 'Inactive' }}
+                <span [style.color]="userForm.value.active ? '#22c55e' : '#ef4444'" class="status-label">
+                    {{ userForm.value.active ? 'Active' : 'Inactive' }}
                 </span>
-                <p-toggleswitch formControlName="isActive"></p-toggleswitch>
+                <p-toggleswitch formControlName="active"></p-toggleswitch>
             </div>
         </div>
         }

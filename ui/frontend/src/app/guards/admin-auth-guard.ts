@@ -1,29 +1,32 @@
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
-import { MessageService } from 'primeng/api';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common'; // Add isPlatformServer
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  const messageService = inject(MessageService);
+  const platformId = inject(PLATFORM_ID);
 
-  const user = authService.currentUser();
-
-  // 1. Check if user is logged in
-  // 2. Check if the role is exactly 'ADMIN'
-  if (user && user.role === 'ADMIN') {
-    return true;
+  // 1. IF RUNNING ON SERVER:
+  // Allow the server to render the page. The browser will perform 
+  // the real check once the JS loads and accesses localStorage.
+  if (isPlatformServer(platformId)) {
+    return true; 
   }
 
-  console.log(user);
+  // 2. IF RUNNING IN BROWSER:
+  if (isPlatformBrowser(platformId)) {
+    const token = localStorage.getItem('token');
+    
+    if (token && !authService.currentUser()) {
+      authService.restoreSession();
+    }
 
-  // If not admin, show error and redirect
-  messageService.add({ 
-    severity: 'error', 
-    summary: 'Access Denied', 
-    detail: 'You do not have administrative privileges.' 
-  });
-  
+    if (authService.currentUser()?.role === 'ADMIN') {
+      return true;
+    }
+  }
+
   return router.parseUrl('/login');
 };

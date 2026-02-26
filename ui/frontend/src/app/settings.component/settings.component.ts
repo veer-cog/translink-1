@@ -1,19 +1,15 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
-
-// PrimeNG
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
-
-// Shared
 import { TabFilterComponent } from "../shareable/components/tab-filter.component/tab-filter.component";
+import { UserService, UserResponse } from '../services/user.service';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
@@ -21,7 +17,7 @@ import { AuthService } from '../auth/auth.service';
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule, SelectModule,
-    InputTextModule, ButtonModule, ToggleSwitchModule, TextareaModule, 
+    InputTextModule, ButtonModule, ToggleSwitchModule, 
     ToastModule, TabFilterComponent, PasswordModule
   ],
   providers: [MessageService],
@@ -29,74 +25,114 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './settings.component.scss'
 })
 export class SettingsComponent implements OnInit {
-  authService = inject(AuthService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
   private messageService = inject(MessageService);
 
+  userProfile = signal<UserResponse | null>(null);
   activeTab = signal<string>('Profile');
-  tabs = ['Profile', 'Security', 'Notifications', 'Organization'];
+  tabs = ['Profile', 'Security', 'Organization']; // Removed Notifications for brevity
+  isLoading = signal<boolean>(false);
 
-  countries = [
-    { name: 'United States', code: 'US', currency: 'USD ($)' },
-    { name: 'United Kingdom', code: 'GB', currency: 'GBP (£)' },
-    { name: 'India', code: 'IN', currency: 'INR (₹)' },
-    { name: 'Germany', code: 'DE', currency: 'EUR (€)' }
-  ];
-  selectedCountry: any = this.countries[2]; // Default to India
-
-  // --- FORMS ---
   profileForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
     lastName: new FormControl('', Validators.required),
-    phone: new FormControl('+91 98765 43210'),
-    bio: new FormControl('Fleet Logistics Professional')
+    email: new FormControl({ value: '', disabled: true })
   });
 
-  notificationForm = new FormGroup({
-    criticalFailures: new FormControl(true),
-    maintenanceReminders: new FormControl(true),
-    emailAlerts: new FormControl(true)
+  securityForm = new FormGroup({
+    mfaEnabled: new FormControl(false),
+    currentPassword: new FormControl(''),
+    newPassword: new FormControl(''),
+    confirmPassword: new FormControl('')
   });
 
   orgForm = new FormGroup({
-    companyName: new FormControl('TransLink Global'),
-    country: new FormControl(this.countries[2])
+    companyName: new FormControl({ value: '', disabled: true })
   });
 
   ngOnInit() {
-    // Fill profile from AuthService Signals
-    const user = this.authService.currentUser();
-    if (user) {
-      const nameParts = user.name.split(' ');
-      this.profileForm.patchValue({
-        firstName: nameParts[0] || '',
-        lastName: nameParts.slice(1).join(' ') || ''
-      });
-    }
+    this.refreshProfile();
   }
 
-  onTabChange(tab: string) { 
-    this.activeTab.set(tab); 
+  refreshProfile() {
+    this.isLoading.set(true);
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.userProfile.set(user);
+        this.profileForm.patchValue({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        });
+        this.securityForm.patchValue({ mfaEnabled: user.mfaEnabled });
+        this.orgForm.patchValue({ companyName: user.companyName });
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load profile' });
+        this.isLoading.set(false);
+      }
+    });
   }
+
+  onTabChange(tab: string) { this.activeTab.set(tab); }
 
   isSaveDisabled(): boolean {
     const active = this.activeTab();
     if (active === 'Profile') return this.profileForm.pristine || this.profileForm.invalid;
-    if (active === 'Notifications') return this.notificationForm.pristine;
-    if (active === 'Organization') return this.orgForm.pristine;
+    if (active === 'Security') return this.securityForm.pristine;
     return true;
   }
 
-  saveData() {
-    // In a real app, you would send this to your backend
-    this.messageService.add({ 
-      severity: 'success', 
-      summary: 'Settings Updated', 
-      detail: `${this.activeTab()} changes saved successfully.` 
+ saveData() {
+  const active = this.activeTab();
+
+  if (active === 'Profile') {
+    // Option A: Extract values safely to satisfy the 'UpdateUserRequest' interface
+    const payload = {
+      firstName: this.profileForm.value.firstName ?? '',
+      lastName: this.profileForm.value.lastName ?? ''
+    };
+
+    this.userService.updateProfile(payload).subscribe({
+      next: (res) => {
+        this.messageService.add({ severity: 'success', summary: 'Updated', detail: 'Profile saved' });
+        this.userProfile.set(res);
+        this.profileForm.markAsPristine();
+      },
+      error: (err) => this.messageService.add({ severity: 'error', detail: err.error?.message || 'Update failed' })
     });
+  } 
+
     
-    // Mark as pristine to disable button until next change
-    this.profileForm.markAsPristine();
-    this.notificationForm.markAsPristine();
-    this.orgForm.markAsPristine();
+    else if (active === 'Security') {
+      // 1. Handle MFA Toggle
+      if (this.securityForm.get('mfaEnabled')?.dirty) {
+        const enabled = this.securityForm.value.mfaEnabled!;
+        this.userService.toggleMfa(enabled).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', detail: `MFA ${enabled ? 'Enabled' : 'Disabled'}` });
+            this.securityForm.get('mfaEnabled')?.markAsPristine();
+          }
+        });
+      }
+
+      // 2. Handle Password Change
+      const { currentPassword, newPassword, confirmPassword } = this.securityForm.value;
+      if (currentPassword && newPassword) {
+        if (newPassword !== confirmPassword) {
+          this.messageService.add({ severity: 'error', detail: 'New passwords do not match' });
+          return;
+        }
+        this.authService.changePassword({ currentPassword, newPassword }).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', detail: 'Password changed successfully' });
+            this.securityForm.patchValue({ currentPassword: '', newPassword: '', confirmPassword: '' });
+          },
+          error: (err) => this.messageService.add({ severity: 'error', detail: err.error || 'Password change failed' })
+        });
+      }
+    }
   }
 }
