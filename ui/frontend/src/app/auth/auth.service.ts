@@ -74,7 +74,7 @@ export class AuthService {
     );
   }
 
-  verifyOtp(email: string, code: string, purpose: 'LOGIN_MFA' | 'REGISTRATION' | 'FORGOT_PASSWORD'): Observable<AuthResponse> {
+  verifyOtp(email: string, code: string, purpose: 'LOGIN_MFA' | 'REGISTRATION' | 'PASSWORD_RESET'): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_BASE}/verify-otp`, { email, code, purpose }).pipe(
       tap((res: AuthResponse) => {
         if (res.token && (purpose === 'LOGIN_MFA' || purpose === 'REGISTRATION')) {

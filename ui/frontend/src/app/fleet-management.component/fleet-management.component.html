@@ -21,10 +21,24 @@
         <i class="pi pi-chevron-down chevron"></i>
       </div>
 
-      <button class="add-btn-vibrant" (click)="addVehicleModal.show()">
-        <i class="pi pi-plus"></i>
-        <span>Add Vehicle</span>
-      </button>
+      <div class="button-group" style="display: flex; gap: 12px; margin-left: 15px;">
+        <button 
+          *ngIf="authService.currentUser()?.role === 'ADMIN'" 
+          class="add-btn-vibrant" 
+          style="background-color: #6366f1;" 
+          (click)="addHubModal.show()">
+            <i class="pi pi-map-marker"></i>
+            <span>Add Hub</span>
+        </button>
+
+        <button 
+          *ngIf="authService.currentUser()?.role === 'ADMIN'" 
+          class="add-btn-vibrant" 
+          (click)="addVehicleModal.show()">
+            <i class="pi pi-plus"></i>
+            <span>Add Vehicle</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -34,7 +48,7 @@
     }
   </div>
 
-  <div class="section-card">
+    <div class="section-card">
     <app-generic-table title="Fleet Overview" [columns]="cols" [data]="filteredFleet()">
       <ng-template #rowActions let-vehicle>
         <div class="actions-cell">
@@ -52,5 +66,7 @@
     </app-generic-table>
   </div>
 </div>
+
+<app-add-hub #addHubModal (onSave)="handleHubSaved($event)"></app-add-hub>
 <app-add-vehicle #addVehicleModal (onSave)="handleVehicleSaved($event)"></app-add-vehicle>
 <app-details-card #detailsCard title="Vehicle Details"></app-details-card>

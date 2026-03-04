@@ -76,7 +76,7 @@ export class ForgotPassword {
     const email = this.otpEmailForm.get('email')?.value;
 
     // Purpose must match 'FORGOT_PASSWORD' as required by the backend
-    this.authService.verifyOtp(email, this.otpValue, 'FORGOT_PASSWORD').subscribe({
+    this.authService.verifyOtp(email, this.otpValue, 'PASSWORD_RESET').subscribe({
       next: (res) => {
         this.loading = false; // Stop spinner
         if (res.token) {
@@ -130,7 +130,7 @@ export class ForgotPassword {
     if (!email) return;
     
     this.loading = true; // Added: Prevent further clicks during resend
-    this.authService.resendOtp(email, 'FORGOT_PASSWORD').subscribe({
+    this.authService.resendOtp(email, 'PASSWORD_RESET').subscribe({
       next: (res: string) => {
         this.loading = false; // Stop spinner
         this.messageService.add({ 

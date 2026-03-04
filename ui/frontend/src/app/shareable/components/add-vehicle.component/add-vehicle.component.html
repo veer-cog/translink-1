@@ -8,7 +8,7 @@
     <form [formGroup]="vehicleForm" class="modal-body">
       <div class="form-row">
         <div class="form-group">
-          <label>Vehicle ID</label>
+          <label>Number Plate</label>
           <input type="text" formControlName="vehicleId" placeholder="TRK-20-XXX" [readonly]="isEditMode" />
         </div>
         <div class="form-group">
@@ -20,21 +20,20 @@
           </select>
         </div>
       </div>
+        <div class="form-group"> 
+    <label>Hub Location</label>
+    <select formControlName="location">
+      <option [ngValue]="null" disabled>Select a Hub</option>
+      @for (hub of hubs(); track hub.id) {
+        <option [value]="hub.id">{{ hub.hubName }}</option>
+      }
+    </select>
+</div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Capacity</label>
-          <input type="text" formControlName="capacity" placeholder="e.g., 20 tons" />
-        </div>
-        <div class="form-group">
-          <label>Hub Location</label>
-          <select formControlName="location">
-            <option value="New York Hub">New York Hub</option>
-            <option value="Chicago Hub">Chicago Hub</option>
-            <option value="Detroit Hub">Detroit Hub</option>
-          </select>
-        </div>
-      </div>
+<div class="form-group">
+  <label>Capacity (Tons)</label>
+  <input type="number" formControlName="capacity" placeholder="e.g., 20.5" />
+</div>
 
       <div class="form-group">
         <label>Status</label>

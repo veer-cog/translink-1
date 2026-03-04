@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HubApiService } from '../../../services/hub-api.service';
 
 @Component({
   selector: 'app-add-vehicle',
@@ -9,8 +10,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   templateUrl: './add-vehicle.component.html',
   styleUrl: './add-vehicle.component.scss',
 })
+
+
 export class AddVehicleComponent {
-vehicleForm: FormGroup;
+  private hubService = inject(HubApiService);
+  hubs = signal<any[]>([]);
+  vehicleForm: FormGroup;
   visible = false;
   isEditMode = false;
 
@@ -18,41 +23,59 @@ vehicleForm: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.vehicleForm = this.fb.group({
-      vehicleId: ['', Validators.required], // Changed from 'id' to match your table data key
+      id: [null], // Added hidden ID for updates
+      vehicleId: ['', Validators.required], 
       type: ['Heavy Truck', Validators.required],
-      capacity: ['', Validators.required],
-      location: ['New York Hub', Validators.required], // Changed from 'hub' to 'location'
+      capacity: ['', [Validators.required, Validators.pattern("^[0-9.]*$")]], // Numerical check
+      location: [null, Validators.required], // This will store the Hub ID
       status: ['Active', Validators.required],
-      driver: ['', Validators.required],
-      nextMaintenance: [''] // Added field to match table requirements
+      driver: ['', Validators.required]
     });
   }
 
   show(data?: any) {
-    if (data) {
-      this.isEditMode = true;
-      this.vehicleForm.patchValue(data);
-    } else {
-      this.isEditMode = false;
-      this.vehicleForm.reset({ 
-        type: 'Heavy Truck', 
-        location: 'New York Hub', 
-        status: 'Active',
-        nextMaintenance: new Date().toISOString().split('T')[0] 
-      });
-    }
-    this.visible = true;
-  }
+  this.hubService.getAllHubs().subscribe(res => {
+    this.hubs.set(res);
+  });
 
-  close() {
-    this.visible = false;
+  if (data) {
+    this.isEditMode = true;
+    this.vehicleForm.patchValue({
+      id: data.id,
+      vehicleId: data.vehicleId, 
+      type: data.type,
+      // Strip unit " Tons" if present to keep the input numeric
+      capacity: data.capacity?.toString().replace(/[^0-9.]/g, ''), 
+      location: data.hubId, // Use the ID we stored in mapToFrontend
+      status: data.status,
+      driver: data.driver
+    });
+  } else {
+    this.isEditMode = false;
+    this.vehicleForm.reset({ status: 'Active', type: 'Heavy Truck' });
   }
-
-  handleSave() {
-    if (this.vehicleForm.valid) {
-      this.onSave.emit(this.vehicleForm.getRawValue()); // Use getRawValue to include disabled/id fields
-      this.close();
-    }
-  }
+  this.visible = true;
 }
 
+  close() { this.visible = false; }
+
+handleSave() {
+  if (this.vehicleForm.valid) {
+    const formValue = this.vehicleForm.getRawValue();
+    
+    const payload = {
+      id: formValue.id,
+      numberPlate: formValue.vehicleId, // Ensure this matches @JsonProperty
+      type: formValue.type,
+      capacity: parseFloat(formValue.capacity),
+      status: formValue.status,
+      dvrName: formValue.driver,
+      hub: { id: formValue.location } 
+    };
+
+    console.log("SENDING PAYLOAD:", payload); // DEBUG: Check numberPlate here
+    this.onSave.emit(payload);
+    this.close();
+  }
+}
+}

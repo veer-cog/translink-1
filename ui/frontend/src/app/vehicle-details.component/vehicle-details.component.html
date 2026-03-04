@@ -1,84 +1,84 @@
+<p-toast></p-toast>
+
 <div class="page-container">
-    <div class="page-header">
-        <div class="title-area">
-            <div class="breadcrumb-nav">
-                <a [routerLink]="['/', rolePath(), 'fleet']">Fleet</a> / <span>{{ vehicle().numberPlate }}</span>
-            </div>
-            <div class="title-with-badge">
-                <h1>{{ vehicle().numberPlate }}</h1>
-                <span class="status-pill" [ngClass]="getStatusClass(vehicle().status)">
-                    {{ vehicle().status }}
-                </span>
-            </div>
-            <p class="sub-text">Vehicle ID: <strong>{{ vehicle().id }}</strong> | Type: {{ vehicle().type }}</p>
+  <div class="page-header">
+    <div class="title-area">
+      <div class="breadcrumb-nav">
+        <a [routerLink]="['/', rolePath(), 'fleet']">Fleet</a> / 
+        <span>{{ vehicle()?.vehicleId }}</span>
+      </div>
+      
+      <div class="title-with-badge">
+        <h1>{{ vehicle()?.vehicleId }}</h1> 
+        <span class="status-pill" [ngClass]="getStatusClass(vehicle()?.status)">
+            {{ vehicle()?.status }}
+        </span>
         </div>
-        <div class="action-area">
-            <button class="btn-secondary"><i class="pi pi-pencil"></i> Edit</button>
-            <button class="add-btn-vibrant"><i class="pi pi-wrench"></i> Log Maintenance</button>
-        </div>
+      
+      <p class="sub-text">
+        Vehicle Database ID: <strong>{{ vehicle()?.id }}</strong> | 
+        Type: {{ vehicle()?.type }}
+      </p>
     </div>
 
-    <div class="stats-grid">
-        <app-stat-card label="Fuel Level" [value]="vehicle().currentFuelLevel + '%'" icon="pi pi-bolt" trend="Optimal"
-            [isPositive]="true" color="#10b981"></app-stat-card>
-        <app-stat-card label="Odometer" [value]="vehicle().odometerReading + ' km'" icon="pi pi-map" trend="+240 today"
-            [isPositive]="true" color="#3b82f6"></app-stat-card>
-        <app-stat-card label="Current Speed" [value]="vehicle().location.speed" icon="pi pi-forward" trend="Moving"
-            [isPositive]="true" color="#a855f7"></app-stat-card>
-        <app-stat-card label="Compliance" value="Passed" icon="pi pi-shield" trend="Exp 2027" [isPositive]="true"
-            color="#f59e0b"></app-stat-card>
+    <div class="action-area">
+      <button class="add-btn-vibrant" (click)="showMaintenanceDialog(vehicle()?.vehicleId)">
+        <i class="pi pi-wrench"></i> Log Maintenance
+      </button>
+
+      <app-log-maintenance 
+        #maintenanceModal 
+        (onSave)="handleRefresh($event)"> 
+      </app-log-maintenance>
+    </div>
+  </div>
+
+  <div class="main-details-layout">
+    <div class="left-column">
+      <app-generic-table 
+        [columns]="shipmentCols()" 
+        [data]="shipmentData()"
+        title="Recent Shipments">
+      </app-generic-table>
     </div>
 
-    <div class="main-details-layout">
-
-        <div class="left-column">
-            <div class="section-card location-card">
-                <div class="card-header">
-                    <h4><i class="pi pi-map-marker"></i> Live Tracking</h4>
-                </div>
-                <div class="map-placeholder">
-                    <div class="mock-map">
-                        <span class="pulse-marker"></span>
-                        <p>Currently near: <strong>New Jersey Turnpike</strong></p>
-                        <small>Lat: {{ vehicle().location.lat }}, Lng: {{ vehicle().location.lng }}</small>
-                    </div>
-                </div>
-            </div>
-
-
-            <app-generic-table [columns]="shipmentCols()" [data]="shipmentData()"
-                title="Recent Shipments"></app-generic-table>
+    <div class="right-column">
+      <div class="section-card info-panel driver-panel">
+        <h4><i class="pi pi-user"></i> Assigned Driver</h4>
+        <div class="driver-profile">
+          <div class="avatar">
+            {{ vehicle()?.driver ? vehicle()?.driver[0] : '?' }}
+          </div>
+          <div class="profile-info">
+            <h5>{{ vehicle()?.driver || 'No Driver Assigned' }}</h5>
+            <span class="badge-lite">Active Duty</span>
+          </div>
         </div>
-
-        <div class="right-column">
-            <div class="section-card info-panel">
-                <h4><i class="pi pi-user"></i> Assigned Driver</h4>
-                <div class="driver-profile">
-                    <div class="avatar">{{ vehicle().driverName[0] }}</div>
-                    <div class="profile-info">
-                        <h5>{{ vehicle().driverName }}</h5>
-                        <p>ID: DRV-9920</p>
-                        <span class="badge-lite">Active Duty</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-card info-panel">
-                <h4><i class="pi pi-shield"></i> Compliance Records</h4>
-                <div class="compliance-list">
-                    <div class="compliance-item">
-                        <span>Safety Inspection</span>
-                        <span class="status-text success">Passed</span>
-                    </div>
-                    <div class="compliance-item">
-                        <span>Insurance Renewal</span>
-                        <span class="status-text warning">Due 30 Days</span>
-                    </div>
-                </div>
-            </div>
-
-            <app-generic-table [columns]="maintenanceCols()" [data]="maintenanceData()"
-                [title]="'Maintenance History'"></app-generic-table>
-        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="full-width-history">
+    <app-generic-table 
+      title="Maintenance History" 
+      [columns]="maintenanceCols()" 
+      [data]="maintenanceData()">
+      
+      <ng-template #rowActions let-log>
+        <div class="table-actions">
+          <button class="p-button-rounded p-button-text edit-btn" 
+                  (click)="editLog(log)" 
+                  title="Edit Log">
+            <i class="pi pi-pencil"></i>
+          </button>
+          
+          <button class="p-button-rounded p-button-text p-button-danger delete-btn" 
+                  (click)="deleteLog(log.id)" 
+                  title="Delete Log">
+            <i class="pi pi-trash"></i>
+          </button>
+        </div>
+      </ng-template>
+    </app-generic-table>
+  </div>
 </div>
