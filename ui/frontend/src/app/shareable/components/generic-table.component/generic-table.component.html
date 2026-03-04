@@ -11,30 +11,43 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of data()">
-          <td *ngFor="let col of columns()">
+        <ng-container *ngIf="data() && data().length > 0; else noDataTemplate">
+          <tr *ngFor="let row of data()">
+            <td *ngFor="let col of columns()">
 
-            <ng-container *ngIf="col.type === 'badge'; else actionCell">
-              <span class="status-badge" [ngClass]="getStatusClass(row[col.field])">
-                {{ row[col.field] }}
-              </span>
-            </ng-container>
-
-            <ng-template #actionCell>
-              <ng-container *ngIf="col.field === 'actions'; else textCell">
-                <ng-container *ngTemplateOutlet="rowActionsTemplate(); context: { $implicit: row }">
-                </ng-container>
+              <ng-container *ngIf="col.type === 'badge'; else actionCell">
+                <span class="status-badge" [ngClass]="getStatusClass(row[col.field])">
+                  {{ row[col.field] }}
+                </span>
               </ng-container>
-            </ng-template>
 
-            <ng-template #textCell>
-              <span [class.bold-text]="col.field === 'vehicleId' || col.field === 'id'">
-                {{ row[col.field] }}
-              </span>
-            </ng-template>
+              <ng-template #actionCell>
+                <ng-container *ngIf="col.field === 'actions'; else textCell">
+                  <ng-container *ngTemplateOutlet="rowActionsTemplate(); context: { $implicit: row }">
+                  </ng-container>
+                </ng-container>
+              </ng-template>
 
-          </td>
-        </tr>
+              <ng-template #textCell>
+                <span [class.bold-text]="col.field === 'vehicleId' || col.field === 'id'">
+                  {{ row[col.field] }}
+                </span>
+              </ng-template>
+
+            </td>
+          </tr>
+        </ng-container>
+
+        <ng-template #noDataTemplate>
+          <tr>
+            <td [attr.colspan]="columns().length" class="no-data-cell">
+              <div class="no-data-content">
+                <i class="pi pi-inbox"></i>
+                <p>No data to be shown here</p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
       </tbody>
     </table>
   </div>

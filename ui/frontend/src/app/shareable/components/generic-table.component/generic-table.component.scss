@@ -114,19 +114,19 @@ $hover-bg: #f8fafc;
     }
 
     /* Red - Inactive / Maintenance / High Priority */
-    &.inactive, &.maintenance, &.high { 
+    &.inactive, &.maintenance, &.high, &.cancelled{ 
         background-color: #fef2f2; 
         color: #ef4444; 
     }
 
     /* Blue - Admin / In-Transit */
-    &.admin, &.in-transit { 
+    &.admin, &.in_transit { 
         background-color: #eff6ff; 
         color: #3b82f6; 
     }
 
     /* Purple - Operator / Booked */
-    &.operator, &.booked { 
+    &.operator, &.created { 
         background-color: #faf5ff; 
         color: #a855f7; 
     }
@@ -137,7 +137,34 @@ $hover-bg: #f8fafc;
         color: #f59e0b;
     }
 }
+/* --- Empty State Styling --- */
+.no-data-cell {
+    padding: 3rem 0 !important; // Extra padding for the empty state
+    text-align: center;
+    background-color: #ffffff;
+    border-right: none !important; // Remove the vertical divider for the empty row
+}
 
+.no-data-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+
+    i {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.3;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+}
 /* --- Action Links --- */
 .view-details-link, .action-link {
     color: $primary-blue;

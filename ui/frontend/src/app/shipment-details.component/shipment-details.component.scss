@@ -5,6 +5,7 @@ $success-green: #10b981;
 $error-red: #ef4444;
 $text-main: #0f172a;
 $text-muted: #64748b;
+$text-create:#a855f7; 
 $bg-light: #f8fafc;
 $white: #ffffff;
 $border-color: #e2e8f0;
@@ -115,9 +116,9 @@ $border-color: #e2e8f0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
-    &.transit { background: rgba($primary-blue, 0.1); color: $primary-blue; }
+    &.in_transit { background: rgba($primary-blue, 0.1); color: $primary-blue; }
     &.delivered { background: rgba($success-green, 0.1); color: $success-green; }
-    &.booked { background: rgba($text-muted, 0.1); color: $text-muted; }
+    &.created { background: rgba($text-create, 0.1); color: $text-create; }
     &.cancelled { background: rgba($error-red, 0.1); color: $error-red; }
 }
 
@@ -155,22 +156,15 @@ $border-color: #e2e8f0;
     border: 1px solid $border-color;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
-    .card-header {
-        margin-bottom: 1.5rem;
+    h4 {
+        margin: 0 0 1.25rem 0;
+        font-size: 1.1rem;
+        font-weight: 700;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-
-        h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: $text-main;
-            i { color: $primary-blue; }
-        }
+        gap: 10px;
+        color: $text-main;
+        i { color: $primary-blue; }
     }
 }
 
@@ -203,30 +197,35 @@ $border-color: #e2e8f0;
 
 // 10. Info Panels (Right Column)
 .info-panel {
-    h4 {
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: $text-muted;
-        margin-bottom: 1.25rem;
-    }
-
     .asset-details {
-        p {
-            margin: 0.75rem 0;
-            font-size: 0.95rem;
-            color: $text-main;
-            strong { font-weight: 600; }
-        }
+        display: flex;
+        flex-direction: column;
 
-        .link-text {
-            display: inline-block;
-            margin-top: 0.5rem;
-            color: $primary-blue;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-decoration: none;
-            &:hover { text-decoration: underline; }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba($border-color, 0.6);
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .label {
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: $text-muted;
+            }
+
+            .value {
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: $text-main;
+                text-align: right;
+                word-break: break-all;
+                max-width: 60%;
+            }
         }
     }
 }
@@ -241,91 +240,137 @@ $border-color: #e2e8f0;
         
         &:last-child { border-bottom: none; }
         span:first-child { color: $text-muted; }
-        span:last-child { font-weight: 600; color: $text-main; }
+        strong { font-weight: 600; color: $text-main; }
     }
 }
 
-// 11. Modal Styles
-.modal-overlay {
+.modal-backdrop {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.6); // Darker Slate Backdrop
+    backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .status-modal {
     background: $white;
-    padding: 2rem;
-    border-radius: 16px;
-    width: 420px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-
-    h3 { margin: 0 0 0.5rem; color: $text-main; }
-    p { color: $text-muted; margin-bottom: 1.5rem; font-size: 0.9rem; }
-}
-
-.status-options {
+    border-radius: 20px;
+    width: 90%;
+    max-width: 440px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    animation: modalSlideUp 0.3s ease-out;
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: $text-main; }
+        .close-btn { 
+            background: none; border: none; font-size: 1.5rem; 
+            color: $text-muted; cursor: pointer; 
+        }
+    }
+}
+
+.status-grid-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 2rem;
 
-    .status-radio {
+    .status-card {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 14px;
-        border: 1px solid $border-color;
+        padding: 14px 18px;
+        border: 2px solid $border-color;
         border-radius: 12px;
         cursor: pointer;
-        transition: all 0.2s ease;
-        font-weight: 600;
-        color: $text-main;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
 
-        &:hover { background: $bg-light; }
+        &:hover {
+            background: $bg-light;
+            border-color: darken($border-color, 10%);
+        }
 
         &.active {
             border-color: $primary-blue;
-            background: #eff6ff;
-            color: $primary-blue;
+            background: rgba($primary-blue, 0.04);
+            
+            .radio-circle {
+                border-color: $primary-blue;
+                &::after { transform: scale(1); }
+            }
+
+            .status-label { color: $primary-blue; font-weight: 700; }
+            i { color: $primary-blue; font-size: 1.2rem; }
         }
 
-        input[type="radio"] {
-            margin: 0;
-            cursor: pointer;
-            accent-color: $primary-blue;
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid $text-muted;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &::after {
+                content: '';
+                width: 10px;
+                height: 10px;
+                background: $primary-blue;
+                border-radius: 50%;
+                transform: scale(0);
+                transition: transform 0.2s ease;
+            }
         }
+
+        .status-info { flex: 1; }
+        .status-label { font-size: 1rem; color: $text-main; transition: color 0.2s; }
     }
 }
 
-.modal-actions {
+.modal-footer {
     display: flex;
-    justify-content: flex-end;
     gap: 12px;
 
     button {
-        padding: 10px 20px;
-        border-radius: 10px;
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
         font-weight: 600;
+        font-size: 0.95rem;
         cursor: pointer;
-        font-size: 0.9rem;
         border: none;
-        transition: all 0.2s;
+        transition: 0.2s;
     }
 
     .btn-cancel {
-        background: #f1f5f9;
-        color: $text-main;
-        &:hover { background: darken(#f1f5f9, 5%); }
+        background: $bg-light;
+        color: $text-muted;
+        &:hover { background: darken($bg-light, 5%); }
     }
 
-    .btn-confirm {
+    .confirm-btn {
         background: $primary-blue;
-        color: $white;
-        &:hover { background: darken($primary-blue, 10%); }
+        color: white;
+        box-shadow: 0 4px 12px rgba($primary-blue, 0.2);
+        &:hover { filter: brightness(1.1); transform: translateY(-1px); }
     }
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

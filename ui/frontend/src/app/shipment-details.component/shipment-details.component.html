@@ -1,15 +1,22 @@
-<div class="page-container">
+<div class="page-container" *ngIf="!isLoading(); else loadingTemplate">
     <div class="page-header">
         <div class="title-area">
-            <div class="breadcrumb-nav">
-                <a [routerLink]="['/', rolePath(), 'shipment']">Shipments</a> / <span>{{ shipment().id }}</span>
-            </div>
+            <nav class="breadcrumb-nav">
+                <a [routerLink]="['/', rolePath(), 'shipment']">Shipments</a>
+                <i class="pi pi-chevron-right separator"></i>
+                <span>{{ shipment()?.shipmentNumber }}</span>
+            </nav>
             <div class="title-with-badge">
-                <h1>Shipment {{ shipment().id }}</h1>
-                <span class="status-pill" [ngClass]="getStatusClass(shipment().status)">{{ shipment().status }}</span>
+                <h1>{{ shipment()?.shipmentNumber }}</h1>
+                <span class="status-pill" [ngClass]="getStatusClass(shipment()?.status)">
+                    {{ shipment()?.status }}
+                </span>
             </div>
-            <p class="sub-text">Customer: <strong>{{ shipment().customer }}</strong> | Priority: <strong>{{
-                    shipment().priority }}</strong></p>
+            <p class="sub-text">
+                Customer: <strong>{{ shipment()?.clientName }}</strong>
+                <span class="dot-separator">•</span>
+                Client Phone: <strong>{{ shipment()?.clientNumber }}</strong>
+            </p>
         </div>
         <div class="action-area">
             <button class="btn-secondary"><i class="pi pi-print"></i> Manifest</button>
@@ -20,79 +27,107 @@
     </div>
 
     <div class="stats-grid">
-        <app-stat-card label="Revenue" [value]="'$' + shipment().revenue" icon="pi pi-dollar" trend="Gross"
-            [isPositive]="true" color="#3b82f6"></app-stat-card>
-        <app-stat-card label="Net Profit" [value]="'$' + shipment().netProfit" icon="pi pi-chart-line" trend="69.5%"
-            [isPositive]="true" color="#10b981"></app-stat-card>
-        <app-stat-card label="Total Costs"
-            [value]="'$' + (shipment().fuelCost + shipment().laborCost + shipment().tollCost)" icon="pi pi-wallet"
+        <app-stat-card label="Revenue" [value]="(shipment()?.revenue | currency) ?? '$0.00'" icon="pi pi-dollar"
+            trend="Gross" [isPositive]="true" color="#3b82f6"></app-stat-card>
+
+        <app-stat-card label="Net Profit" [value]="(netProfit() | currency)?? '$0.00'" icon="pi pi-chart-line"
+            trend="Est." [isPositive]="true" color="#10b981"></app-stat-card>
+
+        <app-stat-card label="Total Costs" [value]="(totalOperatingCost() | currency)?? '$0.00'" icon="pi pi-wallet"
             trend="Expenses" [isPositive]="false" color="#ef4444"></app-stat-card>
-        <app-stat-card label="Cargo Weight" [value]="shipment().weight + ' kg'" icon="pi pi-box" trend="LTL"
-            [isPositive]="true" color="#a855f7"></app-stat-card>
+
+        <app-stat-card label="Cargo Weight" [value]="(shipment()?.totalWeight || 0) + ' kg'" icon="pi pi-box"
+            trend="LTL" [isPositive]="true" color="#a855f7"></app-stat-card>
     </div>
 
     <div class="main-details-layout">
         <div class="left-column">
-            <app-generic-table [columns]="routeCols()" [data]="routeData()" title="Route Progress"></app-generic-table>
+            <div class="section-card no-padding">
+                <app-generic-table [columns]="routeCols()" [data]="routeData()" title="Route Progress">
+                </app-generic-table>
+            </div>
 
             <div class="section-card">
-                <div class="card-header">
-                    <h4>Cost Breakdown</h4>
-                </div>
-                <div class="cost-grid">
-                    <div class="cost-item"><span>Fuel Expenses</span><strong>${{shipment().fuelCost}}</strong></div>
-                    <div class="cost-item"><span>Driver Payout</span><strong>${{shipment().laborCost}}</strong></div>
-                    <div class="cost-item"><span>Transit Tolls</span><strong>${{shipment().tollCost}}</strong></div>
-                    <div class="cost-item total"><span>Total Operating Cost</span><strong>${{shipment().fuelCost +
-                            shipment().laborCost + shipment().tollCost}}</strong></div>
-                </div>
+                <h4><i class="pi pi-info-circle"></i> Description</h4>
+                <p class="description-text">
+                    {{ shipment()?.description || 'No additional notes provided for this shipment.' }}
+                </p>
             </div>
         </div>
 
         <div class="right-column">
             <div class="section-card info-panel">
-                <h4><i class="pi pi-truck"></i> Assigned Vehicle</h4>
+                <h4><i class="pi pi-truck"></i> Logistics Info</h4>
                 <div class="asset-details">
-                    <p>Vehicle ID: <strong>{{ shipment().vehicleId }}</strong></p>
-                    <p>Driver: <strong>{{ shipment().driverName }}</strong></p>
-                    <a [routerLink]="['/', rolePath(), 'fleet', shipment().vehicleId]" class="link-text">View Vehicle
-                        Details →</a>
+                    <div class="detail-row">
+                        <span class="label">Assigned Vehicle ID</span>
+                        <span class="value">{{ routes()?.vehicleID || shipment()?.vehicleId }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Total Distance</span>
+                        <span class="value">{{ routes()?.totalDistance | number:'1.0-2' }} km</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Est. Duration</span>
+                        <span class="value">{{ routes()?.totalDuration | number:'1.1-1' }} hrs</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Route Reference</span>
+                        <span class="value" style="font-size: 0.7rem;">{{ shipment()?.routeId }}</span>
+                    </div>
                 </div>
             </div>
 
             <div class="section-card info-panel">
-                <h4><i class="pi pi-info-circle"></i> Shipment Info</h4>
+                <h4><i class="pi pi-calendar"></i> Timeline</h4>
                 <div class="compliance-list">
-                    <div class="compliance-item"><span>Date Created</span><span>{{ shipment().createdAt |
-                            date:'shortDate' }}</span></div>
-                    <div class="compliance-item"><span>Last Update</span><span>{{ shipment().updatedAt |
-                            date:'shortTime' }}</span></div>
+                    <div class="compliance-item">
+                        <span>Dispatched At</span>
+                        <strong>{{ shipment()?.dispatchedAt | date:'medium' }}</strong>
+                    </div>
+                    <div class="compliance-item">
+                        <span>Est. Arrival</span>
+                        <strong>{{ shipment()?.estimatedArrival ? (shipment()?.estimatedArrival | date:'short') : 'TBD'
+                            }}</strong>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@if (showStatusModal()) {
-<div class="modal-overlay">
-    <div class="status-modal">
-        <h3>Update Shipment Status</h3>
-        <p>Select the new state for shipment <strong>{{ shipment().id }}</strong></p>
+<ng-template #loadingTemplate>
+    <div class="loading-state">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #3b82f6"></i>
+        <p>Fetching shipment details...</p>
+    </div>
+</ng-template>
 
-        <div class="status-options">
+<div class="modal-backdrop" *ngIf="showStatusModal()" (click)="showStatusModal.set(false)">
+    <div class="status-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Update Shipment Status</h3>
+            <button class="close-btn" (click)="showStatusModal.set(false)">&times;</button>
+        </div>
+
+        <div class="status-grid-options">
             @for (opt of statusOptions; track opt.value) {
-            <label class="status-radio" [class.active]="selectedStatus() === opt.value">
-                <input type="radio" name="status" [value]="opt.value" [checked]="selectedStatus() === opt.value"
-                    (change)="selectedStatus.set(opt.value)">
-                {{ opt.label }}
-            </label>
+            <div class="status-card" [class.active]="selectedStatus() === opt.value"
+                (click)="selectedStatus.set(opt.value)">
+                <div class="radio-circle"></div>
+                <div class="status-info">
+                    <span class="status-label">{{ opt.label }}</span>
+                </div>
+                <i class="pi pi-check-circle" *ngIf="selectedStatus() === opt.value"></i>
+            </div>
             }
         </div>
 
-        <div class="modal-actions">
+        <div class="modal-footer">
             <button class="btn-cancel" (click)="showStatusModal.set(false)">Cancel</button>
-            <button class="btn-confirm" (click)="confirmStatusUpdate()">Save Changes</button>
+            <button class="confirm-btn" (click)="confirmStatusUpdate()">
+                Confirm Status
+            </button>
         </div>
     </div>
 </div>
-}

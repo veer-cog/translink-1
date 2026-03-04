@@ -21,9 +21,10 @@ $header-height: 42px;
     padding: 1.5rem;
     box-sizing: border-box;
     background-color: var(--p-surface-50);
+    min-height: 100vh;
 }
 
-/* --- Header: Single Row Force --- */
+/* --- Header Section --- */
 .page-header {
     display: flex;
     flex-direction: row; 
@@ -31,7 +32,7 @@ $header-height: 42px;
     align-items: center;
     gap: 1.5rem;
     width: 100%;
-    flex-wrap: nowrap; // Prevents wrapping to second line
+    flex-wrap: nowrap;
 
     .title-area {
         flex-shrink: 0;
@@ -47,7 +48,7 @@ $header-height: 42px;
     flex-shrink: 0;
 }
 
-/* --- Inputs matched to Fleet Management --- */
+/* --- Search & Filter Inputs --- */
 .search-wrapper {
     position: relative;
     i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); z-index: 2; }
@@ -55,11 +56,12 @@ $header-height: 42px;
         padding: 0 12px 0 36px;
         border: 1px solid $border-color;
         border-radius: 8px;
-        width: 240px; 
+        width: 260px; 
         height: $header-height;
         box-sizing: border-box;
         background: #ffffff;
-        &:focus { outline: none; border-color: var(--p-primary-500); }
+        transition: border-color 0.2s;
+        &:focus { outline: none; border-color: var(--p-primary-500); box-shadow: 0 0 0 2px rgba($primary-blue, 0.1); }
     }
 }
 
@@ -73,13 +75,13 @@ $header-height: 42px;
         background: white;
         font-weight: 600;
         height: $header-height;
-        width: 160px;
+        width: 180px;
         box-sizing: border-box;
         color: $text-dark;
         cursor: pointer;
     }
-    .pi-filter { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); z-index: 2; }
-    .chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: $text-dark; }
+    .pi-filter { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); }
+    .chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--p-surface-400); font-size: 0.8rem; }
 }
 
 .add-btn-vibrant {
@@ -95,147 +97,91 @@ $header-height: 42px;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
+    transition: background 0.2s;
     &:hover { background: var(--p-primary-700); }
+    i { font-size: 0.9rem; }
 }
 
-/* --- Content Layout --- */
+/* --- Stats Grid --- */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
 }
 
+/* --- Main Table Card --- */
 .section-card {
     background: #ffffff;
     border-radius: 12px;
     padding: 1.5rem;
     border: 1px solid $border-color;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    overflow-x: auto;
-    
+
     .card-header-flex {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
-        h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: $text-dark; }
+        h3 { margin: 0; font-size: 1.15rem; font-weight: 700; color: $text-dark; }
+        
+        .count-badge {
+            background: var(--p-surface-100);
+            color: $text-muted;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
     }
 }
 
-/* --- Tables & Custom Cells --- */
+/* --- Custom Table Cell Styling (::ng-deep for Generic Table support) --- */
 ::ng-deep {
     .customer-cell {
-        .name { font-weight: 700; color: $text-dark; display: block; }
-        .id { font-size: 0.75rem; color: $text-muted; }
-    }
-
-    .priority-badge {
-        padding: 4px 12px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        display: inline-block;
-        &.high { background: #fee2e2; color: #dc2626; }
-        &.medium { background: #fef3c7; color: #d97706; }
-        &.low { background: #f0fdf4; color: #16a34a; }
-    }
-
-    .view-details-link {
-        color: $primary-blue;
-        font-weight: 700;
-        text-decoration: none;
-        cursor: pointer;
-        &:hover { text-decoration: underline; }
-    }
-}
-
-/* --- Map Container --- */
-.map-container {
-    width: 100%;
-    min-height: 400px;
-    background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
-
-    .map-content {
         display: flex;
         flex-direction: column;
+        .name { font-weight: 600; color: $text-dark; line-height: 1.2; }
+        .id-subtext { font-size: 0.75rem; color: $text-muted; margin-top: 2px; }
+    }
+
+    .route-cell, .vehicle-cell {
+        display: flex;
         align-items: center;
-        gap: 12px;
-        text-align: center;
-        z-index: 10;
-
-        i {
-            font-size: 64px;
-            color: #0369a1;
-            opacity: 0.9;
-            animation: mapPulse 2s ease-in-out infinite;
-        }
-
-        p {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-            color: #0369a1;
-            letter-spacing: 0.3px;
-        }
+        gap: 8px;
+        color: var(--p-surface-700);
+        font-size: 0.9rem;
+        i { color: $primary-blue; font-size: 0.85rem; }
     }
 
-    // Add decorative map markers
-    &::before,
-    &::after {
-        content: '';
-        position: absolute;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        animation: mapFloat 4s ease-in-out infinite;
+    .weight-text {
+        font-weight: 600;
+        color: $text-dark;
+        small { color: $text-muted; font-weight: 400; margin-left: 2px; }
     }
 
-    &::before {
-        width: 200px;
-        height: 200px;
-        top: -50px;
-        left: -50px;
-        animation-delay: 0s;
-    }
-
-    &::after {
-        width: 150px;
-        height: 150px;
-        bottom: -40px;
-        right: -40px;
-        animation-delay: 1s;
+    .view-details-btn {
+        background: transparent;
+        color: $primary-blue;
+        border: 1px solid rgba($primary-blue, 0.2);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        &:hover { background: rgba($primary-blue, 0.05); border-color: $primary-blue; }
     }
 }
 
-@keyframes mapPulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 0.9;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 1;
-    }
-}
-
-@keyframes mapFloat {
-    0%, 100% {
-        transform: translateY(0px) translateX(0px);
-    }
-    25% {
-        transform: translateY(-10px) translateX(5px);
-    }
-    50% {
-        transform: translateY(-20px) translateX(-5px);
-    }
-    75% {
-        transform: translateY(-10px) translateX(5px);
-    }
+/* --- Empty State --- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    color: $text-muted;
+    
+    i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+    p { margin: 0; font-size: 1rem; }
 }

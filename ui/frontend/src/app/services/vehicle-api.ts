@@ -82,6 +82,10 @@ getMaintenanceLogs(vehiclePlate: string): Observable<any[]> {
     };
   }
 
+
+  getShipmentsByVehicle(vehicleId:number): Observable<any>{
+    return this.http.get(`${environment.apiUrl}/shipments/vehicle/${vehicleId}`);
+  }
   
 
 deleteMaintenanceLog(logId: number): Observable<any> {
@@ -92,4 +96,6 @@ deleteMaintenanceLog(logId: number): Observable<any> {
 
     return this.http.delete(`${environment.apiUrl}/maintenance/${logId}`, { headers });
   }
+
+  
 }

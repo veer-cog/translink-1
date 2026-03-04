@@ -48,14 +48,11 @@ export class VehicleDetailsComponent implements OnInit {
   shipmentCols = signal<TableColumn[]>([
     { field: 'id', header: 'ID' },
     { field: 'customer', header: 'Customer' },
-    { field: 'priority', header: 'Priority', type: 'badge' },
+    { field: 'shipmentNumber', header: 'Shipment Number', type: 'badge' },
     { field: 'status', header: 'Status', type: 'badge' }
   ]);
 
-  shipmentData = signal([
-    { id: 'SH-102', customer: 'Amazon', priority: 'High', status: 'In Transit' },
-    { id: 'SH-105', customer: 'Walmart', priority: 'Low', status: 'Delivered' }
-  ]);
+  shipmentData = signal([]);
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -72,25 +69,58 @@ export class VehicleDetailsComponent implements OnInit {
   /**
    * Initial data fetch for the page
    */
-  loadData(id: string) {
-    this.isLoading.set(true);
-    this.vehicleApi.getVehicleDetails(id).subscribe({
-      next: (data) => {
-        this.vehicle.set(data);
-        if (data.vehicleId) {
-          this.fetchMaintenanceLogs(data.vehicleId);
-        }
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error("Error fetching vehicle details:", err);
-        this.errorMessage.set("Failed to load vehicle details.");
-        this.isLoading.set(false);
+/**
+ * Initial data fetch for the page
+ */
+loadData(id: string) {
+  this.isLoading.set(true);
+  this.vehicleApi.getVehicleDetails(id).subscribe({
+    next: (data) => {
+      this.vehicle.set(data);
+      
+      // We use the numeric ID for shipments and plate/ID for logs
+      if (data.id) {
+        this.fetchVehicleShipments(data.id);
       }
-    });
-  }
+      
+      if (data.vehicleId) {
+        this.fetchMaintenanceLogs(data.vehicleId);
+      }
+      
+      this.isLoading.set(false);
+    },
+    error: (err) => {
+      console.error("Error fetching vehicle details:", err);
+      this.errorMessage.set("Failed to load vehicle details.");
+      this.isLoading.set(false);
+    }
+  });
+}
 
-  private fetchMaintenanceLogs(plate: string) {
+/**
+ * New method to fetch and store shipment data
+ */
+private fetchVehicleShipments(vehicleId: number) {
+  this.vehicleApi.getShipmentsByVehicle(vehicleId).subscribe({
+    next: (shipments) => {
+      // Mapping the data if necessary to match shipmentCols
+      // For example, if 'clientName' from backend should show as 'customer' in table
+      const formattedShipments = shipments.map((s: any) => ({
+        ...s,
+        customer: s.clientName,
+      }));
+      
+      this.shipmentData.set(formattedShipments);
+      console.log("Shipments loaded:", formattedShipments);
+    },
+    error: (err) => {
+      console.error("Error fetching shipments for vehicle:", err);
+      // Optional: set a separate error state for the shipments table
+    }
+  });
+}
+
+private fetchMaintenanceLogs(plate: string) {
     this.vehicleApi.getMaintenanceLogs(plate).subscribe({
       next: (logs) => {
         const sortedLogs = logs.sort((a, b) => 

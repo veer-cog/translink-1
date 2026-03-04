@@ -1,93 +1,91 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, Input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-book-shipment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <div class="modal-overlay" *ngIf="isVisible()">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h2>Book New Shipment</h2>
-          <button class="close-btn" (click)="hide()"><i class="pi pi-times"></i></button>
-        </div>
-
-        <form [formGroup]="shipmentForm" (ngSubmit)="submit()">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Customer ID</label>
-              <input formControlName="customerId" placeholder="CUST-XXX" />
-            </div>
-            <div class="form-group">
-              <label>Customer Name</label>
-              <input formControlName="customerName" placeholder="Company name" />
-            </div>
-            <div class="form-group">
-              <label>Pickup Location</label>
-              <input formControlName="pickup" placeholder="City, State" />
-            </div>
-            <div class="form-group">
-              <label>Delivery Location</label>
-              <input formControlName="delivery" placeholder="City, State" />
-            </div>
-            <div class="form-group">
-              <label>Weight</label>
-              <input formControlName="weight" placeholder="e.g., 5 tons" />
-            </div>
-            <div class="form-group">
-              <label>Priority</label>
-              <select formControlName="priority">
-                <option value="" disabled>Select priority</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-            <div class="form-group full-width">
-              <label>Assign Vehicle</label>
-              <select formControlName="vehicle">
-                <option value="" disabled>Select vehicle</option>
-                <option value="TRK-101">TRK-101</option>
-                <option value="TRK-045">TRK-045</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn-cancel" (click)="hide()">Cancel</button>
-            <button type="submit" class="btn-submit" [disabled]="shipmentForm.invalid">Book Shipment</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, ReactiveFormsModule, Select],
+  templateUrl: './book-shipmen.component.html',
   styleUrl: './book-shipmen.component.scss'
 })
 export class BookShipmenComponent {
+  @Input() vehicles: any[] = []; // Used for lookup only
+  @Input() routes: any[] = [];
+  @Input() hubs: any[] = [];
   @Output() onSave = new EventEmitter<any>();
+
   isVisible = signal(false);
   shipmentForm: FormGroup;
+  formValue = signal<any>({});
 
   constructor(private fb: FormBuilder) {
     this.shipmentForm = this.fb.group({
-      customerId: ['', Validators.required],
-      customerName: ['', Validators.required],
-      pickup: ['', Validators.required],
-      delivery: ['', Validators.required],
-      weight: ['', Validators.required],
-      priority: ['', Validators.required],
-      vehicle: ['', Validators.required]
+      clientName: ['', Validators.required],
+      clientNumber: ['', Validators.required],
+      originHubId: ['', Validators.required],
+      destinationHubId: ['', Validators.required],
+      routeId: ['', Validators.required], // Selected by user
+      vehicleId: [null, Validators.required], // Hidden/Auto-filled
+      revenue: [0, [Validators.required, Validators.min(0)]],
+      totalWeight: [0, [Validators.required, Validators.min(0)]],
+      description: ['']
+    });
+
+    this.shipmentForm.valueChanges.subscribe(val => {
+      this.formValue.set(val);
     });
   }
 
+  // Filter routes based on Hub names found in the "stops" string
+  validRoutes = computed(() => {
+    const originId = this.formValue().originHubId;
+    const destId = this.formValue().destinationHubId;
+
+    if (!originId || !destId || this.routes.length === 0) return [];
+
+    const originHub = this.hubs.find(h => h.id === originId);
+    const destHub = this.hubs.find(h => h.id === destId);
+
+    if (!originHub || !destHub) return [];
+
+    return this.routes.filter(route => {
+      const stops = route.stops || '';
+      return stops.includes(originHub.hubName) && stops.includes(destHub.hubName);
+    });
+  });
+
+  // Triggered when a Route is selected
+  onRouteSelect(event: any) {
+    const selectedRouteId = event.value;
+    const routeData = this.routes.find(r => r.id === selectedRouteId);
+    
+    if (routeData && routeData.vehicleID) {
+      console.log(`🚛 Auto-assigning Vehicle ID: ${routeData.vehicleID} from Route ${selectedRouteId}`);
+      this.shipmentForm.patchValue({ vehicleId: routeData.vehicleID });
+    } else {
+      console.warn("⚠️ Selected route has no pre-assigned vehicleID");
+      this.shipmentForm.patchValue({ vehicleId: null });
+    }
+  }
+
   show() { this.isVisible.set(true); }
-  hide() { this.isVisible.set(false); this.shipmentForm.reset(); }
+  hide() { 
+    this.isVisible.set(false); 
+    this.shipmentForm.reset({ revenue: 0, totalWeight: 0 }); 
+  }
 
   submit() {
     if (this.shipmentForm.valid) {
-      this.onSave.emit(this.shipmentForm.value);
+      const raw = this.shipmentForm.value;
+      const payload = {
+        ...raw,
+        vehicleId: Number(raw.vehicleId), // Ensures it matches your backend Long
+        revenue: Number(raw.revenue),
+        totalWeight: Number(raw.totalWeight)
+      };
+      this.onSave.emit(payload);
       this.hide();
     }
   }

@@ -213,6 +213,15 @@
             &:hover { text-decoration: underline; }
         }
     }
+    .footer-link {
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            &.bold { font-weight: 700; }
+            &.small-text { font-size: 0.85rem; }
+            &:hover { text-decoration: underline; }
+        }
 
     .back-navigation {
         margin-top: 1.5rem;

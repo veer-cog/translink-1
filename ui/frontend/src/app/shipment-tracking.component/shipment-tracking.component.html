@@ -8,7 +8,7 @@
     <div class="header-toolbar">
       <div class="search-wrapper">
         <i class="pi pi-search"></i>
-        <input type="text" placeholder="Search shipments..." (input)="onSearch($event)" />
+        <input type="text" placeholder="Search by ID or Customer..." (input)="onSearch($event)" />
       </div>
 
       <div class="filter-dropdown-wrapper">
@@ -30,44 +30,66 @@
 
   <div class="stats-grid">
     @for (stat of stats(); track stat.label) {
-    <app-stat-card [label]="stat.label" [value]="stat.value" [color]="stat.color" [icon]="stat.icon"></app-stat-card>
+    <app-stat-card [label]="stat.label" [value]="stat.value" [color]="stat.color" [icon]="stat.icon">
+    </app-stat-card>
     }
   </div>
 
   <div class="section-card">
     <div class="card-header-flex">
-      <h3>Shipment Management</h3>
-      <!-- <app-tab-filter [tabs]="['List','Map']" (tabChanged)="view = $event"></app-tab-filter>  -->
+      <h3>Active Shipments</h3>
+      <span class="count-badge">{{ filteredShipments().length }} Total</span>
     </div>
 
+    <app-generic-table [columns]="cols" [data]="filteredShipments()" title="Shipment Management">
 
-
-    <app-generic-table [columns]="cols" [data]="filteredShipments()" title="Active Shipments">
       <ng-template #customCell let-data="data" let-col="col">
-        @if (col.field === 'customer') {
+
+        @if (col.field === 'clientName') {
         <div class="customer-cell">
-          <span class="name">{{ data.customer }}</span>
-          <span class="id">{{ data.customerId }}</span>
+          <span class="name">{{ data.clientName }}</span>
+          <span class="id-subtext">{{ data.clientNumber }}</span>
         </div>
         }
-        @if (col.field === 'route') {
+
+        @if (col.field === 'displayRoute') {
         <div class="route-cell">
           <i class="pi pi-map-marker"></i>
-          <span>{{ data.route }}</span>
+          <span>{{ data.displayRoute }}</span>
         </div>
         }
-        @if (col.field === 'priority') {
-        <span class="priority-badge" [ngClass]="data.priority.toLowerCase()">
-          {{ data.priority }}
-        </span>
+
+        @if (col.field === 'vehiclePlate') {
+        <div class="vehicle-cell">
+          <i class="pi pi-truck"></i>
+          <span>{{ data.vehiclePlate }}</span>
+        </div>
+        }
+
+        @if (col.field === 'totalWeight') {
+        <span class="weight-text">{{ data.totalWeight }} <small>kg</small></span>
         }
       </ng-template>
+
       <ng-template #rowActions let-row>
-        <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
+        <button class="view-details-btn" (click)="viewDetails(row)">
+          View Details
+        </button>
       </ng-template>
+
     </app-generic-table>
 
+    @if (filteredShipments().length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-inbox"></i>
+      <p>No shipments found matching your criteria.</p>
+    </div>
+    }
   </div>
 </div>
-<app-book-shipment #bookShipmentModal (onSave)="onShipmentAdded($event)"></app-book-shipment>
+
+<app-book-shipment #bookShipmentModal [vehicles]="vehicles()" [routes]="routes()" [hubs]="hubs()"
+  (onSave)="onShipmentAdded($event)">
+</app-book-shipment>
+
 <app-details-card #detailsCard title="Shipment Details"></app-details-card>
