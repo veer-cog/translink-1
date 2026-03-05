@@ -1,110 +1,170 @@
-import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Ensure FormsModule is imported
+import { FormsModule } from '@angular/forms'; 
+import { RouteApiService } from '../services/route'; 
 import { Route } from '../route-plans/route-plans';
 
 @Component({
   selector: 'app-route-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CommonModule], 
   templateUrl: './routeform.html',
   styleUrl: './routeform.scss'
 })
 export class RouteFormComponent implements OnInit {
+  private apiService = inject(RouteApiService);
+
   @Input() routeData: Route | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<any>();
 
-  // Form Fields
-  vehicleId: string = '';
-  stops: any[] = [];
-  departureTime: string = '';
-  goal: string = 'Shortest Distance';
+  // --- Form State ---
+  vehicleId: string = ''; // Stores the Number Plate string
+  vehicles: any[] = [];   
+  hubs: any[] = [];
+  stops: any[] = [];      
+  isLoading: boolean = false;
   draggedItemIndex: number | null = null;
 
+  // ngOnInit() {
+  //   // 1. Immediately fetch vehicles and hubs on load
+  //   this.loadVehicles();
+  //   this.loadHubs();
+
+  //   if (this.routeData) {
+  //     this.vehicleId = this.routeData.vehicleID; 
+  //     this.stops = JSON.parse(JSON.stringify(this.routeData.stops));
+  //   } else {
+  //     this.stops = [
+  //       { city: '', type: 'start' },
+  //       { city: '', type: 'end' }
+  //     ];
+  //   }
+  // }
   ngOnInit() {
-    if (this.routeData) {
-      // If editing, fill the form
-      this.vehicleId = this.routeData.vehicleId;
-      // Map stops to a format the form can handle
-      this.stops = this.routeData.stops.map(s => ({ city: s.city, state: s.state, type: s.type }));
-    } else {
-      // Default empty stops for a new route
-      this.stops = [
-        { city: '', state: '', type: 'start' },
-        { city: '', state: '', type: 'end' }
-      ];
+  this.loadVehicles();
+  this.loadHubs();
+
+  if (this.routeData) {
+    this.vehicleId = this.routeData.vehicleID; 
+    
+    // CHANGE: Convert "Port A, Port B" string into the Array format the form uses
+    if (typeof this.routeData.stops === 'string') {
+      this.stops = this.routeData.stops.split(',').map((name, index, array) => {
+        let type = 'stop';
+        if (index === 0) type = 'start';
+        else if (index === array.length - 1) type = 'end';
+        
+        return { city: name.trim(), type: type };
+      });
     }
+  } else {
+    this.stops = [
+      { city: '', type: 'start' },
+      { city: '', type: 'end' }
+    ];
+  }
+}
+  loadVehicles() {
+    console.log("Attempting to fetch vehicles...");
+    this.apiService.getAvailableVehicles().subscribe({
+      next: (data) => {
+        this.vehicles = data;
+        console.log("VEHICLES ARRIVED:", this.vehicles);
+      },
+      error: (err) => {
+        console.error("HTTP Error fetching vehicles:", err);
+      }
+    });
+  }
+
+  loadHubs() {
+    this.apiService.getAllHubs().subscribe({
+      next: (data) => this.hubs = data,
+      error: (err) => console.error("Could not load hubs for dropdown", err)
+    });
   }
 
   addStop() {
-    // Insert new stop before the 'end' stop
-    const newStop = { city: '', state: '', type: 'stop' };
+    const newStop = { city: '', type: 'stop' };
     this.stops.splice(this.stops.length - 1, 0, newStop);
   }
 
-  submitForm() {
+  removeStop(index: number) {
+    this.stops.splice(index, 1);
+  }
+
+  optimizeAndSubmit() {
+    if (!this.vehicleId) {
+      alert("Please select a vehicle.");
+      return;
+    }
+
+    const stopNames = this.stops
+      .map(s => s.city)
+      .filter(city => city && city.trim().length > 0);
+
+    if (stopNames.length < 2) {
+      alert("Please provide at least a Start and End city.");
+      return;
+    }
+
     const payload = {
-      vehicleId: this.vehicleId,
-      stops: this.stops,
-      goal: this.goal
+      id: this.routeData?.id,
+      vehicleId: this.vehicleId, // String Plate
+      stopNames: stopNames
     };
-    this.submitted.emit(payload);
-  }
 
-  closeModal() {
-    this.close.emit();
-  }
+    //added
+   const request = this.routeData?.id 
+    ? this.apiService.updateRoute(this.routeData.id, payload) 
+    : this.apiService.createRoute(payload);
 
-  onDragStart(index: number) {
-  // We only allow dragging if it's a 'stop' type
-  if (this.stops[index].type === 'stop') {
-    this.draggedItemIndex = index;
-  }
-}
-
-onDrop(targetIndex: number) {
-  // Prevent dropping on Start (0) or End (last) or if nothing was dragged
-  if (this.draggedItemIndex === null || targetIndex === 0 || targetIndex === this.stops.length - 1) {
-    return;
-  }
-
-  // 1. Remove the dragged item from its current position
-  const movedItem = this.stops.splice(this.draggedItemIndex, 1)[0];
-
-  // 2. Insert it into the new position
-  this.stops.splice(targetIndex, 0, movedItem);
-
-  // 3. Reset
-  this.draggedItemIndex = null;
-}
-
-onCancel() {
-  // Reset stops to default empty state
-  this.stops = [
-    { city: '', state: '', type: 'start' },
-    { city: '', state: '', type: 'end' }
-  ];
-  this.vehicleId = '';
-  // Close the modal
-  this.closeModal();
-}
-
-optimizeAndSubmit() {
-  // 1. Keep Start and End fixed
-  const start = this.stops[0];
-  const end = this.stops[this.stops.length - 1];
-
-  // 2. Get the middle stops and sort them alphabetically by City
-  // (In a real app, this is where you'd call a distance calculation)
-  const middleStops = this.stops.slice(1, -1).sort((a, b) => {
-    return a.city.localeCompare(b.city);
+    this.isLoading = true;
+    
+  request.subscribe({
+    next: (savedRouteDTO) => {
+      this.isLoading = false;
+      this.submitted.emit(savedRouteDTO);
+      this.closeModal();
+    },
+    error: (err) => {
+      this.isLoading = false;
+      alert("Saving failed.");
+    }
   });
 
-  // 3. Reconstruct the array
-  this.stops = [start, ...middleStops, end];
 
-  // 4. Send the data to the parent component
-  this.submitForm();
+
+    // this.apiService.createRoute(payload).subscribe({
+    //   next: (savedRouteDTO) => {
+    //     this.isLoading = false;
+    //     this.submitted.emit(savedRouteDTO);
+    //     this.closeModal();
+    //   },
+    //   error: (err) => {
+    //     this.isLoading = false;
+    //     console.error("Save Error:", err);
+    //     alert("Optimization failed.");
+    //   }
+    // });
+  }
+
+  closeModal() { this.close.emit(); }
+  onCancel() { this.closeModal(); }
+
+  onDragStart(index: number) { 
+    if (this.stops[index].type === 'stop') this.draggedItemIndex = index; 
+  }
+
+  onDrop(targetIndex: number) {
+    if (this.draggedItemIndex === null || targetIndex === 0 || targetIndex === this.stops.length - 1) return;
+    const movedItem = this.stops.splice(this.draggedItemIndex, 1)[0];
+    this.stops.splice(targetIndex, 0, movedItem);
+    this.draggedItemIndex = null;
+  }
+
+  insertStopAt(index: number) {
+  this.stops.splice(index, 0, { city: '', type: 'stop' });
 }
 }

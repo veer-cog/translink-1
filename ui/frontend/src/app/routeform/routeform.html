@@ -9,39 +9,47 @@
       <div class="form-group">
         <label>Assign Vehicle</label>
         <select class="custom-input" [(ngModel)]="vehicleId">
-          <option value="TRK-101">TRK-101</option>
-          <option value="TRK-102">TRK-102</option>
-          <option value="TRK-103">TRK-103</option>
+          <option value="" disabled selected>-- Select Vehicle --</option>
+          <option *ngFor="let v of vehicles" [value]="v.numberPlate">
+            {{ v.numberPlate }} <span *ngIf="v.model">- {{ v.model }}</span>
+          </option>
         </select>
+        <small *ngIf="vehicles.length === 0" style="color: red;">No vehicles found in database.</small>
       </div>
 
-     
-<div class="form-group">
-  <label>Route Stops (Drag to reorder)</label>
-  <div *ngFor="let stop of stops; let i = index" 
-       class="stop-row"
-       [draggable]="stop.type === 'stop'" 
-       (dragstart)="onDragStart(i)"
-       (dragover)="$event.preventDefault()"
-       (drop)="onDrop(i)"
-       [class.draggable-item]="stop.type === 'stop'">
-    
-    <span class="drag-icon" *ngIf="stop.type === 'stop'">☰</span>
-    <span class="fixed-icon" *ngIf="stop.type !== 'stop'">📍</span>
+      <div class="form-group">
+        <label>Route Stops (Drag to reorder)</label>
+        <div *ngFor="let stop of stops; let i = index" 
+             class="stop-row"
+             [draggable]="stop.type === 'stop'" 
+             (dragstart)="onDragStart(i)"
+             (dragover)="$event.preventDefault()"
+             (drop)="onDrop(i)"
+             [class.draggable-item]="stop.type === 'stop'">
+          
+          <span class="drag-icon" *ngIf="stop.type === 'stop'">☰</span>
+          <span class="fixed-icon" *ngIf="stop.type !== 'stop'">📍</span>
 
-    <input type="text" 
-           [(ngModel)]="stop.city" 
-           [placeholder]="stop.type | uppercase" 
-           class="custom-input stop-input"
-           >
+          <select [(ngModel)]="stop.city" class="custom-input stop-input">
+            <option value="" disabled selected>-- Select {{ stop.type | uppercase }} --</option>
+            <option *ngFor="let h of hubs" [value]="h.hubName">{{ h.hubName }}</option>
+          </select>
+<div class="insert-line" *ngIf="i < stops.length - 1">
+     <button type="button" class="btn-insert" (click)="insertStopAt(i + 1)">+</button>
+  </div>          <button *ngIf="stop.type === 'stop'" class="btn-remove" (click)="removeStop(i)">×</button>
+        </div>
+        
+        <button class="btn-add-stop" (click)="addStop()">+ Add Stop</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+      
+      <button type="button" class="btn-submit" (click)="optimizeAndSubmit()" [disabled]="isLoading">
+        <i class="pi" [ngClass]="isLoading ? 'pi-spin pi-spinner' : 'pi-bolt'"></i>
+        {{ isLoading ? 'Processing...' : 'Optimize & Create' }}
+      </button>
+    </div>
   </div>
-  <button class="btn-add-stop" (click)="addStop()">+ Add Stop</button>
-</div>
-
-<div class="modal-actions">
-  <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
-  
-  <button type="button" class="btn-submit" (click)="optimizeAndSubmit()">
-    <i class="pi pi-bolt"></i> Optimize & Create
-  </button>
 </div>

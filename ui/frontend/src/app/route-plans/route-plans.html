@@ -1,4 +1,4 @@
-<p-card styleClass="route-plan-card">
+<!-- <p-card styleClass="route-plan-card">
   <div class="card-title-header" *ngIf="showHeader">
     <h2>Route Plans</h2>
   </div>
@@ -78,4 +78,112 @@
         (click)="onEditClick()">
       </button>
     </div>
-  </p-card>
+  </p-card> -->
+
+  <!-- <p-card styleClass="route-plan-card">
+  <div class="route-header">
+    <div class="left-block">
+      <div class="top-row">
+        <h4>{{ route.id }}</h4>
+        <p-tag [severity]="statusSeverity" [value]="route.status"></p-tag>
+      </div>
+      <div class="vehicle">Vehicle: <strong>{{ route.vehicleID }}</strong></div>
+    </div>
+    <div class="right-block">
+      <div class="cost-label">Estimated Cost</div>
+      <div class="cost">${{ route.costUSD || '0.00' }}</div>
+    </div>
+  </div>
+
+  <div class="timeline-container">
+    <p-timeline [value]="route.stops" align="left">
+      <ng-template let-stop pTemplate="content">
+        <div class="stop-content">
+          <span class="city">{{ stop.name }}</span>
+          <span class="type-label">{{ stop.type || 'Stop' }}</span>
+        </div>
+      </ng-template>
+    </p-timeline>
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <span class="label">Total Distance</span>
+      <span class="value">{{ route.totalDistance }} miles</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Estimated Time</span>
+      <span class="value">{{ route.totalDuration }} mins</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Shipments</span>
+      <span class="value">{{ route.shipmentsAssigned || 0 }} assigned</span>
+    </div>
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="actions">
+    <button *ngIf="route.status === 'Pending'" pButton label="Start" icon="pi pi-play" (click)="startRoute()"></button>
+    <button pButton label="Analysis" icon="pi pi-chart-bar" (click)="onViewAnalysis()"></button>
+    <button pButton label="Edit" icon="pi pi-pencil" (click)="onEditClick()"></button>
+  </div>
+</p-card>  -->
+<p-card styleClass="route-plan-card" *ngIf="route">
+  <div class="route-header">
+    <div class="left-block">
+      <div class="top-row">
+        <h4>{{ route.id }}</h4>
+        <p-tag [severity]="statusSeverity" [value]="route.status || 'Pending'"></p-tag>
+      </div>
+      <div class="vehicle">Vehicle: <strong>{{ route.vehicleID }}</strong></div>
+    </div>
+    <div class="right-block">
+      <div class="cost-label">Estimated Fuel Cost</div>
+      <div class="cost">${{ route.totalFuelExpense || '0.00' }}</div>
+    </div>
+  </div>
+
+  <div class="timeline-container">
+    <p-timeline [value]="stopsArray" align="left">
+      <ng-template let-stop pTemplate="content">
+        <div class="stop-content">
+          <span class="city">{{ stop.name }}</span>
+          
+          <span class="type-label">
+             {{ stop === stopsArray[0] ? 'Starting point' : 
+                stop === stopsArray[stopsArray.length - 1] ? 'Final destination' : 'Stop' }}
+          </span>
+        </div>
+      </ng-template>
+    </p-timeline>
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <span class="label">Total Distance</span>
+    <span class="value">{{ ((route.totalDistance || 0) * 1.60934) | number:'1.1-2' }} km</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Total Duration</span>
+      <span class="value">{{ route.totalDuration || 0 }} hrs</span>
+    </div>
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="actions">
+    <button pButton label="Map" icon="pi pi-map" class="p-button-outlined" (click)="viewOnMap()"></button>
+    
+    <button pButton label="Start" icon="pi pi-play" (click)="startRoute()" 
+            [disabled]="route.status === 'Active'"></button>
+            
+    <button pButton label="Analysis" icon="pi pi-chart-bar" class="p-button-secondary" (click)="onViewAnalysis()"></button>
+    
+    <button pButton label="Edit" icon="pi pi-pencil" class="p-button-text" (click)="onEditClick()"></button>
+  </div>
+</p-card>
