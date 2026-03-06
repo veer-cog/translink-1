@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { environment } from '../environments/environment'; // Use standard env for dev
+import { environment } from '../environments/environment'; 
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -42,25 +42,27 @@ getMaintenanceLogs(vehiclePlate: string): Observable<any[]> {
 }
 
   saveVehicle(vehicle: any): Observable<any> {
-  // The 'payload' keys must match the Java field names or @JsonProperty names
+  
   const payload = {
     id: vehicle.id || null, 
-    numberPlate: vehicle.numberPlate, // Ensure 'vehicleId' from your form maps to 'numberPlate'
-    dvrName: vehicle.dvrName,        // Matches 'private String dvrName' in Java
+    numberPlate: vehicle.numberPlate, 
+    dvrName: vehicle.dvrName,        
     capacity: parseFloat(vehicle.capacity),
     type: vehicle.type,
     status: vehicle.status || 'Active',
-    // Ensure 'location' from form (which is usually a Hub ID) maps to a Hub object
     hub: vehicle.hub && vehicle.hub.id ? { id: Number(vehicle.hub.id) } : null  };
 
-  console.log('Sending Payload:', payload); // Debug: Check this in your browser console
+  console.log('Sending Payload:', payload); 
   return this.http.post(this.baseUrl, payload, {  });
 }
 
-  deleteVehicle(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { 
-    });
-  }
+deleteVehicle(plate: string): Observable<any> { 
+  const headers = new HttpHeaders({
+    'X-Company-Id': this.authService.currentUser()?.companyId || ''
+  });
+
+  return this.http.delete(`${this.baseUrl}/${plate}`, { headers });
+}
 
  
   private mapToFrontend(v: any) {

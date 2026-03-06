@@ -81,7 +81,7 @@ export class BookShipmenComponent {
       const raw = this.shipmentForm.value;
       const payload = {
         ...raw,
-        vehicleId: Number(raw.vehicleId), // Ensures it matches your backend Long
+        vehicleId: (raw.vehicleId), // Ensures it matches your backend Long
         revenue: Number(raw.revenue),
         totalWeight: Number(raw.totalWeight)
       };

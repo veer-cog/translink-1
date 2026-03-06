@@ -39,15 +39,15 @@ export class FleetManagementComponent implements OnInit {
   @ViewChild('addHubModal') addHubModal!: AddHubComponent; 
   @ViewChild('addVehicleModal') addVehicleModal!: AddVehicleComponent;
 
-  // Dependency Injection
+  
   private router = inject(Router);
   private vehicleApi = inject(VehicleApi);
   private hubService = inject(HubApiService);
   private messageService = inject(MessageService);
   private http = inject(HttpClient);
-  public authService = inject(AuthService); // FIXED: properly injected AuthService
+  public authService = inject(AuthService); 
 
-  // Signals
+ 
   searchQuery = signal<string>('');
   activeFilter = signal<string>('all');
   fleetData = signal<any[]>([]);
@@ -84,7 +84,6 @@ export class FleetManagementComponent implements OnInit {
   handleVehicleSaved(vehicleData: any) {
     console.log('Save Response:', vehicleData)
     this.vehicleApi.saveVehicle(vehicleData).subscribe({
-       // Debug: Check this in your browser console
       next: (response) => {
         this.messageService.add({ 
           severity: 'success', 
@@ -97,7 +96,6 @@ export class FleetManagementComponent implements OnInit {
     });
   }
 
-  // In FleetManagementComponent
 handleHubSaved(hubData: any) {
   const headers = new HttpHeaders({
     'X-Company-Id': this.authService.currentUser()?.companyId?.toString() || '',
@@ -120,22 +118,29 @@ handleHubSaved(hubData: any) {
     this.addVehicleModal.show(vehicle);
   }
 
-  deleteVehicle(vehicle: any) {
-    if (confirm(`Permanently delete ${vehicle.vehicleId}?`)) {
-      this.vehicleApi.deleteVehicle(vehicle.id).subscribe({
-        next: () => {
-          this.fleetData.update(list => list.filter(v => v.id !== vehicle.id));
-          this.messageService.add({ severity: 'info', summary: 'Deleted', detail: 'Vehicle removed' });
-        },
-        error: () => this.showError('Failed to delete vehicle')
-      });
-    }
+  
+
+deleteVehicle(vehicle: any) {
+  // Pass vehicle.vehicleId (the string plate) instead of vehicle.id (the number)
+  if (confirm(`Permanently delete vehicle ${vehicle.vehicleId}?`)) {
+    this.vehicleApi.deleteVehicle(vehicle.vehicleId).subscribe({
+      next: () => {
+        // Filter the UI list by vehicleId
+        this.fleetData.update(list => list.filter(v => v.vehicleId !== vehicle.vehicleId));
+        this.messageService.add({ severity: 'info', summary: 'Deleted', detail: 'Vehicle removed' });
+      },
+      error: (err) => {
+        console.error(err);
+        this.showError('Failed to delete vehicle');
+      }
+    });
   }
+}
 
 viewDetails(vehicle: any) {
     const role = this.authService.currentUser()?.role?.toLowerCase();
     
-    // Navigate to the dynamic route: e.g., /admin/fleet/TRK-101
+    
     this.router.navigate([`/${role}/fleet`, vehicle.vehicleId]);
   }
 
@@ -143,7 +148,7 @@ viewDetails(vehicle: any) {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: msg });
   }
 
-  // Reactive Logic
+  
   filteredFleet = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const filter = this.activeFilter().toLowerCase();

@@ -3,7 +3,7 @@
     <div class="title-area">
       <h1>Fleet Management</h1>
       <p>Manage and monitor your vehicle fleet</p>
-    </div>
+    </div> 
 
     <div class="header-toolbar">
       <div class="search-wrapper">
@@ -25,7 +25,7 @@
         <button 
           *ngIf="authService.currentUser()?.role === 'ADMIN'" 
           class="add-btn-vibrant" 
-          style="background-color: #6366f1;" 
+          style="background-color: #1a1daf;" 
           (click)="addHubModal.show()">
             <i class="pi pi-map-marker"></i>
             <span>Add Hub</span>
