@@ -1,102 +1,104 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Table, TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
+import { Component, signal, ViewChild } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { SelectModule } from 'primeng/select'; // Updated to Select
-import { DatePicker } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select'; 
 import { FormsModule } from '@angular/forms';
+import { AuditService, AuditLog } from '../services/audit.service';
 
 @Component({
   selector: 'app-activity-logs',
   standalone: true,
-  imports: [
-    CommonModule, TableModule, TagModule, InputTextModule, 
-    ButtonModule, TooltipModule, SelectModule, DatePicker, FormsModule
-  ],
+  imports: [CommonModule, TableModule, DatePipe, InputTextModule, SelectModule, FormsModule],
   templateUrl: './activity-logs.component.html',
   styleUrl: './activity-logs.component.scss'
 })
-export class ActivityLogs implements OnInit {
+export class ActivityLogs {
   @ViewChild('dt') dt: Table | undefined;
 
-  logs: any[] = [];
-  statuses: any[] = [
-    { label: 'Info', value: 'info' },
-    { label: 'Warning', value: 'warning' },
-    { label: 'Danger', value: 'danger' }
+  // Signals for Table State
+  logs = signal<AuditLog[]>([]);
+  totalRecords = signal<number>(0);
+  loading = signal<boolean>(false);
+  
+  // Signals for Filters
+  searchValue = signal<string>('');
+  selectedService = signal<string | null>(null);
+
+  serviceOptions = [
+    { label: 'All Services', value: null },
+    { label: 'Vehicle', value: 'vehicle-service' },
+    { label: 'Route', value: 'ROUTESERVICE' },
+    { label: 'Shipment', value: 'ShipmentService' },
+    { label: 'Auth', value: 'AuthServices' },
+    { label: 'Audit', value: 'audit-service' },
+    { label: 'Analytics', value: 'analytics-service' }
   ];
 
-  ngOnInit() {
-    this.generateMockData();
+  constructor(private auditService: AuditService) {}
+
+  // Triggered by search input
+  onSearchChange(value: string) {
+    this.searchValue.set(value);
+    this.dt?.reset(); // Jumping back to page 0 triggers loadLogs automatically
   }
 
-  generateMockData() {
-    const types = ['SHIPMENT', 'VEHICLE', 'ROUTE'];
-    const severities = ['info', 'warning', 'danger'];
-    const operators = ['sarah.admin', 'robert.driver', 'system.monitor', 'john.logistics'];
-    
-    const mockLogs = [];
-    for (let i = 1; i <= 20; i++) {
-      const type = types[Math.floor(Math.random() * types.length)];
-      mockLogs.push({
-        id: 500 + i,
-        entityType: type,
-        entityId: `${type.substring(0, 3)}-${1000 + i}`,
-        activity: this.getActivityDescription(type, i),
-        performedBy: operators[Math.floor(Math.random() * operators.length)],
-        timestamp: new Date(2026, 0, 30, 8 + (i % 8), i * 2),
-        severity: severities[Math.floor(Math.random() * severities.length)]
-      });
+  // Triggered by dropdown
+  onServiceChange(value: string | null) {
+    this.selectedService.set(value);
+    this.dt?.reset();
+  }
+
+loadLogs(event: TableLazyLoadEvent) {
+  this.loading.set(true);
+
+  const page = (event.first || 0) / (event.rows || 10);
+  const size = event.rows || 10;
+  let sort = 'createdAt,desc';
+
+  if (event.sortField) {
+    const dir = event.sortOrder === 1 ? 'asc' : 'desc';
+    sort = `${event.sortField},${dir}`;
+  }
+
+  this.auditService.getLogs(
+    page, 
+    size, 
+    sort, 
+    this.searchValue(), 
+    this.selectedService() ?? undefined
+  ).subscribe({
+    next: (response: any) => {
+      // 1. Logs are in 'content'
+      this.logs.set(response.content || []);
+
+      // 2. totalElements is at the ROOT of your JSON
+      // We use the nullish coalescing operator just in case
+      const total = response.totalElements ?? 0;
+      this.totalRecords.set(total);
+
+      this.loading.set(false);
+    },
+    error: (err) => {
+      console.error("API Error:", err);
+      this.loading.set(false);
     }
-    this.logs = mockLogs;
+  });
+}
+  getServiceDetails(rawName: string) {
+    const name = rawName?.toLowerCase() || '';
+    if (name.includes('vehicle')) return { label: 'Vehicle', icon: 'pi-truck', color: '#3b82f6' };
+    if (name.includes('route')) return { label: 'Route', icon: 'pi-map', color: '#10b981' };
+    if (name.includes('shipment')) return { label: 'Shipment', icon: 'pi-box', color: '#f59e0b' };
+    if (name.includes('auth')) return { label: 'Auth', icon: 'pi-shield', color: '#6366f1' };
+    if (name.includes('audit')) return { label: 'Audit', icon: 'pi-history', color: '#64748b' };
+    if (name.includes('analytics')) return { label: 'Analytics', icon: 'pi-chart-bar', color: '#ec4899' };
+    return { label: 'System', icon: 'pi-cog', color: '#94a3b8' };
   }
 
-  getActivityDescription(type: string, i: number): string {
-    if (type === 'SHIPMENT') return `Package ${i % 2 === 0 ? 'Delivered' : 'Sorted at Hub'}`;
-    if (type === 'VEHICLE') return `Engine Health Check - ${i % 2 === 0 ? 'Passed' : 'Attention Required'}`;
-    return `Route ${100 + i} path recalculated due to traffic`;
-  }
-
-  onSearch(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    this.dt?.filterGlobal(query, 'contains');
-  }
-
-  exportCSV() {
-    this.dt?.exportCSV();
-  }
-
-  constructor(private router: Router) {}
-
-  navigateToEntity(entityType: string, entityId: string) {
-    const pathMap: { [key: string]: string } = {
-      'SHIPMENT': '/shipments/detail',
-      'VEHICLE': '/vehicles/detail',
-      'ROUTE': '/routes/analysis'
-    };
-    const targetPath = pathMap[entityType];
-    if (targetPath) this.router.navigate([targetPath, entityId]);
-  }
-
-  getEntityIcon(type: string): string {
-    switch(type) {
-      case 'SHIPMENT': return 'pi-box';
-      case 'VEHICLE': return 'pi-truck';
-      case 'ROUTE': return 'pi-map-marker';
-      default: return 'pi-info-circle';
-    }
-  }
-
-  getSeverityTag(severity: string): string {
-    switch(severity) {
-      case 'danger': return 'cancelled';
-      case 'warning': return 'booked';
-      case 'info': return 'transit';
-      default: return 'booked';
-    }
+  getSeverityTag(code: number): string {
+    if (code >= 200 && code < 300) return 'success';
+    if (code >= 400 && code < 500) return 'warning';
+    return 'danger';
   }
 }

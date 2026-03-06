@@ -1,115 +1,100 @@
 <div class="page-container">
-    <header class="page-header">
-        <div class="header-info">
-            <nav class="breadcrumb-nav">System / Activity Logs</nav>
-            <div class="title-with-badge">
-                <h1>Audit Activity Logs</h1>
-                <span class="status-pill transit live-pulse">Live Feed</span>
-            </div>
+    <div class="page-header">
+        <div class="title-area">
+            <h1>Audit Activity</h1>
+            <p>Real-time system monitoring and event tracking</p>
         </div>
 
-        <div class="action-area">
+        <div class="filter-bar">
             <div class="search-wrapper">
                 <i class="pi pi-search"></i>
-                <input type="text" pInputText (input)="onSearch($event)" placeholder="Global Search..."
-                    class="search-field" />
+                <input pInputText type="text" [ngModel]="searchValue()" (ngModelChange)="onSearchChange($event)"
+                    placeholder="Search email or endpoint..." />
             </div>
-            <button class="btn-secondary" (click)="dt.reset()"><i class="pi pi-filter-slash"></i> Reset</button>
-            <button class="add-btn-vibrant" (click)="exportCSV()">
-                <i class="pi pi-file-excel"></i> Export CSV
-            </button>
+
+            <div class="dropdown-wrapper">
+                <p-select [options]="serviceOptions" [ngModel]="selectedService()"
+                    (ngModelChange)="onServiceChange($event)" placeholder="All Services" class="modern-select">
+
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        <div class="selected-service-item" *ngIf="selectedOption && selectedOption.value">
+                            <i class="pi" [ngClass]="getServiceDetails(selectedOption.value).icon"
+                                [style.color]="getServiceDetails(selectedOption.value).color"></i>
+                            <span>{{ selectedOption.label }}</span>
+                        </div>
+                        <span *ngIf="!selectedOption || !selectedOption.value">All Services</span>
+                    </ng-template>
+
+                    <ng-template pTemplate="item" let-option>
+                        <div class="selected-service-item">
+                            <i class="pi" [ngClass]="getServiceDetails(option.value).icon"
+                                [style.color]="getServiceDetails(option.value).color"></i>
+                            <span>{{ option.label }}</span>
+                        </div>
+                    </ng-template>
+                </p-select>
+            </div>
         </div>
-    </header>
+    </div>
 
-    <div class="main-details-layout">
-        <section class="section-card no-padding">
-            <p-table #dt [value]="logs" [paginator]="true" [rows]="10"
-                [globalFilterFields]="['entityId', 'activity', 'performedBy', 'entityType']"
-                styleClass="custom-table activity-grid" [rowsPerPageOptions]="[5, 10, 20]"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [showCurrentPageReport]="true">
+    <div class="table-card">
+        <p-table #dt [value]="logs()" [lazy]="true" (onLazyLoad)="loadLogs($event)" [paginator]="true" [rows]="10"
+            [totalRecords]="totalRecords()" [loading]="loading()" styleClass="custom-table"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50, 100]">
 
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th pSortableColumn="timestamp" style="width: 18%">
-                            <div class="flex-align">
-                                Timestamp <p-sortIcon field="timestamp"></p-sortIcon>
-                                <p-columnFilter type="date" field="timestamp" display="menu"></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="width: 15%">
-                            <div class="flex-align">
-                                Source
-                                <p-columnFilter type="text" field="entityType" display="menu" [showMatchModes]="false"
-                                    [showOperator]="false" [showAddButton]="false"></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="width: 15%">Reference ID</th>
-                        <th style="width: 25%">Activity Details</th>
-                        <th style="width: 15%">
-                            <div class="flex-align">
-                                Operator
-                                <p-columnFilter type="text" field="performedBy" display="menu" [showMatchModes]="false"
-                                    [showOperator]="false" [showAddButton]="false"></p-columnFilter>
-                            </div>
-                        </th>
-                        <th style="width: 12%">
-                            <div class="flex-align">
-                                Status
-                                <p-columnFilter field="severity" matchMode="equals" display="menu"
-                                    [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
-                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                        <p-select [ngModel]="value" [options]="statuses"
-                                            (onChange)="filter($event.value)" placeholder="Any" [showClear]="true">
-                                            <ng-template let-option pTemplate="item">
-                                                <span class="status-pill"
-                                                    [ngClass]="getSeverityTag(option.value)">{{option.label}}</span>
-                                            </ng-template>
-                                        </p-select>
-                                    </ng-template>
-                                </p-columnFilter>
-                            </div>
-                        </th>
-                    </tr>
-                </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="createdAt" style="width: 180px">Timestamp <p-sortIcon
+                            field="createdAt"></p-sortIcon></th>
+                    <th style="width: 180px">Service</th>
+                    <th>Activity Details</th>
+                    <th>User Account</th>
+                    <th style="width: 100px">Status</th>
+                </tr>
+            </ng-template>
 
-                <ng-template pTemplate="body" let-log>
-                    <tr class="log-row">
-                        <td class="time-cell">
-                            <div class="date">{{ log.timestamp | date:'MMM dd, yyyy' }}</div>
-                            <div class="time">{{ log.timestamp | date:'hh:mm a' }}</div>
-                        </td>
-                        <td>
-                            <div class="entity-type-badge" [attr.data-type]="log.entityType">
-                                <i class="pi" [ngClass]="getEntityIcon(log.entityType)"></i>
-                                <span>{{ log.entityType }}</span>
+            <ng-template pTemplate="body" let-log>
+                @let service = getServiceDetails(log.serviceName);
+                <tr>
+                    <td>
+                        <div class="timestamp">
+                            <span class="date">{{ log.createdAt | date:'dd MMM yyyy' }}</span>
+                            <span class="time">{{ log.createdAt | date:'HH:mm:ss' }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="service-pill" [style.--accent]="service.color">
+                            <div class="icon-box">
+                                <i class="pi" [ngClass]="service.icon"></i>
                             </div>
-                        </td>
-                        <td>
-                            <span class="ref-id clickable" (click)="navigateToEntity(log.entityType, log.entityId)">
-                                {{ log.entityId }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="activity-desc">
-                                <span class="dot-indicator" [attr.data-severity]="log.severity"></span>
-                                <span class="text">{{ log.activity }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="user-chip">
-                                <div class="user-avatar">{{ log.performedBy.charAt(0).toUpperCase() }}</div>
-                                <span class="user-name">{{ log.performedBy }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-pill" [ngClass]="getSeverityTag(log.severity)">
-                                {{ log.severity }}
-                            </span>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </section>
+                            <span class="service-label">{{ service.label }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="activity-cell">
+                            <span class="method-tag">{{ log.method }}</span>
+                            <span class="endpoint-path">{{ log.endpoint }}</span>
+                        </div>
+                    </td>
+                    <td class="user-email">{{ log.userEmail }}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="getSeverityTag(log.statusCode)">
+                            {{ log.statusCode }}
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <i class="pi pi-inbox"></i>
+                        <p>No activity logs found for the selected filters.</p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
     </div>
 </div>

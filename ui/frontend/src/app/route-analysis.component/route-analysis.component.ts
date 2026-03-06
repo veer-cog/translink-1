@@ -3,56 +3,90 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
 import { TableModule } from 'primeng/table';
 import { TimelineModule } from 'primeng/timeline';
+import { RouteService } from '../services/route.service'; // Ensure correct service name
+import { forkJoin, of, switchMap, catchError, finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'app-route-analysis',
   standalone: true,
-  imports: [CommonModule, ButtonModule, CardModule, TagModule, TableModule, TimelineModule],
+  imports: [CommonModule, ButtonModule, CardModule, TableModule, TimelineModule],
   templateUrl: './route-analysis.component.html',
   styleUrl: './route-analysis.component.scss'
 })
 export class RouteAnalysis implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private routeApiService = inject(RouteService);
 
   routeId: string | null = null;
-shipmentCols = [
-    { field: 'id', header: 'Shipment ID' },
-    { field: 'customer', header: 'Customer' },
-    { field: 'weight', header: 'Weight' },
-    { field: 'priority', header: 'Priority' }
-  ];
-  // Mock Data mimicking your Shipment/Vehicle detail structure
-  routeDetail = {
-    id: 'RT-001',
-    status: 'In-Progress',
-    vehicleId: 'TRK-101',
-    driver: 'Robert Fox',
-    totalDistance: '285 miles',
-    estTime: '6h 30m',
-    efficiency: '94%',
-    cost: '$142.00',
-    stops: [
-      { city: 'New York', state: 'NY', type: 'Pickup', time: '08:00 AM', status: 'Completed' },
-      { city: 'Philadelphia', state: 'PA', type: 'Delivery', time: '11:30 AM', status: 'Arrived' },
-      { city: 'Baltimore', state: 'MD', type: 'Pickup', time: '02:45 PM', status: 'Pending' },
-      { city: 'Washington', state: 'DC', type: 'Final', time: '05:00 PM', status: 'Pending' }
-    ],
-    shipments: [
-      { id: 'SHP-1002', customer: 'Amazon', weight: '120kg', priority: 'High' },
-      { id: 'SHP-1005', customer: 'Walmart', weight: '450kg', priority: 'Medium' },
-      { id: 'SHP-1009', customer: 'Target', weight: '85kg', priority: 'Low' }
-    ]
-  };
+  loading: boolean = true;
+  routeData: any = null;
+  assignedShipments: any[] = [];
+  assignedVehicle: any = null;
 
   ngOnInit() {
     this.routeId = this.route.snapshot.paramMap.get('id');
+    if (this.routeId) {
+      this.loadAnalysis();
+    }
   }
 
+  loadAnalysis() {
+  this.loading = true;
+
+  this.routeApiService.getRouteById(this.routeId!).pipe(
+    switchMap((route: any) => {
+      // 1. Sync local routeData with the stops processing
+      this.routeData = this.formatStops(route);
+      
+      // 2. Identify the vehicle ID from your specific JSON key 'vehicleID'
+      const vId = route.vehicleID; 
+
+      return forkJoin({
+        shipments: this.routeApiService.getShipmentsByRouteId(this.routeId!)
+          .pipe(catchError(() => of([]))),
+        // Fetch full vehicle details using that ID
+        vehicle: vId 
+          ? this.routeApiService.getVehicleById(vId).pipe(catchError(() => of(null)))
+          : of(null)
+      });
+    }),
+    catchError(err => {
+      console.error("Analysis Stream Error:", err);
+      return of({ shipments: [], vehicle: null });
+    }),
+    finalize(() => this.loading = false)
+  ).subscribe(res => {
+    this.assignedShipments = res.shipments;
+    this.assignedVehicle = res.vehicle; // This should now contain the plateNumber
+  });
+}
+
+private formatStops(route: any) {
+  if (!route || !route.stops) return null;
+  const processedRoute = { ...route };
+
+  if (typeof route.stops === 'string') {
+    const stopArray = route.stops.split(',');
+    const totalStops = stopArray.length;
+
+    processedRoute.stops = stopArray.map((city: string, index: number) => {
+      const isLast = index === totalStops - 1;
+      
+      return {
+        city: city.trim(),
+        // Assign status 'destination' to the last one, others stay neutral
+        status: isLast ? 'destination' : (index === 0 ? 'origin' : 'transit'),
+        type: index === 0 ? 'Origin' : (isLast ? 'Destination' : 'Transit Stop')
+      };
+    });
+  }
+  return processedRoute;
+}
+
   goBack() {
-    this.router.navigate(['/admin/routes']);
+    this.router.navigate(['/admin/routeopt']);
   }
 }

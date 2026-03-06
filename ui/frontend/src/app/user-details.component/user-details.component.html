@@ -1,110 +1,120 @@
-<div class="dashboard-shell">
-    <aside class="sidebar-container">
-        <div class="sticky-wrapper">
-
-            <div class="sidebar-card profile-card">
-                <div class="avatar-box">
-                    <span class="initial">{{ user()?.name?.charAt(0) }}</span>
-                    <div class="status-dot"></div>
-                </div>
-                <h3>{{ user()?.name }}</h3>
-                <span class="role-badge">{{ user()?.role }}</span>
-            </div>
-
-            <div class="sidebar-card details-card">
-                <h4 class="card-title">System Identity</h4>
-                <div class="info-row">
-                    <span class="label">ID</span>
-                    <span class="value">{{ user()?.userId }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Email</span>
-                    <span class="value">{{ user()?.email }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Joined At</span>
-                    <span class="value">{{ user()?.joinedDate | date:'MMM yyyy' }}</span>
-                </div>
-            </div>
-
-            <div class="sidebar-card stats-card">
-                <h4 class="card-title">Entity Ownership</h4>
-                <div class="stat-item">
-                    <div class="stat-icon shipment"><i class="pi pi-box"></i></div>
-                    <div class="stat-text">
-                        <strong>124</strong>
-                        <label>Shipments</label>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon route"><i class="pi pi-map"></i></div>
-                    <div class="stat-text">
-                        <strong>18</strong>
-                        <label>Active Routes</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <main class="main-content">
-        <header class="content-header">
-            <div class="header-left">
-                <button class="btn-back" (click)="goBack()" title="Back to Directory">
-                    <i class="pi pi-arrow-left"></i>
+<div class="page-wrapper">
+    <header class="profile-hero">
+        <div class="hero-container">
+            <div class="user-meta">
+                <button class="back-link" (click)="goBack()">
+                    <i class="pi pi-chevron-left"></i>
                 </button>
-                <div class="title-group">
-                    <h1>Audit Traceability</h1>
-                    <p>System interactions for <strong>{{ user()?.name }}</strong></p>
+                <div class="avatar-large">
+                    {{ user()?.firstName?.charAt(0) }}
+                    <span class="status-indicator" [class.active]="user()?.active"></span>
+                </div>
+                <div class="name-stack">
+                    <h1>{{ user()?.firstName }} {{ user()?.lastName }}</h1>
+                    <p>{{ user()?.email }} • <span class="role-tag">{{ user()?.role }}</span></p>
                 </div>
             </div>
 
-            <div class="search-wrapper">
-                <i class="pi pi-search"></i>
-                <input type="text" placeholder="Search reference or operation..." (input)="onSearch($event)">
+            <div class="quick-stats">
+                <div class="stat-pill">
+                    <label>Audit Events</label>
+                    <strong>{{ totalRecords() }}</strong>
+                </div>
+                <div class="stat-pill">
+                    <label>Tenure</label>
+                    <strong>{{ daysJoined() }} Days</strong>
+                </div>
+                <div class="stat-pill success">
+                    <label>Account Status</label>
+                    <strong>{{ user()?.active ? 'Active' : 'Inactive' }}</strong>
+                </div>
             </div>
-        </header>
-
-        <div class="table-container shadow-v3">
-            <p-table #dt [value]="allLogs()" [paginator]="true" [rows]="10" styleClass="p-datatable-custom"
-                [globalFilterFields]="['entityId', 'action', 'entityType']">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th pSortableColumn="timestamp">Timestamp <p-sortIcon field="timestamp"></p-sortIcon></th>
-                        <th>Entity Class</th>
-                        <th>Reference ID</th>
-                        <th>Operation</th>
-                        <th>Status</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-log>
-                    <tr>
-                        <td class="time-cell">
-                            <span class="date">{{ log.timestamp | date:'MMM dd' }}</span>
-                            <span class="time">{{ log.timestamp | date:'HH:mm' }}</span>
-                        </td>
-                        <td>
-                            <span class="entity-chip" [attr.data-type]="log.entityType">
-                                {{ log.entityType }}
-                            </span>
-                        </td>
-                        <td class="ref-id">
-                            <code>{{ log.entityId }}</code>
-                        </td>
-                        <td class="op-cell">
-                            <span class="op-name">{{ log.action }}</span>
-                            <span class="op-details">{{ log.details }}</span>
-                        </td>
-                        <td>
-                            <div class="status-indicator" [ngClass]="log.severity">
-                                <i class="pi"
-                                    [ngClass]="log.severity === 'info' ? 'pi-check-circle' : 'pi-exclamation-triangle'"></i>
-                                <span>{{ log.severity === 'info' ? 'Verified' : 'Flagged' }}</span>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
         </div>
+    </header>
+
+    <main class="content-grid">
+        <section class="activity-section">
+            <div class="section-header">
+                <h2>Activity Traceability</h2>
+
+            </div>
+
+            <div class="table-card shadow-sm">
+                <p-table #dt [value]="logs()" [lazy]="true" (onLazyLoad)="loadUserLogs($event)" [paginator]="true"
+                    [rows]="10" [totalRecords]="totalRecords()" [loading]="loading()"
+                    [rowsPerPageOptions]="[10, 20, 50]" styleClass="p-datatable-custom">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 20%">Timestamp</th>
+                            <th style="width: 15%">Service</th>
+                            <th style="width: 10%">Method</th>
+                            <th>Endpoint</th>
+                            <th style="width: 10%">Status</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-log>
+                        <tr>
+                            <td>
+                                <div class="date-stack">
+                                    <span class="main-date">{{ log.createdAt | date:'dd MMM yyyy' }}</span>
+                                    <span class="sub-time">{{ log.createdAt | date:'HH:mm:ss' }}</span>
+                                </div>
+                            </td>
+                            <td><span class="badge-outline">{{ log.serviceName }}</span></td>
+                            <td><span class="method-label" [attr.data-method]="log.method">{{ log.method }}</span></td>
+                            <td><code class="endpoint-text">{{ log.endpoint }}</code></td>
+                            <td>
+                                <span class="status-chip" [class.error]="log.statusCode >= 400">
+                                    {{ log.statusCode }}
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </section>
+
+        <aside class="context-panel">
+            <div class="panel-card">
+                <h3>System Details</h3>
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <i class="pi pi-id-card"></i>
+                        <div>
+                            <label>External Reference</label>
+                            <span>{{ user()?.id }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="pi pi-building"></i>
+                        <div>
+                            <label>Organization</label>
+                            <span>{{ user()?.companyName || 'Standard Entity' }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="pi pi-calendar"></i>
+                        <div>
+                            <label>Provisioned On</label>
+                            <span>{{ user()?.createdAt | date:'longDate' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card security">
+                <h3>Security Health</h3>
+                <div class="security-status" [class.unsecured]="!user()?.mfaEnabled">
+                    <i [class]="user()?.mfaEnabled ? 'pi pi-verified' : 'pi pi-shield'"></i>
+                    <div class="status-info">
+                        <strong>MFA {{ user()?.mfaEnabled ? 'Enabled' : 'Disabled' }}</strong>
+                        <p>{{ user()?.mfaEnabled ? 'Multi-factor authentication is active.' : 'Account is currently at
+                            risk.' }}</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </main>
 </div>

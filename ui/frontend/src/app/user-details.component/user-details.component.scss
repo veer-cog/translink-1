@@ -1,171 +1,163 @@
-// Variables
+// --- Theme Variables ---
 $primary: #2563eb;
-$surface: #ffffff;
-$bg-app: #f1f5f9;
-$border: #e2e8f0;
-$text-main: #0f172a;
-$text-sub: #64748b;
+$primary-soft: #eef2ff;
+$text-dark: #111827;
+$text-light: #6b7280;
+$border-color: #e5e7eb;
+$bg-main: #f9fafb;
+$white: #ffffff;
 
-$shipment: #3b82f6;
-$route: #10b981;
-
-.dashboard-shell {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 2.5rem;
+.page-wrapper {
+  background: $bg-main;
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-// SIDEBAR STICKY CARDS
-.sidebar-container {
-  .sticky-wrapper {
-    position: sticky;
-    top: 2rem;
+// --- Header Hero Section ---
+.profile-hero {
+  background: $white;
+  border-bottom: 1px solid $border-color;
+  padding: 2.5rem 0;
+
+  .hero-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
     display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
-.sidebar-card {
-  background: $surface;
-  border-radius: 20px;
-  padding: 1.5rem;
-  border: 1px solid $border;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-
-  .card-title {
-    font-size: 0.7rem; font-weight: 800; color: $text-sub;
-    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;
-  }
-
-  &.profile-card {
-    text-align: center;
-    .avatar-box {
-      width: 70px; height: 70px; background: $primary; color: white; margin: 0 auto 1rem;
-      border-radius: 20px; display: flex; align-items: center; justify-content: center;
-      position: relative;
-      .initial { font-size: 1.8rem; font-weight: 800; }
-      .status-dot { 
-        position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px;
-        background: $route; border: 2.5px solid $surface; border-radius: 50%;
-      }
-    }
-    h3 { margin: 0; font-size: 1.25rem; font-weight: 800; color: $text-main; }
-    .role-badge { font-size: 0.7rem; font-weight: 700; color: $primary; margin-top: 4px; display: block; }
-  }
-
-  &.details-card {
-   .info-row {
-  display: flex; 
-  justify-content: space-between; 
+.user-meta {
+  display: flex;
   align-items: center;
-  padding: 0.8rem 0; // Changed from margin to padding for better line spacing
-  font-size: 0.85rem;
-  position: relative; // Required to anchor the absolute line
+  gap: 1.5rem;
 
-  .label { color: $text-sub; font-weight: 500; }
-  .value { color: $text-main; font-weight: 700; }
-  .accent { color: $primary; font-weight: 800; }
-
-  // The "indented" border logic
-  &:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 8px;   // Starts 8px from the left
-    right: 8px;  // Ends 8px from the right
-    height: 1px;
-    background-color: rgb(183, 182, 182);
-    opacity: 0.6; // Makes it look cleaner
-  }
-}
+  .back-link {
+    background: none; border: 1px solid $border-color; border-radius: 50%;
+    width: 36px; height: 36px; cursor: pointer; color: $text-light;
+    transition: all 0.2s;
+    &:hover { background: $primary; color: $white; border-color: $primary; }
   }
 
-  &.stats-card {
-    .stat-item {
-      display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
-      &:last-child { margin-bottom: 0; }
-      .stat-icon {
-        width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        &.shipment { background: rgba($shipment, 0.1); color: $shipment; }
-        &.route { background: rgba($route, 0.1); color: $route; }
-      }
-      .stat-text {
-        strong { display: block; font-size: 1rem; color: $text-main; }
-        label { font-size: 0.65rem; color: $text-sub; font-weight: 600; }
-      }
+  .avatar-large {
+    width: 64px; height: 64px; border-radius: 16px;
+    background: $primary; color: $white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 700; position: relative;
+
+    .status-indicator {
+      position: absolute; bottom: -4px; right: -4px; width: 14px; height: 14px;
+      border: 3px solid $white; border-radius: 50%; background: #9ca3af;
+      &.active { background: #10b981; }
     }
   }
-}
 
-// MAIN CONTENT & HEADER
-.main-content {
-  .content-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
-    
-    .header-left {
-      display: flex; align-items: center; gap: 1.25rem;
-      
-      .btn-back {
-        width: 40px; height: 40px; border-radius: 12px; border: 1px solid $border;
-        background: $surface; color: $text-main; cursor: pointer; transition: 0.2s;
-        display: flex; align-items: center; justify-content: center;
-        &:hover { background: $text-main; color: $surface; transform: translateX(-4px); }
-      }
-
-      h1 { font-size: 1.8rem; font-weight: 800; color: $text-main; margin: 0; }
-      p { margin: 2px 0 0; color: $text-sub; font-size: 0.95rem; }
-    }
+  .name-stack {
+    h1 { font-size: 1.5rem; font-weight: 800; color: $text-dark; margin: 0; }
+    p { color: $text-light; margin: 0.25rem 0 0; font-size: 0.9rem; }
+    .role-tag { color: $primary; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
   }
 }
 
-.search-wrapper {
-  position: relative;
-  i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: $text-sub; }
-  input { 
-    width: 320px; padding: 0.7rem 1rem 0.7rem 2.5rem; border-radius: 12px; border: 1px solid $border;
-    background: $surface; transition: 0.2s;
-    &:focus { outline: none; border-color: $primary; box-shadow: 0 0 0 4px rgba($primary, 0.1); }
+.quick-stats {
+  display: flex; gap: 1rem;
+  .stat-pill {
+    background: #f3f4f6; padding: 0.75rem 1.25rem; border-radius: 12px;
+    text-align: center; min-width: 110px;
+    label { display: block; font-size: 0.65rem; text-transform: uppercase; color: $text-light; font-weight: 700; }
+    strong { font-size: 1.1rem; color: $text-dark; }
+    &.success { background: #ecfdf5; strong { color: #065f46; } }
   }
 }
 
-// TABLE
-.table-container {
-  background: $surface; border-radius: 20px; border: 1px solid $border; padding: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+// --- Grid Layout ---
+.content-grid {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+}
+
+// --- Activity Table Styling ---
+.activity-section {
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;
+    h2 { font-size: 1.1rem; font-weight: 700; color: $text-dark; }
+  }
+}
+
+.table-card {
+  background: $white; border-radius: 12px; border: 1px solid $border-color;
+  overflow: hidden;
 }
 
 ::ng-deep .p-datatable-custom {
-  .p-datatable-thead > tr > th { 
-    background: transparent !important; color: $text-sub !important; font-size: 0.7rem !important; 
-    text-transform: uppercase; padding: 1.25rem 1rem !important; border-bottom: 2px solid $bg-app !important;
+  .p-datatable-thead > tr > th {
+    background: #f8fafc !important; color: $text-light !important; font-size: 0.7rem !important;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 1rem !important;
   }
-  .p-datatable-tbody > tr td { padding: 1.25rem 1rem !important; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+  .p-datatable-tbody > tr > td {
+    padding: 1rem !important; font-size: 0.85rem; border-bottom: 1px solid #f3f4f6;
+  }
 }
 
-.time-cell {
-  .date { display: block; font-weight: 700; color: $text-main; }
-  .time { font-size: 0.75rem; color: $text-sub; }
+.date-stack {
+  .main-date { display: block; font-weight: 600; color: $text-dark; }
+  .sub-time { font-size: 0.75rem; color: $text-light; }
 }
 
-.entity-chip {
-  padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800;
-  &[data-type="SHIPMENT"] { background: #eff6ff; color: $shipment; }
-  &[data-type="VEHICLE"] { background: #fef2f2; color: #ef4444; }
-  &[data-type="ROUTE"] { background: #f0fdf4; color: $route; }
+.badge-outline {
+  padding: 2px 8px; border: 1px solid $border-color; border-radius: 6px;
+  font-size: 0.75rem; color: $text-light; font-weight: 500;
 }
 
-.ref-id code { font-family: monospace; font-weight: 600; color: $text-main; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; }
-
-.op-cell {
-  .op-name { display: block; font-weight: 700; color: $text-main; }
-  .op-details { font-size: 0.75rem; color: $text-sub; }
+.method-label {
+  font-weight: 700; font-size: 0.7rem; color: $primary;
 }
 
-.status-indicator {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700;
-  &.info { color: $route; }
-  &.warning { color: #f59e0b; }
+.endpoint-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: $text-light;
+}
+
+.status-chip {
+  background: #ecfdf5; color: #065f46; padding: 2px 8px; border-radius: 100px; font-weight: 700;
+  &.error { background: #fee2e2; color: #991b1b; }
+}
+
+// --- Side Panel Styling ---
+.context-panel {
+  display: flex; flex-direction: column; gap: 1.5rem;
+
+  .panel-card {
+    background: $white; border-radius: 12px; border: 1px solid $border-color; padding: 1.5rem;
+    h3 { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: $text-light; margin-bottom: 1.25rem; }
+  }
+}
+
+.detail-list {
+  display: flex; flex-direction: column; gap: 1.25rem;
+  .detail-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    i { color: $primary; margin-top: 3px; }
+    label { display: block; font-size: 0.7rem; color: $text-light; font-weight: 600; }
+    span { font-size: 0.9rem; font-weight: 600; color: $text-dark; word-break: break-all; }
+  }
+}
+
+.security-status {
+  display: flex; gap: 1rem; padding: 1rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #d1fae5;
+  i { color: #059669; font-size: 1.5rem; }
+  strong { font-size: 0.9rem; color: #065f46; }
+  p { font-size: 0.75rem; color: #047857; margin: 2px 0 0; }
+
+  &.unsecured {
+    background: #fff7ed; border-color: #ffedd5;
+    i { color: #d97706; }
+    strong { color: #9a3412; }
+    p { color: #c2410c; }
+  }
 }

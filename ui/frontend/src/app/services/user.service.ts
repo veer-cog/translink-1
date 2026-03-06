@@ -30,11 +30,19 @@ export class UserService {
     return this.http.get<UserResponse[]>(`${this.API_BASE}/list`);
   }
 
+  getUserById(id: string): Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${this.API_BASE}/${id}`);
+  }
   createOperator(userData: any): Observable<any> {
     // Maps to @PostMapping("/create-operator") in UserController
     return this.http.post(`${this.API_BASE}/create-operator`, userData);
   }
 
+  updateUserStatus(id: string, active: boolean): Observable<UserResponse> {
+  return this.http.patch<UserResponse>(`${this.API_BASE}/${id}/status`, null, {
+    params: { active: active.toString() }
+  });
+}
   getMe(): Observable<UserResponse> {
     return this.http.get<UserResponse>(`${this.API_BASE}/me`);
   }

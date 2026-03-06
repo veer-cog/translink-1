@@ -23,7 +23,8 @@
                 <span class="nav-label">Settings</span>
 
             </a>
-            <a class="nav-item logout" [pTooltip]="isCollapsed ? 'Logout' : ''" tooltipPosition="right">
+            <a class="nav-item logout" [pTooltip]="isCollapsed ? 'Logout' : ''" tooltipPosition="right"
+                (click)="onLogout()">
                 <i class="pi pi-sign-out"></i>
                 <span class="nav-label">Logout</span>
             </a>
@@ -40,11 +41,6 @@
             </div>
 
             <div class="topbar-right">
-                <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"
-                    (onClick)="notifPopover.toggle($event)">
-                    <p-badge *ngIf="notifications().length > 0" [value]="notifications().length" severity="danger"
-                        class="notifications-num"></p-badge>
-                </p-button>
 
                 <div class="user-profile" (click)="userPopover.toggle($event)">
                     <span class="username">{{authService.currentUser()?.role}}</span>
@@ -53,36 +49,6 @@
             </div>
         </header>
 
-        <p-popover #notifPopover>
-            <div class="popover-header" *ngIf="notifications().length > 0">
-                <strong>Notifications</strong>
-                <p-button label="Clear All" [text]="true" size="small" (onClick)="clearAll()"></p-button>
-            </div>
-
-            <div class="popover-content notif-list">
-                @for (n of notifications(); track n.id) {
-                <div class="notif-item" (click)="navigateToIssue(n, notifPopover)">
-                    <div class="notif-icon" [ngClass]="n.type">
-                        <i class="pi" [ngClass]="n.type === 'error' ? 'pi-times-circle' : 'pi-info-circle'"></i>
-                    </div>
-                    <div class="notif-body">
-                        <span class="notif-title">{{n.title}}</span>
-                        <p class="notif-desc">{{n.desc}}</p>
-                        <span class="notif-time">{{n.time}}</span>
-                    </div>
-                    <div class="notif-actions">
-                        <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="secondary"
-                            (onClick)="clearNotification(n.id, $event)"></p-button>
-                    </div>
-                </div>
-                } @empty {
-                <div class="notif-empty-state">
-                    <i class="pi pi-bell-slash"></i>
-                    <p>No new notifications</p>
-                </div>
-                }
-            </div>
-        </p-popover>
 
         <p-popover #userPopover>
             <div class="user-menu">

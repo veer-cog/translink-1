@@ -1,110 +1,268 @@
-$primary-blue: #2563eb;
-$primary-vibrant: #3b82f6;
-$success-green: #10b981;
-$error-red: #ef4444;
-$warning-orange: #f59e0b;
-$text-main: #0f172a;
-$text-muted: #64748b;
-$bg-light: #f8fafc;
+// --- Variables & Tokens ---
+$text-main: #0f172a;       // Deep Slate
+$text-muted: #64748b;      // Muted Slate
+$primary: #2563eb;         // Indigo Blue
+$border: #e2e8f0;          // Soft Gray
+$bg-canvas: #f8fafc;       // Light Blue-Gray
 $white: #ffffff;
-$border-color: #e2e8f0;
+$control-height: 44px;     // Standard height for Search and Select
 
 .page-container {
-  padding: 2.5rem;
-  background-color: $bg-light;
+  padding: 3rem 4rem;
+  background: $bg-canvas;
   min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+// --- Page Header & Filter Bar ---
 .page-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+
+  h1 { 
+    font-size: 1.875rem; 
+    font-weight: 800; 
+    color: $text-main; 
+    letter-spacing: -0.04em; 
+    margin: 0; 
+  }
+  
+  p { 
+    color: $text-muted; 
+    margin: 4px 0 0 0; 
+    font-size: 0.95rem; 
+  }
+}
+
+.filter-bar {
+  display: flex;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 2rem;
-  h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: $text-main; letter-spacing: -0.04em; }
-}
 
-.action-area {
-  display: flex; gap: 12px;
-  .search-field {
-    height: 48px; border-radius: 12px; border: 1px solid $border-color;
-    padding-left: 3rem; width: 320px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    &:focus { border-color: $primary-blue; box-shadow: 0 0 0 4px rgba($primary-blue, 0.1); }
+  .search-wrapper {
+    position: relative;
+    width: 320px;
+    height: $control-height;
+
+    i { 
+      position: absolute; 
+      left: 1rem; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      color: #94a3b8; 
+      z-index: 2; 
+    }
+
+    input {
+      width: 100%;
+      height: 100%;
+      padding-left: 2.8rem;
+      border-radius: 10px;
+      border: 1px solid $border;
+      background: $white;
+      font-size: 0.875rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &:focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 4px rgba($primary, 0.08);
+        outline: none;
+      }
+    }
   }
 }
 
-.search-wrapper {
-  position: relative;
-  i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: $text-muted; z-index: 5; }
-}
+// --- PrimeNG Components (Deep Overrides) ---
+::ng-deep {
+  // Main Select Dropdown
+  .modern-select {
+    height: $control-height;
+    
+    .p-select {
+      height: 100% !important; 
+      width: 220px;
+      border-radius: 10px;
+      border: 1px solid $border;
+      background: $white;
+      display: flex;
+      align-items: center;
 
-.section-card {
-  background: $white; border-radius: 24px; border: 1px solid $border-color;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-}
+      .p-select-label {
+        padding: 0 1rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $text-main;
+      }
+      
+      .p-select-dropdown {
+        width: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-.custom-table {
-  ::ng-deep {
+      &:not(.p-disabled).p-focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 4px rgba($primary, 0.08);
+      }
+    }
+  }
+
+  // Table Customization
+  .custom-table {
+    background: $white;
+    border-radius: 16px;
+    border: 1px solid $border;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+
     .p-datatable-thead > tr > th {
-      background: #fafbfc !important; color: $text-muted !important;
-      font-size: 0.75rem !important; text-transform: uppercase; padding: 1.25rem !important;
-      border-bottom: 1px solid $border-color !important;
-      .flex-align { display: flex; align-items: center; gap: 8px; }
+      background: #fafbfc !important;
+      color: $text-muted !important;
+      font-size: 0.7rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1.25rem 1.5rem !important;
+      border-bottom: 2px solid #f1f5f9 !important;
     }
-    .p-paginator { border: none; padding: 1.5rem; background: #fff; border-top: 1px solid $border-color; }
-    .p-select { width: 100%; border-radius: 8px; }
-  }
 
-  .log-row {
-    transition: 0.2s;
-    &:hover { background-color: #f8faff }
-    td { padding: 1.25rem !important; border-bottom: 1px solid #f8fafc; }
-    .time-cell{
-        .date{
-            font-weight: 900;
+    .p-datatable-tbody > tr {
+      background: transparent;
+      transition: background 0.2s;
+
+      &:hover { background: #fcfdfe !important; }
+
+      td {
+        padding: 1.25rem 1.5rem !important;
+        border-bottom: 1px solid #f8fafc;
+        color: $text-main;
+        font-size: 0.85rem;
+      }
+    }
+
+    // Paginator & Rows Per Page Dropdown
+    .p-paginator {
+      border: none;
+      padding: 1rem 1.5rem;
+      background: $white;
+      border-top: 1px solid #f1f5f9;
+      justify-content: flex-end; // Align paginator to the right
+      gap: 1rem;
+
+      .p-paginator-pages .p-paginator-page.p-highlight {
+        background: rgba($primary, 0.1);
+        color: $primary;
+        border-radius: 8px;
+        font-weight: 700;
+      }
+
+      // Small Rows-Per-Page Select
+      .p-paginator-rpp-select {
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid $border;
+        background: $white;
+        margin-left: 0.5rem;
+        
+        .p-select-label {
+          padding: 0 0.5rem;
+          font-size: 0.8rem;
+          font-weight: 600;
         }
-        .time{
-            color: gray;
-        }
+      }
     }
   }
+}
 
-  .ref-id.clickable {
-    font-family: 'JetBrains Mono', monospace; font-weight: 700; color: $primary-blue;
-    background: rgba($primary-blue, 0.05); padding: 5px 10px; border-radius: 8px; cursor: pointer;
-    &:hover { background: $primary-blue; color: white; }
+// --- Table Cell Components ---
+.selected-service-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  
+  i {
+    font-size: 0.95rem;
+    line-height: 0; 
+  }
+  
+  span {
+    line-height: 1;
+    font-weight: 600;
   }
 }
 
-.entity-type-badge {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
-  border-radius: 10px; font-size: 0.7rem; font-weight: 800;
-  &[data-type="SHIPMENT"] { background: #eff6ff; color: #1e40af; }
-  &[data-type="VEHICLE"] { background: #fff1f2; color: #be123c; }
-  &[data-type="ROUTE"] { background: #f0fdf4; color: #15803d; }
+.timestamp {
+  .date { display: block; font-weight: 700; color: $text-main; margin-bottom: 2px; }
+  .time { font-size: 0.75rem; color: $text-muted; font-weight: 500; }
 }
 
-.user-chip {
-  display: flex; align-items: center; gap: 10px;
-  .user-avatar {
-    width: 32px; height: 32px; border-radius: 10px; background: #f1f5f9;
-    color: $primary-blue; display: flex; align-items: center; justify-content: center; font-weight: 800;
+.service-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  .icon-box {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: var(--accent);
+    i { font-size: 1rem; }
+  }
+
+  .service-label { 
+    font-weight: 600; 
+    color: $text-main; 
+    font-size: 0.9rem; 
   }
 }
 
-.status-pill {
-  padding: 6px 14px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-  &.transit { background: rgba($primary-blue, 0.1); color: $primary-blue; }
-  &.booked { background: rgba($warning-orange, 0.1); color: $warning-orange; }
-  &.cancelled { background: rgba($error-red, 0.1); color: $error-red; }
+.activity-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .method-tag {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0,0.03);
+  }
+
+  .endpoint-path {
+    color: $text-muted;
+    font-size: 0.8rem;
+    font-weight: 500;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
-.add-btn-vibrant {
-  background: linear-gradient(135deg, $primary-blue 0%, $primary-vibrant 100%);
-  color: white; border: none; padding: 0 1.5rem; height: 48px; border-radius: 12px; font-weight: 700; cursor: pointer;
-  box-shadow: 0 10px 15px -3px rgba($primary-blue, 0.3);
-}
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 
-.btn-secondary {
-  background: white; border: 1px solid $border-color; height: 48px; padding: 0 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer;
+  &.success { background: #dcfce7; color: #15803d; }
+  &.warning { background: #fef9c3; color: #854d0e; }
+  &.danger { background: #fee2e2; color: #991b1b; }
 }

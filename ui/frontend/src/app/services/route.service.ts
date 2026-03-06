@@ -39,4 +39,15 @@ export class RouteService {
   createRoute(route: Route): Observable<Route> {
     return this.http.post<Route>(this.apiUrl, route);
   }
+  // Add these methods to your RouteApiService
+
+getShipmentsByRouteId(routeId: string): Observable<any[]> {
+  // Calls the new endpoint we created in ShipmentController
+  return this.http.get<any[]>(`http://localhost:8080/shipments/route/${routeId}`);
+}
+
+getVehicleById(id: string | number): Observable<any> {
+  // Calls VehicleController
+  return this.http.get<any>(`http://localhost:8080/vehicles/id/${id}`);
+}
 }

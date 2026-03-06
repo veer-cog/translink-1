@@ -42,7 +42,8 @@ export class UserManagementComponent implements OnInit {
 
   userForm = new FormGroup({
     userId: new FormControl(''),
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
     role: new FormControl('OPERATOR', { nonNullable: true, validators: [Validators.required] }),
     active: new FormControl(true, { nonNullable: true })
@@ -121,31 +122,66 @@ loadUsers() {
     this.isEditMode.set(true);
     this.userForm.patchValue({
       userId: user.id,
-      name: user.fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       role: user.role,
       active: user.active
     });
+    this.userForm.get('firstName')?.disable();
+  this.userForm.get('lastName')?.disable();
+  this.userForm.get('email')?.disable();
+  this.userForm.get('role')?.disable();
+  this.userForm.get('active')?.enable(); // Ensure status is changeable
     this.displayDialog.set(true);
   }
 
-  saveUser() {
-    if (this.userForm.invalid) return;
-    const val = this.userForm.getRawValue();
-    
-    if (this.isEditMode()) {
-      this.messageService.add({ severity: 'warn', summary: 'Notice', detail: 'Edit functionality depends on profile update logic.' });
-    } else {
-      this.userService.createOperator(val).subscribe({
-        next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Operator added successfully' });
-          this.loadUsers();
-          this.displayDialog.set(false);
-        },
-        error: (err) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error?.message || 'Creation failed' });
-        }
-      });
-    }
+saveUser() {
+  if (this.userForm.invalid) return;
+  const val = this.userForm.getRawValue();
+  this.isLoading.set(true);
+
+  if (this.isEditMode()) {
+    // Call the specific status update method as requested
+    this.userService.updateUserStatus(val.userId||"test", val.active).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Updated', detail: 'User status changed' });
+        this.loadUsers(); // Refresh list
+        this.displayDialog.set(false);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Update failed' });
+        this.isLoading.set(false);
+      }
+    });
   }
+   else {
+    this.userService.createOperator(val).subscribe({
+      next: (response) => {
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Success', 
+          detail: 'Operator added successfully' 
+        });
+
+        // RESTART THE LIST: Fetch fresh data from the backend
+        this.loadUsers(); 
+
+        // UI Cleanup
+        this.displayDialog.set(false);
+        this.userForm.reset({ role: 'OPERATOR', active: true });
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: err.error?.message || 'Creation failed' 
+        });
+      }
+    });
+  }
+}
 }

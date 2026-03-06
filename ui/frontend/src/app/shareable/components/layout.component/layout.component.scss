@@ -150,7 +150,8 @@ $white: #ffffff;
   }
         .user-profile {
             display: flex; align-items: center; gap: 10px; padding: 6px 12px;
-            border-left: 1px solid var(--p-content-border-color); cursor: pointer; border-radius: 8px;
+             
+            cursor: pointer; border-radius: 8px;
             &:hover { background: #f1f5f9; }
             .username { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
         }

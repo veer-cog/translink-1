@@ -47,8 +47,12 @@
     [style]="{width: '450px'}">
     <form [formGroup]="userForm" class="user-form-grid">
         <div class="form-field">
-            <label>Full Name</label>
-            <input type="text" pInputText formControlName="name" />
+            <label>First Name</label>
+            <input type="text" pInputText formControlName="firstName" />
+        </div>
+        <div class="form-field">
+            <label>Last Name</label>
+            <input type="text" pInputText formControlName="lastName" />
         </div>
         <div class="form-field">
             <label>Email Address</label>
@@ -78,7 +82,7 @@
 
     <ng-template pTemplate="footer">
         <button pButton label="Cancel" class="p-button-text" (click)="displayDialog.set(false)"></button>
-        <button pButton label="Save Changes" class="p-button-primary" [disabled]="userForm.invalid"
-            (click)="saveUser()"></button>
+        <button pButton label="Save Changes" class="p-button-primary" [loading]="isLoading()"
+            [disabled]="userForm.invalid || isLoading()" (click)="saveUser()"></button>
     </ng-template>
 </p-dialog>

@@ -44,7 +44,6 @@ menuItems = computed(() => {
     
     // Admin Only
     { label: 'User Management', icon: 'pi pi-user', path: '/admin/users', roles: ['ADMIN'] },
-    { label: 'Compliance', icon: 'pi pi-shield', path: '/admin/compliance', roles: ['ADMIN'] },
     { label: 'Analytics & Reports', icon: 'pi pi-chart-bar', path: '/admin/analytics', roles: ['ADMIN'] },
     { label: 'Activity Logs', icon: 'pi pi-file', path: '/admin/activity-logs', roles: ['ADMIN'] },
     
