@@ -12,22 +12,24 @@
     </div>
 
     <div class="stats-grid">
-        <app-stat-card label="Total Vehicles" [value]="totalVehicles()" icon="pi pi-car" trend="+12%"
-            [isPositive]="true" color="#3b82f6">
-        </app-stat-card>
-
-        <app-stat-card label="Active Shipments" [value]="activeCount()" icon="pi pi-box" trend="+5%" [isPositive]="true"
-            color="#10b981">
-        </app-stat-card>
-
-        <app-stat-card label="Drivers on Duty" value="42" icon="pi pi-users" trend="-2%" [isPositive]="false"
-            color="#f59e0b">
-        </app-stat-card>
-
-        <app-stat-card label="Pending Alerts" [value]="shipments().length" icon="pi pi-bell" trend="Stable"
-            [isPositive]="true" color="#ef4444">
-        </app-stat-card>
+        <app-stat-card label="Total Vehicles" [value]="totalVehicles()" icon="pi pi-car"
+            color="#3b82f6"></app-stat-card>
+        <app-stat-card label="Active Shipments" [value]="activeCount()" icon="pi pi-box"
+            color="#10b981"></app-stat-card>
+        <app-stat-card label="Total Clients" [value]="shipments().length" icon="pi pi-users"
+            color="#f59e0b"></app-stat-card>
+        <app-stat-card label="System Alerts" value="0" icon="pi pi-bell" color="#ef4444"></app-stat-card>
     </div>
+
+    <div class="section-card chart-container" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h4 style="margin-bottom: 1rem;">Monthly Shipment Overview</h4>
+        @if (chartData()) {
+        <p-chart type="line" [data]="chartData()" [options]="chartOptions()" height="300px"></p-chart>
+        } @else {
+        <div class="loading-placeholder">Loading trends...</div>
+        }
+    </div>
+
     <div class="section-card">
         <div class="table-header">
             <h4>Recent Shipments</h4>
@@ -40,11 +42,9 @@
         </div>
 
         <app-generic-table [columns]="columns()" [data]="shipments()">
-
             <ng-template #rowActions let-row>
                 <a class="view-details-link" (click)="viewDetails(row)">View Details</a>
             </ng-template>
-
         </app-generic-table>
     </div>
 </div>

@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -28,10 +28,10 @@ export class Login implements OnDestroy {
   private authService = inject(AuthService);
   
   isLoading = signal(false);
+  isResetMode = signal(false); // New: Tracks if we are in "First Login" reset mode
   showOtp$ = this.authService.showOtp$; 
   formSubmitted = false;
   
-  // Timer for Resend OTP
   resendCountdown = signal(0);
   private timerSub?: Subscription;
 
@@ -45,6 +45,18 @@ export class Login implements OnDestroy {
     otpCode: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+  // New: Reset Form for First-Time Users
+  resetForm: FormGroup = this.fb.group({
+    newPassword: ['', [Validators.required, Validators.minLength(8)]],
+    confirmPassword: ['', Validators.required]
+  }, { validators: this.passwordMatchValidator });
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('newPassword');
+    const confirm = control.get('confirmPassword');
+    return password && confirm && password.value !== confirm.value ? { mismatch: true } : null;
+  }
+
   onSubmit() {
     this.formSubmitted = true;
     if (this.loginForm.valid) {
@@ -54,6 +66,8 @@ export class Login implements OnDestroy {
           this.isLoading.set(false);
           if (res.status === 'MFA_REQUIRED') {
             this.startResendTimer();
+          } else if (res.status === 'MUST_RESET_PASSWORD') {
+            this.isResetMode.set(true); // Switch UI to Reset Mode
           }
         },
         error: (err) => {
@@ -65,14 +79,38 @@ export class Login implements OnDestroy {
     }
   }
 
+  submitResetPassword() {
+    if (this.resetForm.invalid) return;
+    this.isLoading.set(true);
+    
+     const email = this.loginForm.get('email')?.value
+      const newPassword =  this.resetForm.get('newPassword')?.value
+    
+
+    this.authService.resetPassword(email,newPassword).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.isResetMode.set(false); // Return to login view
+        this.authService.messageService.add({ 
+          severity: 'success', 
+          summary: 'Success', 
+          detail: 'Password updated. Please sign in with your new password.' 
+        });
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.authService.messageService.add({ severity: 'error', summary: 'Reset Failed', detail: err.error?.message });
+      }
+    });
+  }
+
   submitOtp() {
     if (this.otpForm.invalid) return;
     this.isLoading.set(true);
-
     const email = this.loginForm.get('email')?.value;
     const code = this.otpForm.get('otpCode')?.value;
 
-    this.authService.verifyOtp(email, code,"LOGIN_MFA").subscribe({
+    this.authService.verifyOtp(email, code, "LOGIN_MFA").subscribe({
       next: () => this.isLoading.set(false),
       error: (err) => {
         this.isLoading.set(false);
@@ -85,7 +123,6 @@ export class Login implements OnDestroy {
   resendOtp() {
     if (this.resendCountdown() > 0) return;
     const email = this.loginForm.get('email')?.value;
-    
     this.authService.resendOtp(email, 'LOGIN_MFA').subscribe({
       next: () => {
         this.authService.messageService.add({ severity: 'info', summary: 'Sent', detail: 'A new code has been sent.' });

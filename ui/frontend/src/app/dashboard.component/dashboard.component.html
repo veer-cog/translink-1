@@ -1,47 +1,32 @@
-<div class="dashboard-container">
+<div class="dashboard-wrapper">
+
+
     <div class="stats-grid">
-        <app-stat-card label="Total Vehicles" value="248" icon="pi pi-car" trend="+12%" [isPositive]="true"
-            color="#3b82f6"> </app-stat-card>
-        <app-stat-card label="Active Shipments" value="85" icon="pi pi-box" trend="+5%" [isPositive]="true"
-            color="#10b981"> </app-stat-card>
-
-        <app-stat-card label="Drivers on Duty" value="42" icon="pi pi-users" trend="-2%" [isPositive]="false"
-            color="#f59e0b"> </app-stat-card>
-
-        <app-stat-card label="Pending Alerts" value="07" icon="pi pi-bell" trend="Stable" [isPositive]="true"
-            color="#ef4444"> </app-stat-card>
+        <app-stat-card label="Total Shipments" [value]="totalElements()" icon="pi pi-box"
+            color="#6366f1"></app-stat-card>
+        <app-stat-card label="Active Now" [value]="totalActive()" icon="pi pi-truck" color="#A5F951"></app-stat-card>
+        <app-stat-card label="Revenue" value="$42.5k" icon="pi pi-dollar" color="#10b981"></app-stat-card>
+        <app-stat-card label="System Health" value="Stable" icon="pi pi-shield" color="#3b82f6"></app-stat-card>
     </div>
 
-    <div class="charts-row">
-        <div class="chart-wrapper">
-            <app-dashboard-chart title="Shipment Analytics" type="line" [data]="shipmentChartData()"
-                [options]="shipmentChartOptions()" height="350px"></app-dashboard-chart>
+    <div class="content-layout">
+        <div class="main-column">
+
+            <div class="glass-card chart-box">
+                @if (shipmentChartData()) {
+                <app-dashboard-chart title="Monthly Performance" [data]="shipmentChartData()"></app-dashboard-chart>
+                } @else {
+                <div class="skeleton-loader">Loading trends...</div>
+                }
+            </div>
+
+            <div class="glass-card table-box">
+                <app-generic-table title="Recent Shipments" [columns]="shipmentCols" [data]="shipmentData()">
+                </app-generic-table>
+            </div>
         </div>
-        <div class="chart-wrapper">
-            <app-dashboard-chart title="Quarterly Revenue" type="bar" [data]="revenueChartData()"
-                height="350px"></app-dashboard-chart>
-        </div>
+
+
     </div>
 
-    <div class="bottom-row">
-
-        <app-generic-table title="Recent Shipments" [columns]="shipmentCols" [data]="shipmentData">
-        </app-generic-table>
-
-
-
-        <app-alert-list [alerts]="recentAlerts()"></app-alert-list>
-        <app-generic-table title="Fleet Overview" [columns]="vehicleCols" [data]="vehicleData">
-        </app-generic-table>
-    </div>
 </div>
-
-<app-tab-filter [tabs]="[ 'Table','Charts','Alerts']" (tabChanged)="view = $event">>
-</app-tab-filter>
-@switch (view) {
-@case('Alerts') { <app-alert-list [alerts]="recentAlerts()"></app-alert-list>}
-@case ('Charts') { <app-dashboard-chart title="Shipment Analytics" type="line" [data]="shipmentChartData()"
-    [options]="shipmentChartOptions()" height="350px"></app-dashboard-chart> }
-@default { <app-generic-table title="Recent Shipments" [columns]="shipmentCols" [data]="shipmentData">
-</app-generic-table> }
-}

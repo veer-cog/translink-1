@@ -1,91 +1,113 @@
-// Variables mapped to your MyDashboardPreset
+// Variables
 $gap-size: 1.5rem;
-$card-border-radius: var(--p-form-field-border-radius); // 12px
-$bg-dashboard: var(--p-surface-50);
-$border-color: var(--p-surface-200);
-$text-primary: var(--p-surface-900);
-$text-muted: var(--p-surface-500);
+$card-radius: 16px; // Slightly rounder for a modern look
+$glass-bg: rgba(var(--p-surface-0-rgb), 0.03); // Subtle glass effect
+$glass-border: 1px solid rgba(255, 255, 255, 0.08);
+$neon-accent: #A5F951; 
 
-// Shared Card Style
-%section-card {
-    background: var(--p-surface-0);
-    border-radius: $card-border-radius;
-    padding: 1.5rem;
-    border: 1px solid $border-color;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+// Shared Glass Effect
+%glass-card {
+    background: var(--p-surface-0); // Fallback
+    backdrop-filter: blur(10px);
+    border-radius: $card-radius;
+    
+    border: 1px solid var(--p-surface-200);
+    
+  
 }
+
 :host {
     display: block;
-    width: 100%;
-    min-height: 100%;
+    padding: 1.5rem;
+    background-color: var(--p-surface-50);
 }
 
-.dashboard-container {
+.dashboard-wrapper {
     display: flex;
     flex-direction: column;
     gap: $gap-size;
-    padding: 1rem 0;
-    max-width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 0.5rem;
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--p-surface-900);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            color: var(--p-surface-500);
+            margin: 0.25rem 0 0 0;
+            font-size: 1rem;
+        }
+    }
 }
 
+// 4-Column Grid for Stats
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: $gap-size;
 
     @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
-    @media (max-width: 768px) { grid-template-columns: 1fr; }
+    @media (max-width: 640px) { grid-template-columns: 1fr; }
 }
 
-.charts-row {
+// Main Content Layout
+.content-layout {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr; // Single column main flow
     gap: $gap-size;
-    align-items: stretch;
 
-    .chart-wrapper {
-        min-height: 400px;
-        height: 100%;
-        width: 100%;
-        & > app-dashboard-chart { display: block; height: 100%; }
+    .main-column {
+        display: flex;
+        flex-direction: column;
+        gap: $gap-size;
     }
 
-    @media (max-width: 992px) { grid-template-columns: 1fr; }
-}
-
-.bottom-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: $gap-size;
-    align-items: stretch;
-
-    .section-card { 
-        @extend %section-card; 
-        h4 { margin: 0 0 1rem 0; font-size: 1.1rem; color: $text-primary; }
-    }
-
-    .alerts-container {
-        max-height: 600px;
-        overflow: hidden;
-
-        .card-header {
+    .glass-card {
+        @extend %glass-card;
+        
+        &.chart-box {
+            min-height: 400px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-
-            .view-all-btn {
-                background: transparent;
-                border: none;
-                color: var(--p-primary-600);
-                font-weight: 600;
-                cursor: pointer;
-                font-size: 0.85rem;
-
-                &:hover { text-decoration: underline; color: var(--p-primary-700); }
+            flex-direction: column;
+            
+            app-dashboard-chart {
+                flex: 1;
+                width: 100%;
             }
         }
-    }
 
-    @media (max-width: 1024px) { grid-template-columns: 1fr; }
+        &.table-box {
+            overflow: hidden; // Keeps generic table corners clean
+             // Adjusted for table density
+        }
+    }
+}
+
+// Loading States
+.skeleton-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--p-surface-400);
+    font-style: italic;
+    background: linear-gradient(90deg, transparent, var(--p-surface-100), transparent);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }

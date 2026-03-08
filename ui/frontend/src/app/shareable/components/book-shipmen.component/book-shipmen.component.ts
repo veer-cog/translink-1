@@ -81,7 +81,11 @@ export class BookShipmenComponent {
       const raw = this.shipmentForm.value;
       const payload = {
         ...raw,
+<<<<<<< Updated upstream
         vehicleId: (raw.vehicleId), // Ensures it matches your backend Long
+=======
+        vehicleId: raw.vehicleId, // Ensures it matches your backend Long
+>>>>>>> Stashed changes
         revenue: Number(raw.revenue),
         totalWeight: Number(raw.totalWeight)
       };

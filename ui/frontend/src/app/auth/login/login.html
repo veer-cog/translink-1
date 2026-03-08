@@ -10,9 +10,13 @@
 
     <p-card class="login-card shadow-4">
         <div class="card-header">
-            @if (!(showOtp$ | async)) {
+            @if (!(showOtp$ | async) && !isResetMode()) {
             <h2>Welcome back</h2>
             <p>Sign in to your account to continue</p>
+            } @else if (isResetMode()) {
+            <i class="pi pi-key logo-icon-display"></i>
+            <h2>Update Password</h2>
+            <p>Your account requires a new password for security.</p>
             } @else {
             <i class="pi pi-shield logo-icon-display"></i>
             <h2>Verify Identity</h2>
@@ -21,7 +25,8 @@
         </div>
 
         <div class="login-form">
-            @if (!(showOtp$ | async)) {
+
+            @if (!(showOtp$ | async) && !isResetMode()) {
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="animate-fade">
                 <div class="input-group">
                     <label for="email" class="field-label">Email Address</label>
@@ -62,6 +67,37 @@
             </form>
             }
 
+            @else if (isResetMode()) {
+            <form [formGroup]="resetForm" (ngSubmit)="submitResetPassword()" class="animate-fade">
+                <div class="input-group">
+                    <label class="field-label">New Password</label>
+                    <p-password formControlName="newPassword" [toggleMask]="true" styleClass="w-full"
+                        [inputStyleClass]="'custom-input'" placeholder="Minimum 8 characters"></p-password>
+                </div>
+
+                <div class="input-group" style="margin-top: 1rem;">
+                    <label class="field-label">Confirm New Password</label>
+                    <p-password formControlName="confirmPassword" [toggleMask]="true" [feedback]="false"
+                        styleClass="w-full" [inputStyleClass]="'custom-input'"
+                        placeholder="Repeat password"></p-password>
+                    @if (resetForm.hasError('mismatch') && resetForm.get('confirmPassword')?.touched) {
+                    <div class="error-container"><small class="error-text">Passwords do not match.</small></div>
+                    }
+                </div>
+
+                <div class="login-button-wrapper" style="margin-top: 2rem;">
+                    <p-button label="Update & Continue" type="submit" styleClass="custom-btn" [loading]="isLoading()"
+                        [disabled]="resetForm.invalid"></p-button>
+                </div>
+
+                <div class="back-navigation">
+                    <a (click)="isResetMode.set(false)" class="footer-link">
+                        <i class="pi pi-arrow-left"></i> Back to Login
+                    </a>
+                </div>
+            </form>
+            }
+
             @else {
             <div class="animate-fade otp-section">
                 <form [formGroup]="otpForm" (ngSubmit)="submitOtp()" style="width: 100%;">
@@ -87,18 +123,15 @@
 
                 <div class="otp-footer">
                     @if (resendCountdown() > 0) {
-                    <p class="resend-timer">
-                        <i class="pi pi-clock"></i> Resend available in <strong>{{ resendCountdown() }}s</strong>
-                    </p>
+                    <p class="resend-timer"><i class="pi pi-clock"></i> Resend available in <strong>{{ resendCountdown()
+                            }}s</strong></p>
                     } @else {
                     <p>Didn't receive a code?</p>
                     <a (click)="resendOtp()" class="footer-link bold">Resend OTP</a>
                     }
 
                     <div class="back-navigation">
-                        <a (click)="cancelOtp()" class="footer-link">
-                            <i class="pi pi-arrow-left"></i> Back to Login
-                        </a>
+                        <a (click)="cancelOtp()" class="footer-link"><i class="pi pi-arrow-left"></i> Back to Login</a>
                     </div>
                 </div>
             </div>
