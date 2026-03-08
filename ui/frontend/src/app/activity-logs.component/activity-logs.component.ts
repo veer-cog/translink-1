@@ -1,9 +1,9 @@
 import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select'; 
-import { FormsModule } from '@angular/forms';
 import { AuditService, AuditLog } from '../services/audit.service';
 
 @Component({
@@ -16,12 +16,10 @@ import { AuditService, AuditLog } from '../services/audit.service';
 export class ActivityLogs {
   @ViewChild('dt') dt: Table | undefined;
 
-  // Signals for Table State
   logs = signal<AuditLog[]>([]);
   totalRecords = signal<number>(0);
   loading = signal<boolean>(false);
   
-  // Signals for Filters
   searchValue = signal<string>('');
   selectedService = signal<string | null>(null);
 
@@ -37,54 +35,61 @@ export class ActivityLogs {
 
   constructor(private auditService: AuditService) {}
 
-  // Triggered by search input
   onSearchChange(value: string) {
     this.searchValue.set(value);
-    this.dt?.reset(); // Jumping back to page 0 triggers loadLogs automatically
+    this.dt?.reset();
   }
 
-  // Triggered by dropdown
   onServiceChange(value: string | null) {
     this.selectedService.set(value);
     this.dt?.reset();
   }
 
-loadLogs(event: TableLazyLoadEvent) {
-  this.loading.set(true);
+  loadLogs(event: TableLazyLoadEvent) {
+    this.loading.set(true);
+    const page = (event.first || 0) / (event.rows || 10);
+    const size = event.rows || 10;
+    let sort = event.sortField ? `${event.sortField},${event.sortOrder === 1 ? 'asc' : 'desc'}` : 'createdAt,desc';
 
-  const page = (event.first || 0) / (event.rows || 10);
-  const size = event.rows || 10;
-  let sort = 'createdAt,desc';
-
-  if (event.sortField) {
-    const dir = event.sortOrder === 1 ? 'asc' : 'desc';
-    sort = `${event.sortField},${dir}`;
+    this.auditService.getLogs(page, size, sort, this.searchValue(), this.selectedService() ?? undefined)
+      .subscribe({
+        next: (response: any) => {
+          this.logs.set(response.content || []);
+          this.totalRecords.set(response.totalElements ?? 0);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false)
+      });
   }
 
-  this.auditService.getLogs(
-    page, 
-    size, 
-    sort, 
-    this.searchValue(), 
-    this.selectedService() ?? undefined
-  ).subscribe({
-    next: (response: any) => {
-      // 1. Logs are in 'content'
-      this.logs.set(response.content || []);
+  /**
+   * Translates technical logs into Human Readable text
+   */
+  getFriendlyActivity(log: AuditLog): { action: string, target: string } {
+    const endpoint = log.endpoint.toLowerCase();
+    const method = log.method.toUpperCase();
+    
+    let action = 'Accessed';
+    let target = 'System Resource';
 
-      // 2. totalElements is at the ROOT of your JSON
-      // We use the nullish coalescing operator just in case
-      const total = response.totalElements ?? 0;
-      this.totalRecords.set(total);
+    // Map Methods to Actions
+    if (method === 'GET') action = 'Viewed';
+    if (method === 'POST') action = 'Created';
+    if (method === 'PUT' || method === 'PATCH') action = 'Updated';
+    if (method === 'DELETE') action = 'Removed';
 
-      this.loading.set(false);
-    },
-    error: (err) => {
-      console.error("API Error:", err);
-      this.loading.set(false);
-    }
-  });
-}
+    // Map Endpoints to Targets
+    if (endpoint.includes('/auth') || endpoint.includes('/login')) target = 'Security Settings';
+    if (endpoint.includes('/vehicle')) target = 'Vehicle Fleet';
+    if (endpoint.includes('/route')) target = 'Transport Route';
+    if (endpoint.includes('/shipment')) target = 'Shipment Record';
+    if (endpoint.includes('/company')) target = 'Company Profile';
+    if (endpoint.includes('/audit')) target = 'Activity History';
+    if (endpoint.includes('/user')) target = 'User Account';
+
+    return { action, target };
+  }
+
   getServiceDetails(rawName: string) {
     const name = rawName?.toLowerCase() || '';
     if (name.includes('vehicle')) return { label: 'Vehicle', icon: 'pi-truck', color: '#3b82f6' };
@@ -92,7 +97,6 @@ loadLogs(event: TableLazyLoadEvent) {
     if (name.includes('shipment')) return { label: 'Shipment', icon: 'pi-box', color: '#f59e0b' };
     if (name.includes('auth')) return { label: 'Auth', icon: 'pi-shield', color: '#6366f1' };
     if (name.includes('audit')) return { label: 'Audit', icon: 'pi-history', color: '#64748b' };
-    if (name.includes('analytics')) return { label: 'Analytics', icon: 'pi-chart-bar', color: '#ec4899' };
     return { label: 'System', icon: 'pi-cog', color: '#94a3b8' };
   }
 

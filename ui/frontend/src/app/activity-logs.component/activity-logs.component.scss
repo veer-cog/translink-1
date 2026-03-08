@@ -1,268 +1,351 @@
-// --- Variables & Tokens ---
-$text-main: #0f172a;       // Deep Slate
-$text-muted: #64748b;      // Muted Slate
-$primary: #2563eb;         // Indigo Blue
-$border: #e2e8f0;          // Soft Gray
-$bg-canvas: #f8fafc;       // Light Blue-Gray
-$white: #ffffff;
-$control-height: 44px;     // Standard height for Search and Select
+:host {
+    display: block;
+    background-color: var(--p-surface-50);
+    min-height: 100vh;
+}
 
 .page-container {
-  padding: 3rem 4rem;
-  background: $bg-canvas;
-  min-height: 100vh;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-// --- Page Header & Filter Bar ---
+/* --- Header Section --- */
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
 
-  h1 { 
-    font-size: 1.875rem; 
-    font-weight: 800; 
-    color: $text-main; 
-    letter-spacing: -0.04em; 
-    margin: 0; 
-  }
-  
-  p { 
-    color: $text-muted; 
-    margin: 4px 0 0 0; 
-    font-size: 0.95rem; 
-  }
-}
-
-.filter-bar {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-
-  .search-wrapper {
-    position: relative;
-    width: 320px;
-    height: $control-height;
-
-    i { 
-      position: absolute; 
-      left: 1rem; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      color: #94a3b8; 
-      z-index: 2; 
+    .title-area {
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--p-surface-900);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+        p {
+            color: var(--p-surface-500);
+            margin: 0.25rem 0 0 0;
+        }
     }
 
-    input {
-      width: 100%;
-      height: 100%;
-      padding-left: 2.8rem;
-      border-radius: 10px;
-      border: 1px solid $border;
-      background: $white;
-      font-size: 0.875rem;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      
-      &:focus {
-        border-color: $primary;
-        box-shadow: 0 0 0 4px rgba($primary, 0.08);
-        outline: none;
-      }
-    }
-  }
-}
-
-// --- PrimeNG Components (Deep Overrides) ---
-::ng-deep {
-  // Main Select Dropdown
-  .modern-select {
-    height: $control-height;
-    
-    .p-select {
-      height: 100% !important; 
-      width: 220px;
-      border-radius: 10px;
-      border: 1px solid $border;
-      background: $white;
-      display: flex;
-      align-items: center;
-
-      .p-select-label {
-        padding: 0 1rem;
-        height: 100%;
+    .filter-bar {
         display: flex;
+        gap: 1rem;
         align-items: center;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: $text-main;
-      }
-      
-      .p-select-dropdown {
-        width: 2.5rem;
+
+        .search-wrapper {
+            position: relative;
+            i {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--p-surface-400);
+            }
+            input {
+                padding-left: 2.5rem;
+                width: 280px;
+                height: 42px;
+                border-radius: 8px;
+            }
+        }
+
+        
+    }
+}
+
+/* Move this to your GLOBAL styles.scss */
+
+.p-select-overlay {
+    margin-top: 4px;
+    border: 1px solid #e2e8f0; // var(--p-surface-200)
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: white;
+
+    .p-select-list {
+        padding: 0.5rem 0;
+    }
+
+    .p-select-item {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.6rem 0.75rem !important;
+        margin: 2px 8px;
+        border-radius: 6px;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #f1f5f9 !important; // var(--p-surface-100)
+        }
+
+        &.p-highlight {
+            background: #eff6ff !important; // var(--p-primary-50)
+            color: #1d4ed8 !important; // var(--p-primary-700)
+        }
+    }
+}
+
+/* Ensure the inner content is centered globally */
+.dropdown-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    
+    i {
+        font-size: 1.1rem;
+        width: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-
-      &:not(.p-disabled).p-focus {
-        border-color: $primary;
-        box-shadow: 0 0 0 4px rgba($primary, 0.08);
-      }
     }
-  }
 
-  // Table Customization
-  .custom-table {
-    background: $white;
-    border-radius: 16px;
-    border: 1px solid $border;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    .label-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1;
+    }
+}
+:host ::ng-deep {
+    /* Main Selection Box Alignment */
+    .modern-select {
+        .p-select-label {
+            display: flex;
+            align-items: center; // Vertical center
+            height: 100%;
+            padding: 0 0.75rem;
+        }
+    }
+
+    /* Shared Content Logic */
+    .dropdown-item-content {
+        display: flex;
+        align-items: center; // Perfect vertical alignment
+        gap: 12px;
+        height: 100%;
+        
+        i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .label-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--p-surface-700);
+            display: inline-block;
+            margin-top: 1px; // Tiny nudge for optical centering with icons
+        }
+    }
+
+    /* List Item Alignment Fix */
+    .p-select-item {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.6rem 0.75rem !important;
+        margin: 2px 4px;
+        border-radius: 6px;
+        min-height: 40px; // Matches the look of the selected box
+
+        // Removes PrimeNG's default internal padding that offsets the text
+        .p-select-item-label {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        &:hover {
+            background: var(--p-surface-100) !important;
+        }
+
+        &.p-highlight {
+            background: var(--p-primary-50) !important;
+            color: var(--p-primary-700) !important;
+            .label-text { color: var(--p-primary-700); }
+        }
+    }
+
+    /* Overlay Shadow and Border */
+    .p-select-overlay {
+        margin-top: 4px;
+        border: 1px solid var(--p-surface-200);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+}
+/* --- Table Styles --- */
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid var(--p-surface-200);
     overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
 
+:host ::ng-deep .custom-table {
     .p-datatable-thead > tr > th {
-      background: #fafbfc !important;
-      color: $text-muted !important;
-      font-size: 0.7rem !important;
-      font-weight: 700 !important;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 1.25rem 1.5rem !important;
-      border-bottom: 2px solid #f1f5f9 !important;
+        background: var(--p-surface-50);
+        color: var(--p-surface-600);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--p-surface-200);
     }
 
     .p-datatable-tbody > tr {
-      background: transparent;
-      transition: background 0.2s;
+        background: #ffffff;
+        transition: background 0.2s;
 
-      &:hover { background: #fcfdfe !important; }
-
-      td {
-        padding: 1.25rem 1.5rem !important;
-        border-bottom: 1px solid #f8fafc;
-        color: $text-main;
-        font-size: 0.85rem;
-      }
-    }
-
-    // Paginator & Rows Per Page Dropdown
-    .p-paginator {
-      border: none;
-      padding: 1rem 1.5rem;
-      background: $white;
-      border-top: 1px solid #f1f5f9;
-      justify-content: flex-end; // Align paginator to the right
-      gap: 1rem;
-
-      .p-paginator-pages .p-paginator-page.p-highlight {
-        background: rgba($primary, 0.1);
-        color: $primary;
-        border-radius: 8px;
-        font-weight: 700;
-      }
-
-      // Small Rows-Per-Page Select
-      .p-paginator-rpp-select {
-        height: 32px;
-        border-radius: 6px;
-        border: 1px solid $border;
-        background: $white;
-        margin-left: 0.5rem;
-        
-        .p-select-label {
-          padding: 0 0.5rem;
-          font-size: 0.8rem;
-          font-weight: 600;
+        &:hover {
+            background-color: var(--p-surface-50);
         }
-      }
+
+        & > td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--p-surface-100);
+            vertical-align: middle;
+        }
     }
-  }
 }
 
-// --- Table Cell Components ---
-.selected-service-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 100%;
-  
-  i {
-    font-size: 0.95rem;
-    line-height: 0; 
-  }
-  
-  span {
-    line-height: 1;
-    font-weight: 600;
-  }
-}
-
+/* --- Timestamp Column --- */
 .timestamp {
-  .date { display: block; font-weight: 700; color: $text-main; margin-bottom: 2px; }
-  .time { font-size: 0.75rem; color: $text-muted; font-weight: 500; }
-}
-
-.service-pill {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  
-  .icon-box {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
     display: flex;
+    flex-direction: column;
+    .date {
+        font-weight: 600;
+        color: var(--p-surface-900);
+        font-size: 0.9rem;
+    }
+    .time {
+        font-size: 0.8rem;
+        color: var(--p-surface-500);
+    }
+}
+
+/* --- Service/Department Pill --- */
+.service-pill {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    background: #f1f5f9;
-    color: var(--accent);
-    i { font-size: 1rem; }
-  }
-
-  .service-label { 
-    font-weight: 600; 
-    color: $text-main; 
-    font-size: 0.9rem; 
-  }
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    background-color: rgba(var(--accent), 0.1);
+    border: 1px solid rgba(var(--accent), 0.2); // Fallback if using hex directly
+    
+    // Applying the accent color to the text and icon
+    color: var(--accent); 
+    
+    i { font-size: 0.9rem; }
+    span {
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
 }
 
-.activity-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  .method-tag {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.7rem;
-    font-weight: 800;
-    padding: 3px 8px;
-    background: #f1f5f9;
-    color: #475569;
-    border-radius: 5px;
-    border: 1px solid rgba(0,0,0,0.03);
-  }
-
-  .endpoint-path {
-    color: $text-muted;
-    font-size: 0.8rem;
-    font-weight: 500;
-    max-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+/* --- Activity Column (Human Readable) --- */
+.human-activity {
+    .description {
+        margin-bottom: 0.25rem;
+        .action-verb {
+            font-weight: 700;
+            color: var(--p-primary-600);
+            margin-right: 0.35rem;
+        }
+        .target-name {
+            font-weight: 500;
+            color: var(--p-surface-800);
+        }
+    }
+    .tech-subtext {
+        font-family: 'Monaco', 'Consolas', monospace;
+        font-size: 0.7rem;
+        color: var(--p-surface-400);
+        background: var(--p-surface-50);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
 }
 
+/* --- User Column --- */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    .user-display-name {
+        font-weight: 600;
+        color: var(--p-surface-900);
+        text-transform: capitalize;
+    }
+    .full-email {
+        font-size: 0.75rem;
+        color: var(--p-surface-400);
+    }
+}
+
+/* --- Status Badges --- */
 .status-badge {
-  padding: 5px 12px;
-  border-radius: 100px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
 
-  &.success { background: #dcfce7; color: #15803d; }
-  &.warning { background: #fef9c3; color: #854d0e; }
-  &.danger { background: #fee2e2; color: #991b1b; }
+    i { font-size: 0.85rem; }
+
+    &.success {
+        background-color: #ecfdf5;
+        color: #059669;
+    }
+    &.warning {
+        background-color: #fff7ed;
+        color: #c2410c;
+    }
+    &.danger {
+        background-color: #fef2f2;
+        color: #dc2626;
+    }
+}
+
+/* --- Empty State --- */
+.empty-state {
+    text-align: center;
+    padding: 4rem !important;
+    i {
+        font-size: 3rem;
+        color: var(--p-surface-300);
+        margin-bottom: 1rem;
+    }
+    p {
+        color: var(--p-surface-500);
+        font-size: 1.1rem;
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        .filter-bar {
+            width: 100%;
+            .search-wrapper, .modern-select {
+                flex: 1;
+                input { width: 100%; }
+            }
+        }
+    }
 }
