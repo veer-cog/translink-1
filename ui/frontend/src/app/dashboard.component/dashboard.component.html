@@ -2,12 +2,19 @@
 
 
     <div class="stats-grid">
-        <app-stat-card label="Total Shipments" [value]="totalElements()" icon="pi pi-box"
-            color="#6366f1"></app-stat-card>
-        <app-stat-card label="Active Now" [value]="totalActive()" icon="pi pi-truck" color="#A5F951"></app-stat-card>
-        <app-stat-card label="Revenue" value="$42.5k" icon="pi pi-dollar" color="#10b981"></app-stat-card>
-        <app-stat-card label="System Health" value="Stable" icon="pi pi-shield" color="#3b82f6"></app-stat-card>
+        <app-stat-card label="Total Shipments" [value]="totalShipmentsCount()" icon="pi pi-box" color="#6366f1">
+        </app-stat-card>
+
+        <app-stat-card label="Active Shipments" [value]="activeDeliveries()" icon="pi pi-truck" color="#A5F951">
+        </app-stat-card>
+
+        <app-stat-card label="Revenue" [value]="totalRevenueValue()" icon="pi pi-dollar" color="#10b981">
+        </app-stat-card>
+
+        <app-stat-card label="Profit Margin" [value]="profitMargin()" icon="pi pi-chart-line" color="#3b82f6">
+        </app-stat-card>
     </div>
+
 
     <div class="content-layout">
         <div class="main-column">

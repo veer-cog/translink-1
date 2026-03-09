@@ -19,7 +19,9 @@
             </p>
         </div>
         <div class="action-area">
-            <button class="btn-secondary"><i class="pi pi-print"></i> Manifest</button>
+            <button class="btn-secondary" (click)="downloadManifest()">
+                <i class="pi pi-print"></i> Manifest
+            </button>
             <button class="add-btn-vibrant" (click)="openStatusModal()">
                 <i class="pi pi-check-square"></i> Update Status
             </button>

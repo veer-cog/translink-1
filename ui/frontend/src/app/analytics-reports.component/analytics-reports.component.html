@@ -6,7 +6,7 @@
     </div>
     <div class="action-wrap">
       <!-- <app-tab-filter [tabs]="timeTabs"></app-tab-filter> -->
-      <button class=" export-button "> <i class="pi pi-download"> </i> Export Report </button>
+      <button class=" export-button " (click)="exportReport()"> <i class="pi pi-download"> </i> Export Report </button>
     </div>
   </header>
 
@@ -39,7 +39,7 @@
       </div>
       <div class="cost-footer">
         <span>Total Operating Cost</span>
-        <strong>$119,300</strong>
+        <strong>${{totalOperatingCost().toLocaleString()}}</strong>
       </div>
     </div>
   </div>

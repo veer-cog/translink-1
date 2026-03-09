@@ -55,133 +55,79 @@
             }
         }
 
-        
+       
     }
 }
 
-/* Move this to your GLOBAL styles.scss */
-
-.p-select-overlay {
-    margin-top: 4px;
-    border: 1px solid #e2e8f0; // var(--p-surface-200)
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+:host ::ng-deep {
+  /* 1. THE TRIGGER BOX (Selected View) */
+  .modern-select {
+    height: 42px;
+    width: 240px;
     border-radius: 8px;
-    background: white;
+    border: 1px solid var(--p-surface-300);
 
+    .p-select-label {
+      padding: 0 12px !important;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  /* 2. THE LIST OVERLAY (Dropdown View) */
+  .p-select-overlay {
     .p-select-list {
-        padding: 0.5rem 0;
+      padding: 0 !important; // Remove container padding
     }
 
     .p-select-item {
+      padding: 0 !important; // Remove default item padding
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border-bottom: 1px solid var(--p-surface-100); // THE LINE
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      /* PrimeNG v18 wraps your template in this class */
+      .p-select-item-content {
         display: flex !important;
-        align-items: center !important;
-        padding: 0.6rem 0.75rem !important;
-        margin: 2px 8px;
-        border-radius: 6px;
-        transition: background 0.2s;
-
-        &:hover {
-            background: #f1f5f9 !important; // var(--p-surface-100)
-        }
-
-        &.p-highlight {
-            background: #eff6ff !important; // var(--p-primary-50)
-            color: #1d4ed8 !important; // var(--p-primary-700)
-        }
-    }
-}
-
-/* Ensure the inner content is centered globally */
-.dropdown-item-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    
-    i {
-        font-size: 1.1rem;
-        width: 20px;
-        display: flex;
         align-items: center;
-        justify-content: center;
+        padding: 0.75rem 1rem; // Add padding back here
+        width: 100%;
+      }
+      
+      &.p-select-option-selected {
+        background: var(--p-primary-50) !important;
+        .label-text { color: var(--p-primary-700); font-weight: 600; }
+      }
+    }
+  }
+
+  /* 3. SHARED TEMPLATE LOGIC (Forces Spacing) */
+  .dropdown-item-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important; // THE SPACE BETWEEN ICON AND TEXT
+    width: 100%;
+
+    i {
+      font-size: 1.1rem;
+      width: 20px;
+      min-width: 20px; // Prevent shrinking
+      display: flex;
+      justify-content: center;
     }
 
     .label-text {
-        font-size: 0.9rem;
-        font-weight: 500;
-        line-height: 1;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--p-surface-700);
+      white-space: nowrap;
     }
-}
-:host ::ng-deep {
-    /* Main Selection Box Alignment */
-    .modern-select {
-        .p-select-label {
-            display: flex;
-            align-items: center; // Vertical center
-            height: 100%;
-            padding: 0 0.75rem;
-        }
-    }
-
-    /* Shared Content Logic */
-    .dropdown-item-content {
-        display: flex;
-        align-items: center; // Perfect vertical alignment
-        gap: 12px;
-        height: 100%;
-        
-        i {
-            font-size: 1.1rem;
-            width: 20px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .label-text {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--p-surface-700);
-            display: inline-block;
-            margin-top: 1px; // Tiny nudge for optical centering with icons
-        }
-    }
-
-    /* List Item Alignment Fix */
-    .p-select-item {
-        display: flex !important;
-        align-items: center !important;
-        padding: 0.6rem 0.75rem !important;
-        margin: 2px 4px;
-        border-radius: 6px;
-        min-height: 40px; // Matches the look of the selected box
-
-        // Removes PrimeNG's default internal padding that offsets the text
-        .p-select-item-label {
-            width: 100%;
-            display: flex;
-            align-items: center;
-        }
-
-        &:hover {
-            background: var(--p-surface-100) !important;
-        }
-
-        &.p-highlight {
-            background: var(--p-primary-50) !important;
-            color: var(--p-primary-700) !important;
-            .label-text { color: var(--p-primary-700); }
-        }
-    }
-
-    /* Overlay Shadow and Border */
-    .p-select-overlay {
-        margin-top: 4px;
-        border: 1px solid var(--p-surface-200);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
+  }
 }
 /* --- Table Styles --- */
 .table-card {
