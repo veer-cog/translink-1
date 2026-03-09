@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        # Auth Service Route
+        - id: auth_service_route
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+
+        # User Service Route
+        - id: user_service_route
+          uri: lb://auth-service
+          predicates:
+            - Path=/users/**
+
+        # Vehicle Service Route (CRITICAL FIX)
+        - id: vehicle_service_route
+          uri: lb://vehicle-service
+          predicates:
+            - Path=/vehicles/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

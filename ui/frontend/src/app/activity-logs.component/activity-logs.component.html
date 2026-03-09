@@ -1,0 +1,110 @@
+<div class="page-container">
+    <div class="page-header">
+        <div class="title-area">
+            <h1>Audit Activity</h1>
+            <p>Real-time system monitoring and event tracking</p>
+        </div>
+
+        <div class="filter-bar">
+            <div class="search-wrapper">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" [ngModel]="searchValue()" (ngModelChange)="onSearchChange($event)"
+                    placeholder="Search by user email..." />
+            </div>
+            <div class="dropdown-wrapper">
+                <p-select [options]="serviceOptions" [ngModel]="selectedService()"
+                    (ngModelChange)="onServiceChange($event)" placeholder="All Services" styleClass="modern-select"
+                    appendTo="body">
+
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        <div class="dropdown-item-content">
+                            @if (selectedOption && selectedOption.value) {
+                            @let details = getServiceDetails(selectedOption.value);
+                            <i class="pi" [ngClass]="details.icon" [style.color]="details.color"></i>
+                            <span class="label-text">{{ selectedOption.label }}</span>
+                            } @else {
+                            <i class="pi pi-cog" style="color: #94a3b8"></i>
+                            <span class="label-text">All Services</span>
+                            }
+                        </div>
+                    </ng-template>
+
+                    <ng-template pTemplate="item" let-option>
+                        <div class="dropdown-item-content">
+                            @let details = getServiceDetails(option.value);
+                            <i class="pi" [ngClass]="details.icon" [style.color]="details.color"></i>
+                            <span class="label-text">{{ option.label }}</span>
+                        </div>
+                    </ng-template>
+                </p-select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <p-table #dt [value]="logs()" [lazy]="true" (onLazyLoad)="loadLogs($event)" [paginator]="true" [rows]="10"
+            [totalRecords]="totalRecords()" [loading]="loading()" styleClass="custom-table"
+            [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} logs">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="createdAt" style="width: 200px">Date & Time <p-sortIcon
+                            field="createdAt"></p-sortIcon></th>
+                    <th style="width: 150px">Department</th>
+                    <th>Activity Description</th>
+                    <th>Performed By</th>
+                    <th style="width: 120px">Result</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-log>
+                @let service = getServiceDetails(log.serviceName);
+                @let human = getFriendlyActivity(log);
+                <tr>
+                    <td>
+                        <div class="timestamp">
+                            <span class="date">{{ log.createdAt | date:'dd MMM yyyy' }}</span>
+                            <span class="time">{{ log.createdAt | date:'hh:mm a' }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="service-pill" [style.--accent]="service.color">
+                            <i class="pi" [ngClass]="service.icon"></i>
+                            <span>{{ service.label }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="human-activity">
+                            <div class="description">
+                                <span class="action-verb">{{ human.action }}</span>
+                                <span class="target-name">{{ human.target }}</span>
+                            </div>
+                            <small class="tech-subtext">{{ log.method }} • {{ log.endpoint }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="user-info">
+                            <span class="user-display-name">{{ log.userEmail.split('@')[0] }}</span>
+                            <small class="full-email">{{ log.userEmail }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge" [ngClass]="getSeverityTag(log.statusCode)">
+                            <i class="pi"
+                                [ngClass]="log.statusCode < 400 ? 'pi-check-circle' : 'pi-exclamation-triangle'"></i>
+                            {{ log.statusCode < 400 ? 'Success' : 'Failed' }} </span>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <i class="pi pi-search-plus"></i>
+                        <p>No activity logs match your current filters.</p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

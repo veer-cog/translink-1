@@ -1,0 +1,40 @@
+/* The Outer Track */
+.pill-track {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8e8e8; // Exact light gray from image_d8504a
+  padding: 4px;              // The "border" thickness of the gray track
+  border-radius: 100px;      // Perfect pill shape
+  user-select: none;
+  border: 1px solid rgba(0, 0, 0, 0.02); // Subtle definition
+}
+
+/* The Individual Buttons */
+.pill-item {
+  position: relative;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 6px 18px;         // Precise padding to match image_d86a70
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;          // Medium weight for unselected text
+  color: #1e293b;            // Dark slate text
+  border-radius: 100px;      // Each item is also pill-shaped
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+
+  /* Hover effect for grouped items */
+
+
+  /* The Active White Pill (The grouped "Active" state) */
+  &.active {
+    background-color: #ffffff; // Pure white
+    color: #000000;         // Semi-bold active text
+    
+    /* Exact Shadow from image_d84d05 */
+    box-shadow: 
+      0px 2px 4px rgba(0, 0, 0, 0.06), 
+      0px 1px 2px rgba(0, 0, 0, 0.04);
+  }
+}

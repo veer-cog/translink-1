@@ -1,0 +1,146 @@
+$text-main: #0f172a;
+$text-muted: #64748b;
+$primary-blue: #2563eb;
+$border-color: #e2e8f0;
+
+.page-container {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  .title-area h1 { font-size: 1.8rem; font-weight: 700; color: $text-main; margin: 0; }
+}
+
+.add-btn-vibrant {
+  background: $primary-blue;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  &:hover { background: #1d4ed8; }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.toolbar-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  width: 100%; // Ensure container covers full width
+
+  .search-wrapper {
+    position: relative;
+    flex: 1; // Allows search to grow and take remaining space
+    i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 2; }
+    input { 
+      width: 100%; 
+      padding-left: 48px !important; 
+      border-radius: 10px; 
+      background: #f1f5f9; 
+      border: 1px solid $border-color; 
+      height: 45px; // Fixed height
+    }
+  }
+
+  .filter-dropdown-wrapper {
+    flex: 0 0 200px; // Sets a standard width for the dropdown
+  }
+}
+
+
+.user-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    label { font-size: 0.85rem; font-weight: 700; color: $text-main; }
+  }
+}
+
+.status-toggle-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid $border-color;
+  background: #f0fdf4; 
+  transition: all 0.3s ease;
+
+  &.inactive-bg { background: #fef2f2; border-color: #fecaca; }
+
+  .status-info {
+    label { font-weight: 700; color: $text-main; display: block; }
+    p { font-size: 0.75rem; color: $text-muted; margin-top: 2px; }
+  }
+
+  .toggle-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    .status-label { font-size: 0.75rem; font-weight: 800; }
+  }
+}
+
+.divider { height: 1px; background: $border-color; margin: 0.5rem 0; }
+
+::ng-deep {
+  /* FIX FOR SEARCH AND DROPDOWN ALIGNMENT */
+  .p-select {
+    height: 45px !important; // Match search input height
+    border-radius: 10px !important;
+    display: flex;
+    align-items: center;
+    width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid $border-color !important;
+  }
+
+  /* MODAL OVERFLOW FIX */
+  .p-dialog-content {
+    overflow-y: visible !important;
+  }
+
+  /* DROPDOWN DEPTH FIX */
+  .p-select-overlay, .p-dropdown-panel {
+    z-index: 9999 !important;
+  }
+
+  /* TOGGLE COLORS */
+  .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider { background: #22c55e !important; }
+  .p-toggleswitch:not(.p-toggleswitch-checked) .p-toggleswitch-slider { background: #ef4444 !important; }
+  
+  /* TABLE STYLES */
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    &.active { background: #f0fdf4; color: #22c55e; }
+    &.inactive { background: #fef2f2; color: #ef4444; }
+    &.admin { background: #eff6ff; color: #3b82f6; }
+    &.operator { background: #faf5ff; color: #a855f7; }
+  }
+  .view-details-link { color: $text-main; font-weight: 700; cursor: pointer; &:hover { color: $primary-blue; text-decoration: underline; } }
+}

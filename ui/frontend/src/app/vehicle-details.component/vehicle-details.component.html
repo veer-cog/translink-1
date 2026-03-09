@@ -1,0 +1,84 @@
+<p-toast></p-toast>
+
+<div class="page-container">
+  <div class="page-header">
+    <div class="title-area">
+      <div class="breadcrumb-nav">
+        <a [routerLink]="['/', rolePath(), 'fleet']">Fleet</a> / 
+        <span>{{ vehicle()?.vehicleId }}</span>
+      </div>
+      
+      <div class="title-with-badge">
+        <h1>{{ vehicle()?.vehicleId }}</h1> 
+        <span class="status-pill" [ngClass]="getStatusClass(vehicle()?.status)">
+            {{ vehicle()?.status }}
+        </span>
+        </div>
+      
+      <p class="sub-text">
+        Vehicle Database ID: <strong>{{ vehicle()?.id }}</strong> | 
+        Type: {{ vehicle()?.type }}
+      </p>
+    </div>
+
+    <div class="action-area">
+      <button class="add-btn-vibrant" (click)="showMaintenanceDialog(vehicle()?.vehicleId)">
+        <i class="pi pi-wrench"></i> Log Maintenance
+      </button>
+
+      <app-log-maintenance 
+        #maintenanceModal 
+        (onSave)="handleRefresh($event)"> 
+      </app-log-maintenance>
+    </div>
+  </div>
+
+  <div class="main-details-layout">
+    <div class="left-column">
+      <app-generic-table 
+        [columns]="shipmentCols()" 
+        [data]="shipmentData()"
+        title="Recent Shipments">
+      </app-generic-table>
+    </div>
+
+    <div class="right-column">
+      <div class="section-card info-panel driver-panel">
+        <h4><i class="pi pi-user"></i> Assigned Driver</h4>
+        <div class="driver-profile">
+          <div class="avatar">
+            {{ vehicle()?.driver ? vehicle()?.driver[0] : '?' }}
+          </div>
+          <div class="profile-info">
+            <h5>{{ vehicle()?.driver || 'No Driver Assigned' }}</h5>
+            <span class="badge-lite">Active Duty</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-width-history">
+    <app-generic-table 
+      title="Maintenance History" 
+      [columns]="maintenanceCols()" 
+      [data]="maintenanceData()">
+      
+      <ng-template #rowActions let-log>
+        <div class="table-actions">
+          <button class="p-button-rounded p-button-text edit-btn" 
+                  (click)="editLog(log)" 
+                  title="Edit Log">
+            <i class="pi pi-pencil"></i>
+          </button>
+          
+          <button class="p-button-rounded p-button-text p-button-danger delete-btn" 
+                  (click)="deleteLog(log.id)" 
+                  title="Delete Log">
+            <i class="pi pi-trash"></i>
+          </button>
+        </div>
+      </ng-template>
+    </app-generic-table>
+  </div>
+</div>

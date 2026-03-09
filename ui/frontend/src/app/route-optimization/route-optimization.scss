@@ -1,0 +1,75 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Header Area
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 { font-size: 24px; font-weight: 700; color: #1e293b; margin: 0; }
+  p { color: #64748b; margin-top: 4px; }
+
+  .btn-create {
+    background-color: #1a6dff; // Exact blue from screenshot
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+}
+
+// The Top Grid (4 cards)
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 768px) { grid-template-columns: 1fr; }
+}
+::ng-deep {
+  // Logic for BLUE card
+  app-stat-card.blue .stat-card {
+    background-color: #eff6ff !important; // Very light blue
+    .icon-container {
+      background-color: #3b82f6 !important;
+      i { color: #ffffff !important; }
+    }
+  }
+
+  // Logic for PURPLE card
+  app-stat-card.purple .stat-card {
+    background-color: #f5f3ff !important; // Very light purple
+    .icon-container {
+      background-color: #8b5cf6 !important;
+      i { color: #ffffff !important; }
+    }
+  }
+
+  // Logic for ORANGE card
+  app-stat-card.orange .stat-card {
+    background-color: #fff7ed !important; // Very light orange
+    .icon-container {
+      background-color: #f59e0b !important;
+      i { color: #ffffff !important; }
+    }
+  }
+
+  // Logic for GREEN card (Only if you want a custom green)
+  app-stat-card.green .stat-card {
+    background-color: #f0fdf4 !important;
+    .icon-container {
+      background-color: #22c55e !important;
+      i { color: #ffffff !important; }
+    }
+  }
+}

@@ -1,0 +1,120 @@
+<div class="page-wrapper">
+    <header class="profile-hero">
+        <div class="hero-container">
+            <div class="user-meta">
+                <button class="back-link" (click)="goBack()">
+                    <i class="pi pi-chevron-left"></i>
+                </button>
+                <div class="avatar-large">
+                    {{ user()?.firstName?.charAt(0) }}
+                    <span class="status-indicator" [class.active]="user()?.active"></span>
+                </div>
+                <div class="name-stack">
+                    <h1>{{ user()?.firstName }} {{ user()?.lastName }}</h1>
+                    <p>{{ user()?.email }} • <span class="role-tag">{{ user()?.role }}</span></p>
+                </div>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-pill">
+                    <label>Audit Events</label>
+                    <strong>{{ totalRecords() }}</strong>
+                </div>
+                <div class="stat-pill">
+                    <label>Tenure</label>
+                    <strong>{{ daysJoined() }} Days</strong>
+                </div>
+                <div class="stat-pill success">
+                    <label>Account Status</label>
+                    <strong>{{ user()?.active ? 'Active' : 'Inactive' }}</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-grid">
+        <section class="activity-section">
+            <div class="section-header">
+                <h2>Activity Traceability</h2>
+
+            </div>
+
+            <div class="table-card shadow-sm">
+                <p-table #dt [value]="logs()" [lazy]="true" (onLazyLoad)="loadUserLogs($event)" [paginator]="true"
+                    [rows]="10" [totalRecords]="totalRecords()" [loading]="loading()"
+                    [rowsPerPageOptions]="[10, 20, 50]" styleClass="p-datatable-custom">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 20%">Timestamp</th>
+                            <th style="width: 15%">Service</th>
+                            <th style="width: 10%">Method</th>
+                            <th>Endpoint</th>
+                            <th style="width: 10%">Status</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-log>
+                        <tr>
+                            <td>
+                                <div class="date-stack">
+                                    <span class="main-date">{{ log.createdAt | date:'dd MMM yyyy' }}</span>
+                                    <span class="sub-time">{{ log.createdAt | date:'HH:mm:ss' }}</span>
+                                </div>
+                            </td>
+                            <td><span class="badge-outline">{{ log.serviceName }}</span></td>
+                            <td><span class="method-label" [attr.data-method]="log.method">{{ log.method }}</span></td>
+                            <td><code class="endpoint-text">{{ log.endpoint }}</code></td>
+                            <td>
+                                <span class="status-chip" [class.error]="log.statusCode >= 400">
+                                    {{ log.statusCode }}
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </section>
+
+        <aside class="context-panel">
+            <div class="panel-card">
+                <h3>System Details</h3>
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <i class="pi pi-id-card"></i>
+                        <div>
+                            <label>External Reference</label>
+                            <span>{{ user()?.id }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="pi pi-building"></i>
+                        <div>
+                            <label>Organization</label>
+                            <span>{{ user()?.companyName || 'Standard Entity' }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="pi pi-calendar"></i>
+                        <div>
+                            <label>Provisioned On</label>
+                            <span>{{ user()?.createdAt | date:'longDate' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card security">
+                <h3>Security Health</h3>
+                <div class="security-status" [class.unsecured]="!user()?.mfaEnabled">
+                    <i [class]="user()?.mfaEnabled ? 'pi pi-verified' : 'pi pi-shield'"></i>
+                    <div class="status-info">
+                        <strong>MFA {{ user()?.mfaEnabled ? 'Enabled' : 'Disabled' }}</strong>
+                        <p>{{ user()?.mfaEnabled ? 'Multi-factor authentication is active.' : 'Account is currently at
+                            risk.' }}</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+</div>

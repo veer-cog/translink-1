@@ -1,0 +1,142 @@
+<p-toast></p-toast>
+
+<div class="page-container">
+    <header class="page-header">
+        <div class="title-block">
+            <h2>Account & Settings</h2>
+            <p>Manage your personal profile, security, and organization preferences</p>
+        </div>
+        <div class="action-block">
+            <p-button label="Save Changes" icon="pi pi-check" (onClick)="saveData()" [disabled]="isSaveDisabled()"
+                [loading]="isLoading()">
+            </p-button>
+        </div>
+    </header>
+
+    <div class="main-layout-grid">
+        <div class="forms-column">
+            <div class="main-card">
+                <div class="tab-container">
+                    <app-tab-filter [tabs]="tabs" (tabChanged)="onTabChange($event)"></app-tab-filter>
+                </div>
+
+                @if (activeTab() === 'Profile') {
+                <div class="settings-content" [formGroup]="profileForm">
+                    <div class="section-header">
+                        <h3>Personal Information</h3>
+                        <p>Update your name and primary contact email.</p>
+                    </div>
+
+                    <div class="avatar-upload">
+                        <div class="avatar-circle">
+                            {{ userProfile()?.firstName?.charAt(0) || 'U' }}
+                        </div>
+                        <div class="upload-actions">
+                            <span>Profile identification is based on your account ID.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label>First Name</label>
+                            <input pInputText formControlName="firstName" placeholder="Enter first name" />
+                        </div>
+                        <div class="form-field">
+                            <label>Last Name</label>
+                            <input pInputText formControlName="lastName" placeholder="Enter last name" />
+                        </div>
+                        <div class="form-field full-width">
+                            <label>Email Address (Primary)</label>
+                            <input pInputText formControlName="email" class="w-full opacity-70" />
+                        </div>
+                    </div>
+                </div>
+                }
+
+                @if (activeTab() === 'Security') {
+                <div class="settings-content" [formGroup]="securityForm">
+                    <div class="section-header">
+                        <h3>Security & Access</h3>
+                        <p>Manage your password and multi-factor authentication preferences.</p>
+                    </div>
+
+                    <div class="form-grid mb-6">
+                        <div class="form-field full-width">
+                            <label>Current Password</label>
+                            <p-password formControlName="currentPassword" [feedback]="false" [toggleMask]="true"
+                                styleClass="w-full" inputStyleClass="w-full" placeholder="Enter current password">
+                            </p-password>
+                        </div>
+                        <div class="form-field">
+                            <label>New Password</label>
+                            <p-password formControlName="newPassword" [toggleMask]="true" styleClass="w-full"
+                                inputStyleClass="w-full" placeholder="Min. 6 characters">
+                            </p-password>
+                        </div>
+                        <div class="form-field">
+                            <label>Confirm New Password</label>
+                            <p-password formControlName="confirmPassword" [feedback]="false" [toggleMask]="true"
+                                styleClass="w-full" inputStyleClass="w-full" placeholder="Repeat new password">
+                            </p-password>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="action-list mt-4">
+                        <div class="action-item">
+                            <div class="text">
+                                <strong>Two-Factor Authentication (MFA)</strong>
+                                <p>Receive a security code via email whenever you log in.</p>
+                            </div>
+                            <p-toggleSwitch formControlName="mfaEnabled"></p-toggleSwitch>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                @if (activeTab() === 'Organization') {
+                <div class="settings-content" [formGroup]="orgForm">
+                    <div class="section-header">
+                        <h3>Organization Details</h3>
+                        <p>View your registered company information.</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field full-width">
+                            <label>Company Name</label>
+                            <input pInputText formControlName="companyName" class="w-full" />
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="sidebar-column">
+            <div class="content-card stats-card">
+                <h3>Account Overview</h3>
+                <div class="stat-mini">
+                    <span>Role</span>
+                    <strong class="role-highlight">{{ userProfile()?.role }}</strong>
+                </div>
+                <div class="stat-mini">
+                    <span>Email</span>
+                    <strong>{{ userProfile()?.email }}</strong>
+                </div>
+                <div class="stat-mini">
+                    <span>Organization</span>
+                    <strong>{{ userProfile()?.companyName }}</strong>
+                </div>
+            </div>
+
+            <div class="content-card activity-card mt-4">
+                <h3>System Identity</h3>
+                <div class="user-id-badge">
+                    <small>Unique Identifier</small>
+                    <code>{{ userProfile()?.id }}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

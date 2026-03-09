@@ -1,0 +1,297 @@
+:host {
+    display: block;
+    background-color: var(--p-surface-50);
+    min-height: 100vh;
+}
+
+.page-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* --- Header Section --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+
+    .title-area {
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--p-surface-900);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+        p {
+            color: var(--p-surface-500);
+            margin: 0.25rem 0 0 0;
+        }
+    }
+
+    .filter-bar {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .search-wrapper {
+            position: relative;
+            i {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--p-surface-400);
+            }
+            input {
+                padding-left: 2.5rem;
+                width: 280px;
+                height: 42px;
+                border-radius: 8px;
+            }
+        }
+
+       
+    }
+}
+
+:host ::ng-deep {
+  /* 1. THE TRIGGER BOX (Selected View) */
+  .modern-select {
+    height: 42px;
+    width: 240px;
+    border-radius: 8px;
+    border: 1px solid var(--p-surface-300);
+
+    .p-select-label {
+      padding: 0 12px !important;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  /* 2. THE LIST OVERLAY (Dropdown View) */
+  .p-select-overlay {
+    .p-select-list {
+      padding: 0 !important; // Remove container padding
+    }
+
+    .p-select-item {
+      padding: 0 !important; // Remove default item padding
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border-bottom: 1px solid var(--p-surface-100); // THE LINE
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      /* PrimeNG v18 wraps your template in this class */
+      .p-select-item-content {
+        display: flex !important;
+        align-items: center;
+        padding: 0.75rem 1rem; // Add padding back here
+        width: 100%;
+      }
+      
+      &.p-select-option-selected {
+        background: var(--p-primary-50) !important;
+        .label-text { color: var(--p-primary-700); font-weight: 600; }
+      }
+    }
+  }
+
+  /* 3. SHARED TEMPLATE LOGIC (Forces Spacing) */
+  .dropdown-item-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important; // THE SPACE BETWEEN ICON AND TEXT
+    width: 100%;
+
+    i {
+      font-size: 1.1rem;
+      width: 20px;
+      min-width: 20px; // Prevent shrinking
+      display: flex;
+      justify-content: center;
+    }
+
+    .label-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--p-surface-700);
+      white-space: nowrap;
+    }
+  }
+}
+/* --- Table Styles --- */
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid var(--p-surface-200);
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+:host ::ng-deep .custom-table {
+    .p-datatable-thead > tr > th {
+        background: var(--p-surface-50);
+        color: var(--p-surface-600);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--p-surface-200);
+    }
+
+    .p-datatable-tbody > tr {
+        background: #ffffff;
+        transition: background 0.2s;
+
+        &:hover {
+            background-color: var(--p-surface-50);
+        }
+
+        & > td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--p-surface-100);
+            vertical-align: middle;
+        }
+    }
+}
+
+/* --- Timestamp Column --- */
+.timestamp {
+    display: flex;
+    flex-direction: column;
+    .date {
+        font-weight: 600;
+        color: var(--p-surface-900);
+        font-size: 0.9rem;
+    }
+    .time {
+        font-size: 0.8rem;
+        color: var(--p-surface-500);
+    }
+}
+
+/* --- Service/Department Pill --- */
+.service-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    background-color: rgba(var(--accent), 0.1);
+    border: 1px solid rgba(var(--accent), 0.2); // Fallback if using hex directly
+    
+    // Applying the accent color to the text and icon
+    color: var(--accent); 
+    
+    i { font-size: 0.9rem; }
+    span {
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+}
+
+/* --- Activity Column (Human Readable) --- */
+.human-activity {
+    .description {
+        margin-bottom: 0.25rem;
+        .action-verb {
+            font-weight: 700;
+            color: var(--p-primary-600);
+            margin-right: 0.35rem;
+        }
+        .target-name {
+            font-weight: 500;
+            color: var(--p-surface-800);
+        }
+    }
+    .tech-subtext {
+        font-family: 'Monaco', 'Consolas', monospace;
+        font-size: 0.7rem;
+        color: var(--p-surface-400);
+        background: var(--p-surface-50);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+}
+
+/* --- User Column --- */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    .user-display-name {
+        font-weight: 600;
+        color: var(--p-surface-900);
+        text-transform: capitalize;
+    }
+    .full-email {
+        font-size: 0.75rem;
+        color: var(--p-surface-400);
+    }
+}
+
+/* --- Status Badges --- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    i { font-size: 0.85rem; }
+
+    &.success {
+        background-color: #ecfdf5;
+        color: #059669;
+    }
+    &.warning {
+        background-color: #fff7ed;
+        color: #c2410c;
+    }
+    &.danger {
+        background-color: #fef2f2;
+        color: #dc2626;
+    }
+}
+
+/* --- Empty State --- */
+.empty-state {
+    text-align: center;
+    padding: 4rem !important;
+    i {
+        font-size: 3rem;
+        color: var(--p-surface-300);
+        margin-bottom: 1rem;
+    }
+    p {
+        color: var(--p-surface-500);
+        font-size: 1.1rem;
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        .filter-bar {
+            width: 100%;
+            .search-wrapper, .modern-select {
+                flex: 1;
+                input { width: 100%; }
+            }
+        }
+    }
+}

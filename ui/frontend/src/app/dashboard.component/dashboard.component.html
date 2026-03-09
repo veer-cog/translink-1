@@ -1,0 +1,39 @@
+<div class="dashboard-wrapper">
+
+
+    <div class="stats-grid">
+        <app-stat-card label="Total Shipments" [value]="totalShipmentsCount()" icon="pi pi-box" color="#6366f1">
+        </app-stat-card>
+
+        <app-stat-card label="Active Shipments" [value]="activeDeliveries()" icon="pi pi-truck" color="#A5F951">
+        </app-stat-card>
+
+        <app-stat-card label="Revenue" [value]="totalRevenueValue()" icon="pi pi-dollar" color="#10b981">
+        </app-stat-card>
+
+        <app-stat-card label="Profit Margin" [value]="profitMargin()" icon="pi pi-chart-line" color="#3b82f6">
+        </app-stat-card>
+    </div>
+
+
+    <div class="content-layout">
+        <div class="main-column">
+
+            <div class="glass-card chart-box">
+                @if (shipmentChartData()) {
+                <app-dashboard-chart title="Monthly Performance" [data]="shipmentChartData()"></app-dashboard-chart>
+                } @else {
+                <div class="skeleton-loader">Loading trends...</div>
+                }
+            </div>
+
+            <div class="glass-card table-box">
+                <app-generic-table title="Recent Shipments" [columns]="shipmentCols" [data]="shipmentData()">
+                </app-generic-table>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

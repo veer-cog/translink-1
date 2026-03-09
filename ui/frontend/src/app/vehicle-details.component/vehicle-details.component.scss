@@ -1,0 +1,147 @@
+$primary-blue: #2563eb;
+$primary-vibrant: #3b82f6;
+$success-green: #10b981;
+$warning-orange: #f59e0b;
+$danger-red: #ef4444;
+$text-main: #0f172a;
+$text-muted: #64748b;
+$bg-light: #f8fafc;
+$border-color: #e2e8f0;
+
+.page-container {
+    padding: 1.5rem 2rem;
+    background-color: $bg-light;
+    min-height: 100vh;
+}
+
+/* Header & Breadcrumbs */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    .breadcrumb-nav {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        color: $text-muted;
+        a { color: $primary-blue; text-decoration: none; &:hover { text-decoration: underline; } }
+    }
+
+    .title-with-badge {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        h1 { margin: 0; font-size: 1.75rem; font-weight: 800; color: $text-main; }
+    }
+
+    .sub-text { font-size: 0.9rem; color: $text-muted; margin-top: 0.25rem; }
+}
+
+/* Grid for Shipments and Driver */
+.main-details-layout {
+    display: grid;
+    grid-template-columns: 3fr 1fr; // Left is 75%, Right is 25%
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr; // Stack on tablets/mobile
+    }
+}
+
+/* Section Cards */
+.section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+    h4 { margin: 0 0 1.25rem 0; font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+}
+
+/* Driver Profile Panel (Narrow version) */
+.driver-profile {
+    display: flex;
+    flex-direction: column; // Stack for narrow look
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+
+    .avatar {
+        width: 60px; height: 60px; background: $primary-blue;
+        color: white; border-radius: 50%; display: flex;
+        align-items: center; justify-content: center; font-weight: 700; font-size: 1.5rem;
+    }
+
+    .profile-info {
+        h5 { margin: 0; font-size: 1rem; }
+        .badge-lite { font-size: 0.75rem; color: $success-green; font-weight: 600; }
+    }
+}
+
+/* Full Width History Section */
+.full-width-history {
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+/* Table Actions (Edit & Delete) */
+.table-actions {
+    display: flex;
+    gap: 8px;
+
+    button {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: background 0.2s;
+
+        i { font-size: 1.1rem; }
+
+        &.edit-btn {
+            color: $primary-blue;
+            &:hover { background: rgba($primary-blue, 0.1); }
+        }
+
+        &.delete-btn {
+            color: $danger-red;
+            &:hover { background: rgba($danger-red, 0.1); }
+        }
+    }
+}
+
+/* Log Maintenance Button */
+.add-btn-vibrant {
+    height: 44px;
+    padding: 0 1.5rem;
+    background: linear-gradient(135deg, $primary-blue 0%, $primary-vibrant 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba($primary-blue, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s;
+
+    &:active { transform: translateY(1px); }
+}
+
+/* Status Pill Styles */
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    
+    &.status-active { background: rgba($success-green, 0.1); color: $success-green; }
+    &.status-warning { background: rgba($warning-orange, 0.1); color: $warning-orange; }
+    &.status-danger { background: rgba($danger-red, 0.1); color: $danger-red; }
+}

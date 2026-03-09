@@ -1,0 +1,172 @@
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px; // Padding for small screens
+}
+
+.modal-card {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column; // Stack header, body, and actions
+  max-height: 90vh; // Ensure modal never leaves the screen
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+
+  h2 { font-size: 1.25rem; margin: 0; font-weight: 700; }
+  .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #64748b; }
+}
+
+.form-body {
+  padding: 24px;
+  overflow-y: auto; // This makes the form scrollable
+  flex: 1; // Takes up all available space between header and footer
+  
+  // Styling for the scrollbar (optional)
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+}
+
+.modal-actions {
+  padding: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+  background: #f8fafc; // Subtle background for the footer
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+// Global form styles
+.form-group {
+  margin-bottom: 20px;
+  label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #1e293b; }
+}
+
+.custom-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  &:focus { outline: none; border-color: #1a6dff; }
+}
+
+.stop-input { margin-bottom: 10px; }
+
+.btn-add-stop {
+  width: 100%;
+  padding: 10px;
+  background: #f1f5f9;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #1a6dff;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { background: #e2e8f0; }
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.btn-cancel { 
+  background: white; border: 1px solid #e2e8f0; padding: 10px 24px; 
+  border-radius: 8px; cursor: pointer; font-weight: 600;
+}
+
+.btn-submit { 
+  background: #1a6dff; color: white; border: none; padding: 10px 24px; 
+  border-radius: 8px; cursor: pointer; font-weight: 600;
+}
+
+.stop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.stop-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 5px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 4px;
+
+  &.draggable-item {
+    cursor: grab;
+    &:active { cursor: grabbing; }
+    &:hover { background-color: #f0f7ff; border-color: #6366f1; }
+  }
+
+  .drag-icon {
+    color: #ccc;
+    cursor: grab;
+    font-size: 18px;
+    padding-left: 5px;
+  }
+
+  .fixed-icon {
+    padding-left: 5px;
+    opacity: 0.6;
+  }
+
+  .stop-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid #eee;
+
+  button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+  }
+
+  .btn-cancel {
+    background-color: #f3f4f6;
+    color: #4b5563;
+    &:hover { background-color: #e5e7eb; }
+  }
+
+  .btn-submit {
+    background-color: #6366f1; // Modern Purple/Indigo
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    &:hover { 
+      background-color: #4f46e5;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+  }
+}

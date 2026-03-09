@@ -1,0 +1,163 @@
+// --- Theme Variables ---
+$primary: #2563eb;
+$primary-soft: #eef2ff;
+$text-dark: #111827;
+$text-light: #6b7280;
+$border-color: #e5e7eb;
+$bg-main: #f9fafb;
+$white: #ffffff;
+
+.page-wrapper {
+  background: $bg-main;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+// --- Header Hero Section ---
+.profile-hero {
+  background: $white;
+  border-bottom: 1px solid $border-color;
+  padding: 2.5rem 0;
+
+  .hero-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  .back-link {
+    background: none; border: 1px solid $border-color; border-radius: 50%;
+    width: 36px; height: 36px; cursor: pointer; color: $text-light;
+    transition: all 0.2s;
+    &:hover { background: $primary; color: $white; border-color: $primary; }
+  }
+
+  .avatar-large {
+    width: 64px; height: 64px; border-radius: 16px;
+    background: $primary; color: $white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 700; position: relative;
+
+    .status-indicator {
+      position: absolute; bottom: -4px; right: -4px; width: 14px; height: 14px;
+      border: 3px solid $white; border-radius: 50%; background: #9ca3af;
+      &.active { background: #10b981; }
+    }
+  }
+
+  .name-stack {
+    h1 { font-size: 1.5rem; font-weight: 800; color: $text-dark; margin: 0; }
+    p { color: $text-light; margin: 0.25rem 0 0; font-size: 0.9rem; }
+    .role-tag { color: $primary; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+  }
+}
+
+.quick-stats {
+  display: flex; gap: 1rem;
+  .stat-pill {
+    background: #f3f4f6; padding: 0.75rem 1.25rem; border-radius: 12px;
+    text-align: center; min-width: 110px;
+    label { display: block; font-size: 0.65rem; text-transform: uppercase; color: $text-light; font-weight: 700; }
+    strong { font-size: 1.1rem; color: $text-dark; }
+    &.success { background: #ecfdf5; strong { color: #065f46; } }
+  }
+}
+
+// --- Grid Layout ---
+.content-grid {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+}
+
+// --- Activity Table Styling ---
+.activity-section {
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;
+    h2 { font-size: 1.1rem; font-weight: 700; color: $text-dark; }
+  }
+}
+
+.table-card {
+  background: $white; border-radius: 12px; border: 1px solid $border-color;
+  overflow: hidden;
+}
+
+::ng-deep .p-datatable-custom {
+  .p-datatable-thead > tr > th {
+    background: #f8fafc !important; color: $text-light !important; font-size: 0.7rem !important;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 1rem !important;
+  }
+  .p-datatable-tbody > tr > td {
+    padding: 1rem !important; font-size: 0.85rem; border-bottom: 1px solid #f3f4f6;
+  }
+}
+
+.date-stack {
+  .main-date { display: block; font-weight: 600; color: $text-dark; }
+  .sub-time { font-size: 0.75rem; color: $text-light; }
+}
+
+.badge-outline {
+  padding: 2px 8px; border: 1px solid $border-color; border-radius: 6px;
+  font-size: 0.75rem; color: $text-light; font-weight: 500;
+}
+
+.method-label {
+  font-weight: 700; font-size: 0.7rem; color: $primary;
+}
+
+.endpoint-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: $text-light;
+}
+
+.status-chip {
+  background: #ecfdf5; color: #065f46; padding: 2px 8px; border-radius: 100px; font-weight: 700;
+  &.error { background: #fee2e2; color: #991b1b; }
+}
+
+// --- Side Panel Styling ---
+.context-panel {
+  display: flex; flex-direction: column; gap: 1.5rem;
+
+  .panel-card {
+    background: $white; border-radius: 12px; border: 1px solid $border-color; padding: 1.5rem;
+    h3 { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: $text-light; margin-bottom: 1.25rem; }
+  }
+}
+
+.detail-list {
+  display: flex; flex-direction: column; gap: 1.25rem;
+  .detail-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    i { color: $primary; margin-top: 3px; }
+    label { display: block; font-size: 0.7rem; color: $text-light; font-weight: 600; }
+    span { font-size: 0.9rem; font-weight: 600; color: $text-dark; word-break: break-all; }
+  }
+}
+
+.security-status {
+  display: flex; gap: 1rem; padding: 1rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #d1fae5;
+  i { color: #059669; font-size: 1.5rem; }
+  strong { font-size: 0.9rem; color: #065f46; }
+  p { font-size: 0.75rem; color: #047857; margin: 2px 0 0; }
+
+  &.unsecured {
+    background: #fff7ed; border-color: #ffedd5;
+    i { color: #d97706; }
+    strong { color: #9a3412; }
+    p { color: #c2410c; }
+  }
+}

@@ -1,0 +1,13 @@
+<div class="alerts-card">
+  <h3>Vehicle Alerts</h3>
+  <div class="alert-list">
+    <div class="alert-item" *ngFor="let alert of alerts()">
+      <div class="priority-dot" [style.background-color]="getPriorityColor(alert.priority)"></div>
+      <div class="alert-content">
+        <div class="vehicle-id">{{ alert.vehicleId }}</div>
+        <div class="issue-text">{{ alert.issue }}</div>
+        <div class="priority-label">Priority: {{ alert.priority }}</div>
+      </div>
+    </div>
+  </div>
+</div>

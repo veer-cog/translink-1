@@ -1,0 +1,76 @@
+<div class="modal-overlay" *ngIf="isVisible()" (click)="hide()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h2>Book New Shipment</h2>
+            <button class="close-x" (click)="hide()">&times;</button>
+        </div>
+
+        <form [formGroup]="shipmentForm" (ngSubmit)="submit()">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Origin Hub</label>
+                    <p-select [options]="hubs" formControlName="originHubId" optionLabel="hubName" optionValue="id"
+                        [filter]="true" placeholder="Select Origin" [style]="{'width':'100%'}">
+                    </p-select>
+                </div>
+
+                <div class="form-group">
+                    <label>Destination Hub</label>
+                    <p-select [options]="hubs" formControlName="destinationHubId" optionLabel="hubName" optionValue="id"
+                        [filter]="true" placeholder="Select Destination" [style]="{'width':'100%'}">
+                    </p-select>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Route</label>
+                    <p-select [options]="validRoutes()" formControlName="routeId" optionLabel="id" optionValue="id"
+                        placeholder="Select Route" (onChange)="onRouteSelect($event)"
+                        [disabled]="validRoutes().length === 0" [style]="{'width':'100%'}">
+                        <ng-template let-route pTemplate="item">
+                            <span>ID: {{route.id}} ({{route.totalDistance}} km)</span>
+                        </ng-template>
+                    </p-select>
+                </div>
+
+                <div class="form-group">
+                    <label>Assigned Vehicle</label>
+                    <div class="read-only-box">
+                        <i class="pi pi-truck"></i>
+                        <span>{{ shipmentForm.get('vehicleId')?.value ? 'Vehicle ID: ' +
+                            shipmentForm.get('vehicleId')?.value : 'Select a route first...' }}</span>
+                    </div>
+                    <input type="hidden" formControlName="vehicleId">
+                </div>
+
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" formControlName="clientName" placeholder="Client Name">
+                </div>
+
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" formControlName="clientNumber" placeholder="ACC-001">
+                </div>
+
+                <div class="form-group">
+                    <label>Revenue ($)</label>
+                    <input type="number" formControlName="revenue">
+                </div>
+
+                <div class="form-group">
+                    <label>Weight (kg)</label>
+                    <input type="number" formControlName="totalWeight">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" (click)="hide()">Cancel</button>
+                <button type="submit" class="btn-primary" [disabled]="shipmentForm.invalid">
+                    Book Shipment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

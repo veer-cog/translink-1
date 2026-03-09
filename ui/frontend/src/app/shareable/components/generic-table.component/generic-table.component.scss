@@ -1,0 +1,184 @@
+/* --- Variables --- */
+$card-border-radius: 12px;
+$border-color: #e2e8f0;    // Standard light border
+$divider-color: #f1f5f9;   // Very soft for internal column lines
+$text-primary: #1e293b;
+$text-muted: #64748b;
+$primary-blue: #2563eb;
+$hover-bg: #f8fafc;        
+
+/* --- Main Container --- */
+.table-container {
+    background: #ffffff;
+    border-radius: $card-border-radius;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); // Softer shadow for blending
+}
+
+.table-header {
+    margin-bottom: 1.2rem;
+    h4 {
+        margin: 0;
+        color: $text-primary;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    thead {
+        background-color: #ffffff;
+        th {
+            text-align: left;
+            padding: 14px 12px;
+            color: $text-muted;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid $border-color;
+            
+            /* Column vertical divider logic */
+            &:not(:last-child) {
+                border-right: 1px solid $divider-color;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #ffffff;
+
+
+
+            /* BLENDED HOVER EFFECT: Soft lift and darkening */
+            &:hover {
+                background-color: #fafbfc !important;
+                // cursor: pointer;
+                // No blue edge bar, just a clean row highlight
+                
+                td {
+                    color: #000;
+                }
+            }
+
+            td {
+                padding: 16px 12px;
+                border-bottom: 1px solid #f8fafc;
+                color: $text-primary;
+                font-size: 0.85rem;
+                vertical-align: middle;
+
+                /* FIX: Consistent column borders that don't break with zebra colors */
+                &:not(:last-child) {
+                    border-right: 1px solid $divider-color;
+                }
+            }
+        }
+    }
+
+    .bold-text { 
+        font-weight: 600; 
+        color: #0f172a; 
+    }
+}
+
+/* --- PILL STATUS BADGES (Restored & Improved) --- */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 100px; // Full pill shape
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 75px;
+    letter-spacing: 0.02em;
+
+    /* Green - Active / Delivered */
+    &.active, &.delivered { 
+        background-color: #f0fdf4; 
+        color: #22c55e; 
+    }
+
+    /* Red - Inactive / Maintenance / High Priority */
+    &.inactive, &.maintenance, &.high, &.cancelled{ 
+        background-color: #fef2f2; 
+        color: #ef4444; 
+    }
+
+    /* Blue - Admin / In-Transit */
+    &.admin, &.in_transit { 
+        background-color: #eff6ff; 
+        color: #3b82f6; 
+    }
+
+    /* Purple - Operator / Booked */
+    &.operator, &.created { 
+        background-color: #faf5ff; 
+        color: #a855f7; 
+    }
+
+    /* Orange/Yellow - Pending / Medium */
+    &.pending, &.medium {
+        background-color: #fffbeb;
+        color: #f59e0b;
+    }
+}
+/* --- Empty State Styling --- */
+.no-data-cell {
+    padding: 3rem 0 !important; // Extra padding for the empty state
+    text-align: center;
+    background-color: #ffffff;
+    border-right: none !important; // Remove the vertical divider for the empty row
+}
+
+.no-data-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+
+    i {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.3;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+}
+/* --- Action Links --- */
+.view-details-link, .action-link {
+    color: $primary-blue;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba($primary-blue, 0.05);
+    transition: all 0.2s;
+    
+    &:hover {
+        background: rgba($primary-blue, 0.1);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+}

@@ -1,0 +1,214 @@
+// Variables
+$primary-blue: #2563eb;
+$success-green: #10b981;
+$text-main: #0f172a;
+$text-muted: #64748b;
+$bg-light: #f8fafc;
+$white: #ffffff;
+$border-color: #e2e8f0;
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+.page-container {
+    padding: 2rem;
+    background-color: $bg-light;
+    min-height: 100vh;
+}
+
+// Header
+.page-header {
+    margin-bottom: 2rem;
+    .breadcrumb-nav {
+        font-size: 0.85rem;
+        color: $text-muted;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+        a { color: $primary-blue; font-weight: 600; text-decoration: none; }
+    }
+    h1 { font-size: 1.75rem; font-weight: 800; margin: 0; color: $text-main; }
+}
+
+// Stats
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-mini {
+    background: $white;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+    span { font-size: 0.7rem; font-weight: 700; color: $text-muted; text-transform: uppercase; }
+    strong { display: block; font-size: 1.25rem; margin-top: 4px; color: $text-main; }
+}
+
+// Main Layout
+.main-details-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px; // Left column takes remaining space
+    gap: 2rem;
+    align-items: start; // Crucial for sticky behavior
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+// Cards
+.section-card {
+    background: $white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: $shadow-sm;
+
+    .card-header {
+        margin-bottom: 1.5rem;
+        h4 { margin: 0; font-size: 1.1rem; color: $text-main; display: flex; align-items: center; gap: 8px; }
+        i { color: $primary-blue; }
+    }
+}
+
+// Timeline ZigZag
+// 12. FIXED Timeline (Path Style)
+.stop-sequence-wrapper {
+    padding: 2rem 0;
+    overflow: hidden;
+
+    ::ng-deep .route-path-timeline {
+        // 1. Remove the "opposite" side entirely so it doesn't take up 50% width
+        .p-timeline-event-opposite {
+            display: none !important;
+        }
+
+        // 2. Fix the event alignment
+        .p-timeline-event {
+            min-height: 80px;
+        }
+
+        // 3. Handle LEFT side items (Odd children)
+        .p-timeline-event:nth-child(odd) {
+            flex-direction: row !important;
+            .p-timeline-event-content {
+                text-align: left !important;
+                padding-left: 1.5rem !important;
+                padding-right: 0 !important;
+            }
+        }
+
+        // 4. Handle RIGHT side items (Even children)
+        .p-timeline-event:nth-child(even) {
+            flex-direction: row-reverse !important;
+            .p-timeline-event-content {
+                text-align: right !important;
+                padding-right: 1.5rem !important;
+                padding-left: 0 !important;
+            }
+        }
+
+        // 5. The Connector Line
+        .p-timeline-event-connector {
+            background-color: $border-color;
+            width: 2px;
+        }
+    }
+}
+
+.timeline-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $white;
+    z-index: 5;
+    transition: all 0.3s ease;
+    
+    // Default Style (Black/Dark Gray for Transit/Origin)
+    border: 2px solid #334155; 
+    i { font-size: 0.8rem; color: #334155; }
+
+    // Completed state (Optional: Gray out if done)
+    &[data-status="completed"] {
+        background: #e2e8f0;
+        border-color: #94a3b8;
+        i { color: #64748b; }
+    }
+
+    // DESTINATION STATE (Red)
+    &[data-status="destination"] {
+        background: #fef2f2;
+        border-color: red;
+        box-shadow: 0 0 0 4px rgba(red, 0.1);
+        
+        i { 
+            color: red; 
+            font-weight: bold;
+        }
+    }
+}
+
+// Optional: Make the text for the destination entry bold or red
+.stop-entry {
+    &.is-destination {
+        border-left: 4px solid red;
+        .loc-row strong { color: red; }
+    }
+}
+
+// Sticky Sidebar
+.sticky-container {
+    position: sticky;
+    top: 2rem;
+}
+
+.vehicle-tag {
+    background: $text-main;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    .label { display: block; font-size: 0.65rem; opacity: 0.7; font-weight: 700; }
+    .value { font-size: 1.25rem; font-weight: 800; font-family: monospace; }
+}
+
+.info-grid {
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+        .label { font-size: 0.85rem; color: $text-muted; }
+        .data { font-size: 0.85rem; font-weight: 600; color: $text-main; }
+    }
+}
+
+// Table Styling
+.custom-table {
+    ::ng-deep .p-datatable-thead > tr > th {
+        background: $bg-light;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: $text-muted;
+    }
+}
+
+// Pills
+.status-pill {
+    padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+    &.transit { background: #e0f2fe; color: $primary-blue; }
+    &.delivered { background: #dcfce7; color: $success-green; }
+}
+
+.color-success { color: $success-green; }

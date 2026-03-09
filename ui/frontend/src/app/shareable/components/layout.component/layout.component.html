@@ -1,0 +1,73 @@
+<div class="layout-wrapper">
+    <aside class="sidebar" [class.collapsed]="isCollapsed">
+        <div class="sidebar-logo">
+            <div class="logo-box"></div>
+            <span class="logo-text">TransLink</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            @for (item of menuItems(); track item.label) {
+            <a class="nav-item" [routerLink]="item.path" routerLinkActive="active"
+                [pTooltip]="isCollapsed ? item.label : ''" tooltipPosition="right">
+                <i [class]="item.icon"></i>
+                <span class="nav-label">{{item.label}}</span>
+            </a>
+            }
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="nav-item"
+                [routerLink]="authService.currentUser()?.role === 'ADMIN' ? '/admin/settings' : '/operator/settings'"
+                routerLinkActive="active" [pTooltip]="isCollapsed ? 'Settings' : ''" tooltipPosition="right">
+                <i class="pi pi-cog"></i>
+                <span class="nav-label">Settings</span>
+
+            </a>
+            <a class="nav-item logout" [pTooltip]="isCollapsed ? 'Logout' : ''" tooltipPosition="right"
+                (click)="onLogout()">
+                <i class="pi pi-sign-out"></i>
+                <span class="nav-label">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-container">
+        <header class="topbar">
+            <div class="topbar-left">
+                <p-button icon="pi pi-bars" [rounded]="true" [text]="true" (onClick)="toggleSidebar()"></p-button>
+                <div class="breadcrumb">
+                    <span class="system-name">Transportation Management System</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="user-profile" (click)="userPopover.toggle($event)">
+                    <span class="username">{{authService.currentUser()?.role}}</span>
+                    <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
+                </div>
+            </div>
+        </header>
+
+
+        <p-popover #userPopover>
+            <div class="user-menu">
+                <div class="user-menu-header">
+                    <strong>{{authService.currentUser()?.name}} </strong>
+                    <span>{{authService.currentUser()?.email}} </span>
+                </div>
+                <ul class="menu-list">
+                    <li
+                        [routerLink]="authService.currentUser()?.role === 'ADMIN' ? '/admin/settings' : '/operator/settings'">
+                        <i class="pi pi-user"></i> My Profile
+                    </li>
+                    <li class="logout-link" (click)="onLogout()"><i class="pi pi-sign-out"></i> Sign Out</li>
+                </ul>
+            </div>
+        </p-popover>
+
+        <section class="content">
+            <router-outlet></router-outlet>
+        </section>
+    </main>
+</div>

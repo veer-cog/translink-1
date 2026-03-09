@@ -1,0 +1,14 @@
+<div class="insights-container" >
+  <h3>Optimization Insights</h3>
+  <div class="insights-grid">
+    <div *ngFor="let item of insightData" class="insight-card" [ngClass]="item.color" >
+      <div class="icon-box">
+        <i [class]="item.icon"></i>
+      </div>
+      <div class="content-2">
+        <h4>{{ item.label }}</h4>
+        <p>{{ item.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>

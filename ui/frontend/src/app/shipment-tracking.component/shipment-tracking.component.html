@@ -1,0 +1,95 @@
+<div class="page-container">
+  <header class="page-header">
+    <div class="title-area">
+      <h1>Shipment Tracking</h1>
+      <p>Monitor and manage logistics flows in real-time</p>
+    </div>
+
+    <div class="header-toolbar">
+      <div class="search-wrapper">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Search by ID or Customer..." (input)="onSearch($event)" />
+      </div>
+
+      <div class="filter-dropdown-wrapper">
+        <i class="pi pi-filter"></i>
+        <select class="custom-status-select" (change)="onStatusChange($event)">
+          @for (opt of statusOptions; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+        <i class="pi pi-chevron-down chevron"></i>
+      </div>
+
+      <button class="add-btn-vibrant" (click)="bookShipmentModal.show()">
+        <i class="pi pi-plus"></i>
+        <span>New Shipment</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    @for (stat of stats(); track stat.label) {
+    <app-stat-card [label]="stat.label" [value]="stat.value" [color]="stat.color" [icon]="stat.icon">
+    </app-stat-card>
+    }
+  </div>
+
+  <div class="section-card">
+    <div class="card-header-flex">
+      <h3>Active Shipments</h3>
+      <span class="count-badge">{{ filteredShipments().length }} Total</span>
+    </div>
+
+    <app-generic-table [columns]="cols" [data]="filteredShipments()" title="Shipment Management">
+
+      <ng-template #customCell let-data="data" let-col="col">
+
+        @if (col.field === 'clientName') {
+        <div class="customer-cell">
+          <span class="name">{{ data.clientName }}</span>
+          <span class="id-subtext">{{ data.clientNumber }}</span>
+        </div>
+        }
+
+        @if (col.field === 'displayRoute') {
+        <div class="route-cell">
+          <i class="pi pi-map-marker"></i>
+          <span>{{ data.displayRoute }}</span>
+        </div>
+        }
+
+        @if (col.field === 'vehiclePlate') {
+        <div class="vehicle-cell">
+          <i class="pi pi-truck"></i>
+          <span>{{ data.vehiclePlate }}</span>
+        </div>
+        }
+
+        @if (col.field === 'totalWeight') {
+        <span class="weight-text">{{ data.totalWeight }} <small>kg</small></span>
+        }
+      </ng-template>
+
+      <ng-template #rowActions let-row>
+        <button class="view-details-btn" (click)="viewDetails(row)">
+          View Details
+        </button>
+      </ng-template>
+
+    </app-generic-table>
+
+    @if (filteredShipments().length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-inbox"></i>
+      <p>No shipments found matching your criteria.</p>
+    </div>
+    }
+  </div>
+</div>
+
+<app-book-shipment #bookShipmentModal [vehicles]="vehicles()" [routes]="routes()" [hubs]="hubs()"
+  (onSave)="onShipmentAdded($event)">
+</app-book-shipment>
+
+<app-details-card #detailsCard title="Shipment Details"></app-details-card>

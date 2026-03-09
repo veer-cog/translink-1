@@ -1,0 +1,38 @@
+<div class="landing-wrapper">
+    <nav class="navbar">
+        <div class="logo-section">
+            <i class="pi pi-verified logo-icon"></i>
+            <span class="brand-name">TransLink</span>
+        </div>
+        <div class="nav-links">
+            <a routerLink="/login" class="nav-item">Log in</a>
+            <p-button label="Get started" routerLink="/signup" styleClass="get-started-btn"></p-button>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-content">
+            <h1>Streamline Transportation and Logistics</h1>
+            <p>Simplify how you manage your fleet with our comprehensive management system.</p>
+            <div class="hero-actions">
+                <p-button label="Get Started" routerLink="/signup" styleClass="hero-btn-primary"></p-button>
+                <p-button label="Learn More" styleClass="hero-btn-outline"></p-button>
+            </div>
+        </div>
+    </header>
+
+    <section class="carousel-container">
+        <p-carousel [value]="features" [numVisible]="3" [numScroll]="1" [circular]="true"
+            [responsiveOptions]="responsiveOptions" autoplayInterval="5000">
+            <ng-template let-feature pTemplate="item">
+                <div class="feature-card">
+                    <div class="icon-box">
+                        <i [class]="feature.icon"></i>
+                    </div>
+                    <h3>{{feature.title}}</h3>
+                    <p>{{feature.description}}</p>
+                </div>
+            </ng-template>
+        </p-carousel>
+    </section>
+</div>

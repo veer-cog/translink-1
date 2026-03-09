@@ -1,0 +1,187 @@
+/* shipment-tracking.component.scss */
+
+// Variables synchronized with Fleet Management
+$border-color: var(--p-surface-200);
+$primary-blue: var(--p-primary-600);
+$text-dark: var(--p-surface-900);
+$text-muted: var(--p-surface-500);
+$header-height: 42px;
+
+:host {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    background-color: var(--p-surface-50);
+    min-height: 100vh;
+}
+
+/* --- Header Section --- */
+.page-header {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex-wrap: nowrap;
+
+    .title-area {
+        flex-shrink: 0;
+        h1 { margin: 0; font-size: 1.75rem; font-weight: 700; color: $text-dark; letter-spacing: -0.02em; }
+        p { margin: 2px 0 0 0; color: $text-muted; font-size: 0.95rem; }
+    }
+}
+
+.header-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* --- Search & Filter Inputs --- */
+.search-wrapper {
+    position: relative;
+    i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); z-index: 2; }
+    input {
+        padding: 0 12px 0 36px;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        width: 260px; 
+        height: $header-height;
+        box-sizing: border-box;
+        background: #ffffff;
+        transition: border-color 0.2s;
+        &:focus { outline: none; border-color: var(--p-primary-500); box-shadow: 0 0 0 2px rgba($primary-blue, 0.1); }
+    }
+}
+
+.filter-dropdown-wrapper {
+    position: relative;
+    select {
+        padding: 0 32px 0 36px;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        appearance: none;
+        background: white;
+        font-weight: 600;
+        height: $header-height;
+        width: 180px;
+        box-sizing: border-box;
+        color: $text-dark;
+        cursor: pointer;
+    }
+    .pi-filter { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--p-surface-400); }
+    .chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--p-surface-400); font-size: 0.8rem; }
+}
+
+.add-btn-vibrant {
+    background: $primary-blue;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    height: $header-height;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: background 0.2s;
+    &:hover { background: var(--p-primary-700); }
+    i { font-size: 0.9rem; }
+}
+
+/* --- Stats Grid --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+/* --- Main Table Card --- */
+.section-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .card-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        h3 { margin: 0; font-size: 1.15rem; font-weight: 700; color: $text-dark; }
+        
+        .count-badge {
+            background: var(--p-surface-100);
+            color: $text-muted;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    }
+}
+
+/* --- Custom Table Cell Styling (::ng-deep for Generic Table support) --- */
+::ng-deep {
+    .customer-cell {
+        display: flex;
+        flex-direction: column;
+        .name { font-weight: 600; color: $text-dark; line-height: 1.2; }
+        .id-subtext { font-size: 0.75rem; color: $text-muted; margin-top: 2px; }
+    }
+
+    .route-cell, .vehicle-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--p-surface-700);
+        font-size: 0.9rem;
+        i { color: $primary-blue; font-size: 0.85rem; }
+    }
+
+    .weight-text {
+        font-weight: 600;
+        color: $text-dark;
+        small { color: $text-muted; font-weight: 400; margin-left: 2px; }
+    }
+
+    .view-details-btn {
+        background: transparent;
+        color: $primary-blue;
+        border: 1px solid rgba($primary-blue, 0.2);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        &:hover { background: rgba($primary-blue, 0.05); border-color: $primary-blue; }
+    }
+}
+
+/* --- Empty State --- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    color: $text-muted;
+    
+    i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+    p { margin: 0; font-size: 1rem; }
+}

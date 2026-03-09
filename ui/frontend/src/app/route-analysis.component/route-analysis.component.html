@@ -1,0 +1,141 @@
+<div class="page-container">
+    <div *ngIf="loading" class="flex flex-column align-items-center justify-content-center" style="height: 60vh;">
+        <i class="pi pi-spin pi-spinner text-4xl color-primary mb-3"></i>
+        <p class="text-muted">Loading route analysis...</p>
+    </div>
+
+    <ng-container *ngIf="!loading">
+        <header class="page-header">
+            <div>
+                <nav class="breadcrumb-nav" (click)="goBack()">
+                    <a><i class="pi pi-chevron-left"></i> Back to Optimization</a>
+                </nav>
+                <div class="title-with-badge">
+                    <h1>Route: {{ routeData?.id }}</h1>
+                    <span class="status-pill transit">{{ routeData?.status || 'Active' }}</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="section-card stat-mini">
+                <span>Distance</span>
+                <strong>{{ routeData?.totalDistance | number:'1.1-2' }} km</strong>
+            </div>
+            <div class="section-card stat-mini">
+                <span>Shipments</span>
+                <strong>{{ assignedShipments.length }}</strong>
+            </div>
+            <div class="section-card stat-mini">
+                <span>Assigned Vehicle</span>
+                <strong>{{ assignedVehicle?.numberPlate || 'Not Set' }}</strong>
+            </div>
+            <div class="section-card stat-mini">
+                <span>Est. Duration</span>
+                <strong>{{ routeData?.totalDuration | number:'1.1-1' }} hrs</strong>
+            </div>
+        </div>
+
+        <div class="main-details-layout">
+
+            <div class="left-column">
+
+                <section class="section-card">
+                    <div class="card-header">
+                        <h4><i class="pi pi-map-marker"></i> Route Path</h4>
+                    </div>
+                    <div class="stop-sequence-wrapper">
+                        <p-timeline [value]="routeData?.stops" align="alternate" styleClass="route-path-timeline">
+
+                            <ng-template pTemplate="marker" let-stop>
+                                <div class="timeline-dot" [attr.data-status]="stop.status">
+                                    <i class="pi" [ngClass]="{
+                'pi-map-marker': stop.status === 'destination',
+                'pi-check': stop.status === 'completed',
+                'pi-circle-fill': stop.status !== 'destination' && stop.status !== 'completed'
+            }"></i>
+                                </div>
+                            </ng-template>
+
+                            <ng-template pTemplate="content" let-stop>
+                                <div class="stop-entry" [class.is-destination]="stop.status === 'destination'">
+                                    <div class="loc-row">
+                                        <strong>{{ stop.city }}</strong>
+                                    </div>
+                                    <div class="meta-row">
+                                        <span class="stop-type">{{ stop.type }}</span>
+                                    </div>
+                                </div>
+                            </ng-template>
+
+                        </p-timeline>
+                    </div>
+                </section>
+
+                <section class="section-card">
+                    <div class="card-header">
+                        <h4><i class="pi pi-box"></i> Shipment Manifest</h4>
+                    </div>
+                    <p-table [value]="assignedShipments" class="custom-table">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Tracking #</th>
+                                <th>Recipient</th>
+                                <th>Weight</th>
+                                <th>Status</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-s>
+                            <tr>
+                                <td><strong>{{ s.shipmentNumber }}</strong></td>
+                                <td>{{ s.clientName }}</td>
+                                <td>{{ s.totalWeight }} kg</td>
+                                <td><span class="status-pill delivered">{{ s.status }}</span></td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </section>
+            </div>
+
+            <div class="right-column">
+                <aside class="sticky-container">
+                    <section class="section-card info-panel sticky-card">
+                        <div class="card-header">
+                            <h4><i class="pi pi-truck"></i> Vehicle Details</h4>
+                        </div>
+
+                        <div class="asset-details" *ngIf="assignedVehicle; else vehicleState">
+                            <div class="vehicle-tag">
+                                <span class="label">PLATE NUMBER</span>
+                                <span class="value">{{ assignedVehicle.numberPlate }}</span>
+                            </div>
+
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="label">Type</span>
+                                    <span class="data">{{ assignedVehicle.type }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Status</span>
+                                    <span class="data color-success">Available</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-template #vehicleState>
+                            <div *ngIf="routeData?.vehicleID" class="p-3 text-center">
+                                <i class="pi pi-spin pi-spinner mb-2"></i>
+                                <p class="text-sm">Fetching vehicle info...</p>
+                            </div>
+                            <div *ngIf="!routeData?.vehicleID" class="p-3 text-center text-muted">
+                                <i class="pi pi-exclamation-circle mb-2 text-2xl"></i>
+                                <p>No vehicle assigned to this route.</p>
+                            </div>
+                        </ng-template>
+                    </section>
+                </aside>
+            </div>
+
+        </div>
+    </ng-container>
+</div>

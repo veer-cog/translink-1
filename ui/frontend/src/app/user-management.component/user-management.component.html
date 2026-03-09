@@ -1,0 +1,93 @@
+<p-toast></p-toast>
+
+<div class="page-container">
+    <header class="page-header">
+        <div class="title-area">
+            <h1>User Management</h1>
+            <p>System Administration & Staff Control</p>
+        </div>
+        <button class="add-btn-vibrant" (click)="openAddModal()">
+            <i class="pi pi-user-plus"></i>
+            <span>Add Operator</span>
+        </button>
+    </header>
+
+    <div class="stats-grid">
+        @for (stat of stats(); track stat.label) {
+        <app-stat-card [label]="stat.label" [value]="stat.value" [icon]="stat.icon"
+            [color]="stat.color"></app-stat-card>
+        }
+    </div>
+
+    <div class="toolbar-section">
+        <div class="search-wrapper">
+            <i class="pi pi-search"></i>
+            <input type="text" pInputText placeholder="Search users by name or ID..."
+                (input)="searchQuery.set($any($event.target).value)" />
+        </div>
+        <div class="filter-dropdown-wrapper">
+            <p-select [options]="filterOptions" [(ngModel)]="roleFilter" optionLabel="label" optionValue="value"
+                class="w-12rem"></p-select>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <app-generic-table title="Staff Directory" [columns]="cols" [data]="filteredUsers()">
+            <ng-template #rowActions let-row>
+                <div class="action-links" style="display: flex; gap: 15px;">
+                    <a class="view-details-link" (click)="viewUserDetails(row)">View Profile</a>
+                    <a class="view-details-link" (click)="editUser(row)" style="color: #64748b;">Edit Permissions</a>
+                </div>
+            </ng-template>
+        </app-generic-table>
+    </div>
+</div>
+
+<p-dialog [header]="isEditMode() ? 'Edit User Status' : 'New Operator'" [(visible)]="displayDialog" [modal]="true"
+    [style]="{width: '450px'}">
+
+    <form [formGroup]="userForm" class="user-form-grid">
+        <div class="form-field" [class.locked-field]="isEditMode()">
+            <label>First Name</label>
+            <input type="text" pInputText formControlName="firstName" />
+        </div>
+
+        <div class="form-field" [class.locked-field]="isEditMode()">
+            <label>Last Name</label>
+            <input type="text" pInputText formControlName="lastName" />
+        </div>
+
+        <div class="form-field" [class.locked-field]="isEditMode()">
+            <label>Email Address</label>
+            <input type="email" pInputText formControlName="email" />
+        </div>
+
+        <div class="form-field" [class.locked-field]="isEditMode()">
+            <label>System Role</label>
+            <p-select [options]="roleOptions" formControlName="role" optionLabel="label" optionValue="value"></p-select>
+        </div>
+
+        @if (isEditMode()) {
+        <div class="divider"></div>
+        <div class="status-toggle-card" [class.inactive-bg]="!userForm.get('active')?.value">
+            <div class="status-info">
+                <label>Account Status</label>
+                <p>{{ userForm.get('active')?.value ? 'User has full access' : 'Access is currently revoked' }}</p>
+            </div>
+            <div class="toggle-wrapper">
+                <span [style.color]="userForm.get('active')?.value ? '#22c55e' : '#ef4444'" class="status-label">
+                    {{ userForm.get('active')?.value ? 'Active' : 'Inactive' }}
+                </span>
+                <p-toggleswitch formControlName="active"></p-toggleswitch>
+            </div>
+        </div>
+        }
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancel" class="p-button-text" (click)="displayDialog.set(false)"></button>
+        <button pButton [label]="isEditMode() ? 'Update Status' : 'Save Changes'" class="p-button-primary"
+            [loading]="isLoading()" [disabled]="userForm.invalid || isLoading()" (click)="saveUser()">
+        </button>
+    </ng-template>
+</p-dialog>
