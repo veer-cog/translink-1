@@ -1,58 +1,27 @@
-import { Component } from '@angular/core';
+// src/app/analytics-reports/analytics-reports.component.ts
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AnalyticsService } from '../services/analytics-service';
 import { StatCardComponent } from '../shareable/components/stat-card.component/stat-card.component';
 import { DashboardChartComponent } from '../shareable/components/dashboard-chart.component/dashboard-chart.component';
 import { TabFilterComponent } from '../shareable/components/tab-filter.component/tab-filter.component';
 import { GenericTableComponent, TableColumn } from '../shareable/components/generic-table.component/generic-table.component';
 
-
 @Component({
   selector: 'app-analytics-reports',
   standalone: true,
-  imports: [
-    CommonModule, 
-    StatCardComponent, 
-    DashboardChartComponent, 
-    TabFilterComponent, 
-    GenericTableComponent,
-  ],
+  imports: [CommonModule, StatCardComponent, DashboardChartComponent, TabFilterComponent, GenericTableComponent],
   templateUrl: './analytics-reports.component.html',
   styleUrls: ['./analytics-reports.component.scss']
 })
-export class AnalyticsReportsComponent {
-  // Filters
+export class AnalyticsReportsComponent implements OnInit {
+  private analyticsService = inject(AnalyticsService);
+
+  // Default UI State
   timeTabs = ['Last Week', 'Last Month', 'Last Year'];
-
-  // Stat Cards 
-  stats = [
-    { label: 'Total Revenue', value: '$485,200', trend: '12.5%', isPos: true, icon: 'pi pi-indian-rupee', col: '#e6fcf5' },
-    { label: 'Total Deliveries', value: '1,342', trend: '8.3%', isPos: true, icon: 'pi pi-box', col: '#e7f1ff' },
-    { label: 'Profit Margin', value: '75.4%', trend: '2.1%', isPos: true, icon: 'pi pi-chart-line', col: '#f3f0ff' },
-    { label: 'Fleet Utilization', value: '87%', trend: '5.2%', isPos: true, icon: 'pi pi-truck', col: '#fff4e6' }
-  ];
-
-  // Chart Setup
-  chartData = {
-    labels: ['Jan', 'Dec', 'Nov', 'Oct', 'Sep', 'Aug'],
-    datasets: [
-      { label: 'Revenue', backgroundColor: '#3b82f6', data: [460, 440, 410, 430, 420, 400], borderRadius: 6 },
-      { label: 'Cost', backgroundColor: '#ff6b6b', data: [75, 80, 85, 90, 70, 80], borderRadius: 6 }
-    ]
-  };
-
-  chartOptions = {
-    scales: { x: { stacked: true }, y: { stacked: true, display: false } }
-  };
-
-  // Cost Analysis (Middle Section)
-  costAnalysis = [
-    { label: 'Fuel', amt: '$45,600', pct: 38 },
-    { label: 'Maintenance', amt: '$28,400', pct: 24 },
-    { label: 'Labor', amt: '$32,100', pct: 27 },
-    { label: 'Insurance', amt: '$13,200', pct: 11 }
-  ];
-
-  // Table Configuration
+  isLoading = false;
+  
+  // Table & Chart Configuration
   tableCols: TableColumn[] = [
     { field: 'shipmentId', header: 'Shipment ID', type: 'text' },
     { field: 'route', header: 'Route', type: 'text' },
@@ -61,9 +30,74 @@ export class AnalyticsReportsComponent {
     { field: 'cost', header: 'Cost', type: 'text' }
   ];
 
-  tableData = [
-    { shipmentId: 'SHP-001', route: 'New York -> London', date: '2026-01-10', status: 'delivered', cost: '$1,200' },
-    { shipmentId: 'SHP-002', route: 'Paris -> Berlin', date: '2026-01-12', status: 'in-transit', cost: '$850' },
-    { shipmentId: 'SHP-003', route: 'Tokyo -> Sydney', date: '2026-01-13', status: 'booked', cost: '$2,100' }
-  ];
+  chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { x: { stacked: true }, y: { stacked: true } }
+  };
+
+  // Data variables
+  stats: any[] = [];
+  chartData: any = { labels: [], datasets: [] };
+  costAnalysis: any[] = [];
+  tableData: any[] = [];
+  totalOperatingCost = 0;
+
+  ngOnInit() {
+    // Force "month" as the default load period immediately
+    this.loadData('month'); 
+  }
+
+  onTabChange(tabLabel: string) {
+    const mapping: any = { 'Last Week': 'week', 'Last Month': 'month', 'Last Year': 'year' };
+    this.loadData(mapping[tabLabel] || 'month');
+  }
+
+  private loadData(period: string) {
+    this.isLoading = true;
+    this.analyticsService.getDashboardData(period).subscribe({
+      next: (res) => {
+        this.mapSummary(res.summary);
+        this.mapTrends(res.trends);
+        this.mapCosts(res.costs);
+        this.tableData = res.operations || [];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error("Critical fetch error:", err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private mapSummary(summary: any) {
+    if (!summary) return;
+    this.stats = [
+      { label: 'Total Revenue', value: `$${(summary.totalRevenue || 0).toLocaleString()}`, trend: summary.revenueChangeLabel, icon: 'pi pi-indian-rupee', col: '#2522cfff' },
+      { label: 'Total Deliveries', value: (summary.totalDeliveries || 0).toLocaleString(), trend: summary.deliveriesChangeLabel, icon: 'pi pi-box', col: '#df145bff' },
+      { label: 'Profit Margin', value: `${summary.profitMargin || 0}%`, trend: summary.marginChangeLabel, icon: 'pi pi-chart-line', col: '#15940cff' },
+      { label: 'Fleet Utilization', value: `${(summary.fleetUtilization || 0).toFixed(1)}%`, trend: summary.utilizationChangeLabel, icon: 'pi pi-truck', col: '#57a4c7ff' }
+    ];
+  }
+
+  private mapTrends(trends: any[]) {
+    this.chartData = {
+      labels: trends?.map(t => t.month) || [],
+      datasets: [
+        { label: 'Revenue', backgroundColor: '#3b82f6', data: trends?.map(t => t.revenue) || [], borderRadius: 6 },
+        { label: 'Cost', backgroundColor: '#ff6b6b', data: trends?.map(t => t.cost) || [], borderRadius: 6 }
+      ]
+    };
+  }
+
+  private mapCosts(costs: any) {
+    if (!costs) return;
+    this.totalOperatingCost = costs.totalOperatingCost || 0;
+    const base = this.totalOperatingCost || 1;
+    this.costAnalysis = [
+      { label: 'Fuel', amt: `$${(costs.fuel || 0).toLocaleString()}`, pct: Math.round(((costs.fuel || 0) / base) * 100) },
+      { label: 'Maintenance', amt: `$${(costs.maintenance || 0).toLocaleString()}`, pct: Math.round(((costs.maintenance || 0) / base) * 100) },
+      { label: 'Labor', amt: `$${(costs.labor || 0).toLocaleString()}`, pct: Math.round(((costs.labor || 0) / base) * 100) }
+    ];
+  }
 }
