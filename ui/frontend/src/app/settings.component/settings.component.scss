@@ -1,283 +1,289 @@
-// Variables to match your existing dashboard theme
-$bg-color: #f8fafc;
+// 1. Variable Definitions
+$primary-blue: #2563eb;
+$primary-hover: #1d4ed8;
+$bg-slate: #f8fafc;
+$white: #ffffff;
 $border-color: #e2e8f0;
 $text-main: #0f172a;
 $text-muted: #64748b;
-$primary-blue: #2563eb;
-$white: #ffffff;
+$text-slate-700: #334155;
+$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+$shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 
 .page-container {
-  padding: 2rem;
-  background: $bg-color;
+  padding: 2.5rem;
+  background: $bg-slate;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 
-  // Header Section
+  // 2. Header Section
   .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    padding-bottom: 0.5rem;
     
     .title-block {
-      h2 { font-size: 1.5rem; font-weight: 700; color: $text-main; margin: 0; }
-      p { color: $text-muted; margin: 4px 0 0; font-size: 0.95rem; }
+      h2 { 
+        font-size: 1.875rem; 
+        font-weight: 800; 
+        color: $text-main; 
+        margin: 0; 
+        letter-spacing: -0.02em;
+      }
+      p { 
+        color: $text-muted; 
+        margin: 6px 0 0; 
+        font-size: 1rem; 
+      }
     }
   }
 
-  // Main Layout Grid
+  // 3. Main Layout Grid
   .main-layout-grid {
     display: grid;
-    grid-template-columns: 1fr 340px; 
-    gap: 2rem;
+    grid-template-columns: 1fr 360px; 
+    gap: 2.5rem;
     align-items: start;
   }
 
-  // Common Card Style
+  // 4. Common Card Container
   .main-card, .content-card {
     background: $white;
     border: 1px solid $border-color;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: $shadow-sm;
   }
 
-  // Tab Navigation Container
+  // 5. Tab Navigation Container
   .tab-container {
     border-bottom: 1px solid #f1f5f9;
     padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
   }
 
-  // Settings Content Animations
+  // 6. Settings Content Logic
   .settings-content {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     .section-header {
-      margin-bottom: 2rem;
-      h3 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 6px; }
-      p { color: $text-muted; font-size: 0.9rem; margin: 0; }
+      margin-bottom: 2.5rem;
+      h3 { 
+        font-size: 1.25rem; 
+        font-weight: 700; 
+        color: $text-main; 
+        margin-bottom: 8px; 
+      }
+      p { 
+        color: $text-muted; 
+        font-size: 0.95rem; 
+        margin: 0; 
+        line-height: 1.5;
+      }
     }
 
     .divider {
       height: 1px;
       background: #f1f5f9;
       width: 100%;
-      margin: 2rem 0;
+      margin: 2.5rem 0;
     }
   }
 
-  // Avatar / Profile Photo Section
+  // 7. Profile Specific: Avatar Section
   .avatar-upload {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px dashed #cbd5e1;
 
     .avatar-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: $primary-blue;
+      width: 96px;
+      height: 96px;
+      border-radius: 24px; // Modern Squircle
+      background: linear-gradient(135deg, $primary-blue, #3b82f6);
       color: $white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 2.25rem;
       font-weight: 700;
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+      border: 4px solid $white;
     }
 
     .upload-actions {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      span { font-size: 0.75rem; color: #94a3b8; }
+      strong { color: $text-main; font-size: 1.05rem; }
+      span { font-size: 0.85rem; color: #94a3b8; max-width: 280px; line-height: 1.4; }
     }
   }
 
-  // Form Grid
+  // 8. Form Layout
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    column-gap: 2rem;
+    row-gap: 1.75rem;
 
-    .full-width {
-      grid-column: span 2;
-    }
+    .full-width { grid-column: span 2; }
 
     .form-field {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
 
       label {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #475569;
+        color: $text-slate-700;
       }
 
-      input[pInputText], textarea[pInputTextarea] {
+      input[pInputText] {
+        height: 48px;
         width: 100%;
-        border-radius: 8px;
-        border: 1px solid #cbd5e1;
-        padding: 0.75rem;
-        transition: border-color 0.2s;
+        border-radius: 10px;
+        border: 1.5px solid $border-color;
+        padding: 0 1rem;
+        font-size: 0.95rem;
+        color: $text-main;
+        transition: all 0.2s ease;
 
+        &:hover { border-color: #cbd5e1; }
         &:focus {
           border-color: $primary-blue;
-          box-shadow: 0 0 0 1px $primary-blue;
+          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
           outline: none;
+        }
+
+        &.opacity-70 {
+          background: #f1f5f9;
+          cursor: not-allowed;
+          color: $text-muted;
+          &:focus { box-shadow: none; border-color: $border-color; }
         }
       }
     }
   }
 
-  // Action List (For Security and Notifications)
+  // 9. Security Specific Items
   .action-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
 
     .action-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.25rem;
-      background: #f8fafc;
-      border: 1px solid #f1f5f9;
-      border-radius: 12px;
-      transition: background 0.2s;
+      padding: 1.5rem;
+      background: #ffffff;
+      border: 1px solid $border-color;
+      border-radius: 14px;
+      transition: all 0.2s ease;
 
-      &:hover { background: #f1f5f9; }
+      &:hover { border-color: #cbd5e1; background: #fafafa; }
 
       .text {
-        strong { display: block; color: #1e293b; font-size: 0.95rem; margin-bottom: 2px; }
-        p { margin: 0; font-size: 0.85rem; color: $text-muted; line-height: 1.4; }
+        strong { display: block; color: $text-main; font-size: 1rem; margin-bottom: 4px; }
+        p { margin: 0; font-size: 0.9rem; color: $text-muted; }
       }
     }
   }
 
-  // Security Specific: Session Log
-  .session-log {
-    margin-top: 1rem;
-    .session-entry {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: #f8fafc;
-      border: 1px solid #f1f5f9;
-      border-radius: 12px;
-
-      i { font-size: 1.25rem; color: $text-muted; }
-      .details {
-        flex: 1;
-        strong { display: block; font-size: 0.9rem; color: $text-main; }
-        span { font-size: 0.8rem; color: $text-muted; }
-      }
-    }
-  }
-
-  // Sidebar Column Content
+  // 10. Sidebar UI
   .sidebar-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
     .stats-card {
-      h3 { font-size: 1rem; margin-bottom: 1rem; }
+      h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: $text-main; }
       
       .stat-mini {
-        padding: 1rem 0;
+        padding: 1.25rem 0;
         border-bottom: 1px solid #f1f5f9;
         &:last-child { border: none; }
 
-        span { display: block; font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-        strong { display: block; color: #1e293b; font-size: 0.9rem; margin-top: 4px; }
+        span { display: block; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 600; }
+        strong { display: block; color: $text-main; font-size: 0.95rem; margin-top: 6px; }
+        .role-highlight { color: $primary-blue; font-weight: 700; }
       }
     }
 
-    .activity-card {
-      margin-top: 1.5rem;
-
-      h3 { font-size: 1rem; margin-bottom: 1rem; }
-      .activity-feed {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-
-        li {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-          padding: 12px 0;
-          font-size: 0.85rem;
-          color: $text-muted;
-          border-bottom: 1px dashed #e2e8f0;
-
-          i { color: $primary-blue; margin-top: 3px; font-size: 0.8rem; }
-          &:last-child { border: none; }
-        }
-      }
+    .user-id-badge {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      small { display: block; color: $text-muted; margin-bottom: 4px; }
+      code { font-family: monospace; color: $text-main; font-weight: 600; font-size: 0.85rem; }
     }
   }
 }
 
-// PrimeNG Overrides for consistent Security UI
+// 11. PrimeNG Component Overrides
 ::ng-deep {
-  .flex { display: flex; }
-  .items-center { align-items: center; }
-  .gap-3 { gap: 0.75rem; }
-  .w-full { width: 100%; }
-  .mt-4 { margin-top: 1rem; }
-  .mt-6 { margin-top: 1.5rem; }
-  .mb-6 { margin-bottom: 1.5rem; }
-
-  // Password override to match your input style
   .p-password {
     width: 100%;
     input {
-      width: 100%;
-      border-radius: 8px !important;
-      border: 1px solid #cbd5e1 !important;
-      padding: 0.75rem !important;
-      transition: border-color 0.2s;
-
+      width: 100% !important;
+      height: 48px !important;
+      border-radius: 10px !important;
+      border: 1.5px solid #e2e8f0 !important;
       &:focus {
-        border-color: #2563eb !important; // $primary-blue
-        box-shadow: 0 0 0 1px #2563eb !important;
-        outline: none;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
       }
     }
   }
 
-  // Adjusting the p-select dropdown width
-  .p-select {
-    border-radius: 8px;
-    border: 1px solid #cbd5e1;
+  .p-button {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: transform 0.1s;
+    &:active { transform: scale(0.98); }
+  }
+
+  .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+    background: $primary-blue;
   }
 }
 
+// 12. Animations & Media Queries
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-// Responsive adjustments
-@media (max-width: 1100px) {
+
+
+@media (max-width: 1200px) {
   .page-container .main-layout-grid {
     grid-template-columns: 1fr;
   }
   .page-container .sidebar-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
   }
 }
 
 @media (max-width: 768px) {
+  .page-container { padding: 1.5rem; }
   .page-container .form-grid {
     grid-template-columns: 1fr;
     .full-width { grid-column: span 1; }
   }
-  .page-container .sidebar-column {
-    grid-template-columns: 1fr;
-  }
+  .page-container .sidebar-column { grid-template-columns: 1fr; }
 }

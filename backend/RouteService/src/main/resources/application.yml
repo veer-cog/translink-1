@@ -1,0 +1,10 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+google:
+  maps:
+    api-key: AIzaSyAy4e3T5aP-77WGvo2kfR0MsJc0EgfxJq8
